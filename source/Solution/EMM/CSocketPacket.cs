@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace EnigmaMM
+﻿namespace EnigmaMM
 {
     public class CSocketPacket
     {
+        public const int BufferSize = 32;
         public System.Net.Sockets.Socket thisSocket;
-        public byte[] dataBuffer = new byte[32];
+        public byte[] dataBuffer = new byte[BufferSize];
     }
 }

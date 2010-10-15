@@ -12,17 +12,29 @@ namespace EnigmaMM
         private byte[] mDataBuffer = new byte[10];
         private IAsyncResult mAsynResult;
         private String mData;
+        private String mServerIP = "127.0.0.1";
+        private int mServerPort = 8221;
 
         public AsyncCallback pfnCallBack;
         public Socket mSocClient;
 
+        public String ServerIP
+        {
+            get { return mServerIP; }
+            set { mServerIP = value; }
+        }
+
+        public int ServerPort
+        {
+            get { return mServerPort; }
+            set { mServerPort = value; }
+        }
+
         public void StartClient()
         {
             mSocClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            String ServerIP = "10.50.30.1";
-            int ServerPort = 8221;
-            IPAddress remoteIPAddress = IPAddress.Parse(ServerIP);
-            IPEndPoint remoteEndpoint = new IPEndPoint(remoteIPAddress, ServerPort);
+            IPAddress remoteIPAddress = IPAddress.Parse(mServerIP);
+            IPEndPoint remoteEndpoint = new IPEndPoint(remoteIPAddress, mServerPort);
             mSocClient.Connect(remoteEndpoint);
             WaitForData();
         }
@@ -71,7 +83,6 @@ namespace EnigmaMM
             {
                 System.Diagnostics.Debugger.Log(0, "1", "OnDataReceived: Socket closed");
             }
-
         }
     }
 }

@@ -15,10 +15,12 @@ namespace EnigmaMM
             System.Threading.Thread.Sleep(500);
 
             Client mClient = new Client();
+            mClient.ServerIP = "127.0.0.1";
+            mClient.ServerPort = 8221;
             mClient.StartClient();
             // Loop and send test commands
             int i;
-            for (i = 0; i < 10; i++)
+            for (i = 0; i < 100; i++)
             {
                 mClient.SendData("This is a really long test message sure to exceed the length of the receiving buffer " + i + ".\n");
                 mClient.SendData("but this one won't " + i + ".\n");
@@ -28,10 +30,9 @@ namespace EnigmaMM
                 mClient.SendData("one\n");
                 mClient.SendData("after\n");
                 mClient.SendData("another\n");
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(5000);
             }
             mClient.StopClient();
-
         }
     }
 }

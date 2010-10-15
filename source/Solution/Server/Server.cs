@@ -58,21 +58,32 @@ namespace EnigmaMM
             try
             {
                 CSocketPacket theSocketId = (CSocketPacket)asyn.AsyncState;
-                int iRx = 0;
-                iRx = theSocketId.thisSocket.EndReceive(asyn);
+
+                // Get the number of chars in the buffer
+                int iRx = theSocketId.thisSocket.EndReceive(asyn);
+
                 char[] chars = new char[iRx + 1];
-                //System.Text.Decoder d = System.Text.Encoding.UTF8.GetDecoder();
-                System.String szData = Encoding.UTF8.GetString(theSocketId.dataBuffer);
-                //Console.WriteLine("OnDataReceived: \"" + szData + "\"");
+                
+                // Decode the received data, making sure to only get iRx 
+                // characters (buffer is filled with \0)
+                System.String szData = Encoding.UTF8.GetString(theSocketId.dataBuffer, 0, iRx);
+
+                // If the buffer contains any new-line characters, then we need
+                // to parse out each of the sent commands
                 while (szData.Contains("\n"))
                 {
                     mText += szData.Substring(0, szData.IndexOf("\n"));
                     szData = szData.Substring(szData.IndexOf("\n") + 1);
-                    Console.WriteLine("OnDataReceived: COMMAND: \"" + mText + "\"\n");
+                    
+                    Console.WriteLine("OnDataReceived: COMMAND: [" + mText + "]");
+                    theSocketId.thisSocket.Send(System.Text.Encoding.UTF8.GetBytes("Executing command [" + mText + "]"));
+
+
                     mText = "";
                 }
                 mText = mText + szData;
                 
+                // Wait for more commands
                 WaitForData(mSocketWorker);
             }
             catch (ObjectDisposedException e)
@@ -82,7 +93,6 @@ namespace EnigmaMM
             catch (SocketException e)
             {
                 System.Diagnostics.Debugger.Log(0, "1", "OnDataReceived SocketException :( " + e.Message);
-
             }
             catch (Exception e)
             {
