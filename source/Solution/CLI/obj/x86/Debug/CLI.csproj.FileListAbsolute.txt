@@ -1,0 +1,7 @@
+D:\Mark\Dev\Enigma-MM\source\Solution\CLI\bin\Debug\CLI.exe
+D:\Mark\Dev\Enigma-MM\source\Solution\CLI\bin\Debug\CLI.pdb
+D:\Mark\Dev\Enigma-MM\source\Solution\CLI\bin\Debug\emmserver.dll
+D:\Mark\Dev\Enigma-MM\source\Solution\CLI\bin\Debug\emmserver.pdb
+D:\Mark\Dev\Enigma-MM\source\Solution\CLI\obj\x86\Debug\ResolveAssemblyReference.cache
+D:\Mark\Dev\Enigma-MM\source\Solution\CLI\obj\x86\Debug\CLI.exe
+D:\Mark\Dev\Enigma-MM\source\Solution\CLI\obj\x86\Debug\CLI.pdb
