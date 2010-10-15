@@ -1,0 +1,1 @@
+@cscript backup.vbs %1
