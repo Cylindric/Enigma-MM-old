@@ -1,0 +1,11 @@
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\obj\x86\Release\ResolveAssemblyReference.cache
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emmtest.exe
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emmtest.pdb
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emmclient.exe
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emmserver.exe
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emm.dll
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emmclient.pdb
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emmserver.pdb
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\bin\Release\emm.pdb
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\obj\x86\Release\emmtest.exe
+D:\Mark\Dev\Enigma-MM\source\Solution\Test\obj\x86\Release\emmtest.pdb
