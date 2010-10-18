@@ -7,7 +7,7 @@ using System.Configuration;
 
 namespace EnigmaMM
 {
-    class Program
+    class CLIProgram
     {
 
         private static CLI m_Con;

@@ -7,12 +7,26 @@ namespace EnigmaMM
 {
     public class Server
     {
+        private String mServerIP = "any";
+        private int mServerPort = 8221;
         private Socket mSocketListener;
         private Socket mSocketWorker;
         private AsyncCallback pfnWorkerCallBack;
         private string mText;
         private bool mListening = false;
 
+        public String ServerIP
+        {
+            get { return mServerIP; }
+            set { mServerIP = value; }
+        }
+
+        public int ServerPort
+        {
+            get { return mServerPort; }
+            set { mServerPort = value; }
+        }
+        
         public bool Listening
         {
             get { return mListening; }
@@ -21,7 +35,14 @@ namespace EnigmaMM
         public void StartListener()
         {
             mSocketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-            IPEndPoint LocalIp = new IPEndPoint(IPAddress.Any, 8221);
+            IPEndPoint LocalIp;
+            if (mServerIP == "any")
+            {
+                LocalIp = new IPEndPoint(IPAddress.Any, mServerPort);
+            } else
+            {
+                LocalIp = new IPEndPoint(IPAddress.Parse(mServerIP), mServerPort);
+            }
             mSocketListener.Bind(LocalIp);
             mSocketListener.Listen(4);
             mSocketListener.BeginAccept(new AsyncCallback(OnClientConnect), null);
@@ -77,7 +98,6 @@ namespace EnigmaMM
                     
                     Console.WriteLine("OnDataReceived: COMMAND: [" + mText + "]");
                     theSocketId.thisSocket.Send(System.Text.Encoding.UTF8.GetBytes("Executing command [" + mText + "]"));
-
 
                     mText = "";
                 }

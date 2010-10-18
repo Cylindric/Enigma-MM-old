@@ -1,6 +1,6 @@
 ﻿namespace EnigmaMM
 {
-    class Program
+    class ServerProgram
     {
         static void Main(string[] args)
         {
