@@ -67,7 +67,6 @@ Sub CompressImage(Filename)
   cmd = Replace(cmd, "{CMD}", PNGC)
   cmd = Replace(cmd, "{FILENAME}", Filename)
 
-  WScript.Echo "Compressing " & objFS.GetFileName(Filename)
   objShell.Run cmd, CommandWindowStyle, True
 End Sub
 
@@ -85,7 +84,6 @@ Sub ResizeImage(InFilename, OutFilename, Width, Height)
   cmd = Replace(cmd, "{WIDTH}", Width)
   cmd = Replace(cmd, "{HEIGHT}", Height)
 
-  WScript.Echo "Resizing " & objFS.GetFileName(InFilename)
   objShell.Run cmd, CommandWindowStyle, True
 End Sub
 
@@ -101,7 +99,6 @@ Sub ConvertImage(InFilename, OutFilename)
   cmd = Replace(cmd, "{INFILENAME}", InFilename)
   cmd = Replace(cmd, "{OUTFILENAME}", OutFilename)
 
-  WScript.Echo "Converting " & objFS.GetFileName(InFilename)
   objShell.Run cmd, CommandWindowStyle, True
 End Sub
 
@@ -110,7 +107,6 @@ Sub ExtentImage(InFilename, OutFilename, Width, Height, PosX, PosY)
   extent = extent & PosX
   extent = extent & PosY
 
-  WScript.Echo "Extenting " & objFS.GetFileName(InFilename)
   IMmsg = objIM.Convert("-extent", extent, InFilename, OutFilename)
 End Sub
 

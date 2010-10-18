@@ -1,5 +1,5 @@
 Sub overviewer_onCreateMaps()
-	If (CreateOverviewerMap) Then
+	If ((CreatePrimaryMaps) Or (CreateOverviewerMap)) Then
 	  WScript.Echo "Generating Overview"
 		OverviewTileViewer
 		ExtractWarpLocations
@@ -24,8 +24,7 @@ Sub OverviewTileViewer()
   cmd = Replace(cmd, "{WORLD}", WORLD)
   cmd = Replace(cmd, "{OUTPUT}", OverViewerOutput)
 
-  WScript.Echo "Generating Overview tile viewer"
-  Wscript.echo cmd
+  WScript.Echo "Generating Overview map"
   objShell.Run cmd, CommandWindowStyle, True
 End Sub
 
@@ -60,7 +59,7 @@ Sub ExtractWarpLocations()
       WarpB = Warp(5)
       WarpGroup = Warp(6)
 
-      If (WarpGroup = "admin") Then
+      If (WarpGroup = "admins") Then
         'Skip admin warps
         WScript.Echo("Found admin warp: " & WarpName)
       Else

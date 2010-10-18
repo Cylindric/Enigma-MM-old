@@ -1,44 +1,56 @@
 Sub alphavespucci_onCreateMaps()
 
-  If ((CreateSingleMaps = False) And (CreateLayeredMap = False) And (CreateSliceMaps = False)) Then
+  If ((CreatePrimaryMaps = False) And (CreateSingleMaps = False) And (CreateLayeredMap = False) And (CreateSliceMaps = False)) Then
     Exit Sub
   End If
 
   DefaultSave = OUTPUT
   DatedSave = objFS.BuildPath(OUTPUT, "History")
   SlicedSave = objFS.BuildPath(CACHEDIR, "Slices")
+  LayerCache = objFS.BuildPath(CACHEDIR, "Layers")
   SlicedSaveThumbs = objFS.BuildPath(SlicedSave, "Thumbs")
+
+  DatedName = "mainmap-{YYYY}{MM}{DD}-{HH}"
+  DatedName = Replace(DatedName, "{YYYY}", Year(Now()))
+  DatedName = Replace(DatedName, "{MM}", StrPad(Month(Now()), 2))
+  DatedName = Replace(DatedName, "{DD}", StrPad(Day(Now()), 2))
+  DatedName = Replace(DatedName, "{HH}", StrPad(Hour(Now()), 2))
 
   WScript.Echo "Generating Alpha Vespucci maps..."
 
-	If (CreateSingleMaps) Then
+	If (CreateLayeredMap Or CreatePrimaryMaps Or CreateSingleMaps) Then
     CreateFolder DefaultSave
-	  AlphaVespucciMap "obleft", "day", "mainmap", DefaultSave, True
-	  AlphaVespucciMap "obleft", "cave", "caves", DefaultSave, True
-	  AlphaVespucciMap "obleft", "cavelimit 15", "surfacecaves", DefaultSave, True
-	  AlphaVespucciMap "obleft", "whitelist ""Diamond ore""", "resource-diamond", DefaultSave, True
-	  AlphaVespucciMap "obleft", "whitelist ""Redstone ore""", "resource-redstone", DefaultSave, True
-	  AlphaVespucciMap "flat", "day", "flatmap", DefaultSave, True
 
-	  DatedName = "mainmap-{YYYY}{MM}{DD}-{HH}"
-	  DatedName = Replace(DatedName, "{YYYY}", Year(Now()))
-	  DatedName = Replace(DatedName, "{MM}", StrPad(Month(Now()), 2))
-	  DatedName = Replace(DatedName, "{DD}", StrPad(Day(Now()), 2))
-	  DatedName = Replace(DatedName, "{HH}", StrPad(Hour(Now()), 2))
-    AlphaVespucciMap "obleft", "day", DatedName, DatedSave, False
+    AlphaVespucciMap "obleft", "day", "mainmap", DefaultSave, True
+    objFS.CopyFile objFS.BuildPath(OUTPUT, "mainmap.png"), objFS.BuildPath(DatedSave, DatedName & ".png")
+    'AlphaVespucciMap "obleft", "day", DatedName, DatedSave, False
+
+    If (CreateSingleMaps = True) Then
+  	  AlphaVespucciMap "obleft", "cave", "caves", DefaultSave, True
+  	  AlphaVespucciMap "obleft", "cavelimit 15", "surfacecaves", DefaultSave, True
+  	  AlphaVespucciMap "obleft", "whitelist ""Diamond ore""", "resource-diamond", DefaultSave, True
+  	  AlphaVespucciMap "obleft", "whitelist ""Redstone ore""", "resource-redstone", DefaultSave, True
+  	  AlphaVespucciMap "flat", "day", "flatmap", DefaultSave, True
+    End If
 	End If
 
 
   If (CreateLayeredMap) Then
+    objFS.CopyFile objFS.BuildPath(OUTPUT, "mainmap.png"), objFS.BuildPath(LayerCache, "mainmap.png")
+    objFS.CopyFile objFS.BuildPath(OUTPUT, "caves.png"), objFS.BuildPath(LayerCache, "caves.png")
+    objFS.CopyFile objFS.BuildPath(OUTPUT, "surfacecaves.png"), objFS.BuildPath(LayerCache, "surfacecaves.png")
+    objFS.CopyFile objFS.BuildPath(OUTPUT, "resource-diamond.png"), objFS.BuildPath(LayerCache, "resource-diamond.png")
+    objFS.CopyFile objFS.BuildPath(OUTPUT, "resource-redstone.png"), objFS.BuildPath(LayerCache, "resource-redstone.png")
+
     CreateFolder DefaultSave
 	  WScript.Echo "Generating layered viewer"
 	  Set LayerConfFile = objFS.CreateTextFile(objFS.BuildPath(SERVERROOT, "mapper-layers.conf"), True)
 	  LayerConfFile.WriteLine("title:World Map")
-	  LayerConfFile.WriteLine("mainmap:Original Map;" & objFS.BuildPath(OUTPUT, "mainmap.png"))
-	  LayerConfFile.WriteLine("overlay:Diamond Ore;" & objFS.BuildPath(OUTPUT, "resource-diamond.png"))
-	  LayerConfFile.WriteLine("overlay:Redstone Ore;" & objFS.BuildPath(OUTPUT, "resource-redstone.png"))
-	  LayerConfFile.WriteLine("overlay:Surface Caves;" & objFS.BuildPath(OUTPUT, "surfacecaves.png"))
-	  LayerConfFile.WriteLine("overlay:All Caves;" & objFS.BuildPath(OUTPUT, "caves.png"))
+	  LayerConfFile.WriteLine("mainmap:Original Map;" & objFS.BuildPath(LayerCache, "mainmap.png"))
+	  LayerConfFile.WriteLine("overlay:Diamond Ore;" & objFS.BuildPath(LayerCache, "resource-diamond.png"))
+	  LayerConfFile.WriteLine("overlay:Redstone Ore;" & objFS.BuildPath(LayerCache, "resource-redstone.png"))
+	  LayerConfFile.WriteLine("overlay:Surface Caves;" & objFS.BuildPath(LayerCache, "surfacecaves.png"))
+	  LayerConfFile.WriteLine("overlay:All Caves;" & objFS.BuildPath(LayerCache, "caves.png"))
 	  LayerConfFile.WriteLine("outputfolder:" & OUTPUT)
 	  LayerConfFile.Close
 		AlphaVespucciTileViewer

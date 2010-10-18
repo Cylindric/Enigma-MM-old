@@ -26,9 +26,10 @@ SLICE_MAX = 127
 ThumbSize = 120
 SmallSize = 800
 
-CreateSingleMaps = True
-CreateLayeredMap = True
-CreateGoogleMap = True
+CreatePrimaryMaps = True
+CreateSingleMaps = False
+CreateLayeredMap = False
+CreateGoogleMap = False
 CreateSliceMaps = False
 CreateHistoryAnim = False
 
@@ -43,8 +44,9 @@ If Wscript.Arguments.Count > 0 Then
 	' Quick run-through to find any 'only' commands
   For i = 0 To Wscript.Arguments.Count - 1
 		If (Left(LCase(WScript.Arguments(i)), 5) = "/only") Then
+        CreatePrimaryMaps = False
 				CreateSingleMaps = False
-				CreateLayeredMap = True
+				CreateLayeredMap = False
 				CreateOverviewerMap = False
 				CreateSliceMaps = False
 				CreateHistoryAnim = False
@@ -57,6 +59,7 @@ If Wscript.Arguments.Count > 0 Then
         WScript.Echo("Available options:")
         WScript.Echo()
         WScript.Echo("To enable a feature:")
+        WScript.Echo("  /PrimaryMaps")
         WScript.Echo("  /SingleMaps")
         WScript.Echo("  /LayeredMap")
         WScript.Echo("  /OverviewerMap")
@@ -64,6 +67,7 @@ If Wscript.Arguments.Count > 0 Then
         WScript.Echo("  /HistoryAnim")
         WScript.Echo()
         WScript.Echo("To disable a feature:")
+        WScript.Echo("  /NoPrimaryMaps")
         WScript.Echo("  /NoSingleMaps")
         WScript.Echo("  /NoLayeredMap")
         WScript.Echo("  /NoOverviewerMap")
@@ -71,6 +75,7 @@ If Wscript.Arguments.Count > 0 Then
         WScript.Echo("  /NoHistoryAnim")
         WScript.Echo()
         WScript.Echo("To force only a single feature:")
+        WScript.Echo("  /OnlyPrimaryMaps")
         WScript.Echo("  /OnlySingleMaps")
         WScript.Echo("  /OnlyLayeredMap")
         WScript.Echo("  /OnlyOverviewerMap")
@@ -79,6 +84,8 @@ If Wscript.Arguments.Count > 0 Then
         WScript.Echo()
         WScript.Quit
 
+      Case "/primarymaps"
+        CreatePrimaryMaps = True
       Case "/singlemaps"
         CreateSingleMaps = True
       Case "/layeredmap"
@@ -90,6 +97,8 @@ If Wscript.Arguments.Count > 0 Then
       Case "/historyanim"
         CreateHistoryAnim = True
 
+      Case "/noprimarymaps"
+        CreatePrimaryMaps = False
       Case "/nosinglemaps"
         CreateSingleMaps = False
       Case "/nolayeredmap"
@@ -101,6 +110,8 @@ If Wscript.Arguments.Count > 0 Then
       Case "/nohistoryanim"
         CreateHistoryAnim = False
 
+      Case "/onlyprimarymaps"
+        CreatePrimaryMaps = True
       Case "/onlysinglemaps"
 				CreateSingleMaps = True
       Case "/onlylayeredmap"
@@ -148,6 +159,13 @@ WScript.Echo("CACHEDIR: " & CACHEDIR)
 WScript.Echo("VESPUCCIMAPPER: " & VESPUCCIMAPPER)
 WScript.Echo("OVERVIEWMAPPER: " & OVERVIEWMAPPER)
 WScript.Echo()
+WScript.Echo("")
+WScript.Echo("CreatePrimaryMaps: " & CreatePrimaryMaps)
+WScript.Echo("CreateSingleMaps: " & CreateSingleMaps)
+WScript.Echo("CreateLayeredMap: " & CreateLayeredMap)
+WScript.Echo("CreateOverviewerMap: " & CreateOverviewerMap)
+WScript.Echo("CreateSliceMaps: " & CreateSliceMaps)
+WScript.Echo("CreateHistoryAnim: " & CreateHistoryAnim)
 
 
 

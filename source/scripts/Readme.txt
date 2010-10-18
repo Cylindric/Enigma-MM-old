@@ -41,10 +41,11 @@ mapper.vbs
 ==========
 The main mapper script.  Call this to generate the various available maps.
 Default parameters are:
-	/SingleMaps /LayeredMap /OverviewerMap
+	/PrimaryMaps /SingleMaps /LayeredMap /OverviewerMap
 
 Available parameters:
 	Parameters to enable a feature (these will be in addition to any defaults)
+	  /PrimaryMaps
 	  /SingleMaps
 	  /LayeredMap
 	  /OverviewerMap
@@ -52,6 +53,7 @@ Available parameters:
 	  /HistoryAnim
 
 	Parameters to disable a feature
+	  /NoPrimaryMaps
 	  /NoSingleMaps
 	  /NoLayeredMap
 	  /NoOverviewerMap
@@ -59,6 +61,7 @@ Available parameters:
 	  /NoHistoryAnim
 
 	Parameters to force only a single feature (overrides the defaults)
+	  /OnlyPrimaryMaps
 	  /OnlySingleMaps
 	  /OnlyLayeredMap
 	  /OnlyOverviewerMap
