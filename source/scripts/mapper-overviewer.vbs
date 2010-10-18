@@ -6,7 +6,8 @@ Sub overviewer_onCreateMaps()
 	End If
 End Sub
 
-
+' Number of cores to use.  0 for default (one process per core)
+OverviewerNumProcesses = 1
 
 ' -----------------------------------------------------------------------------
 ' Helper Functions
@@ -17,9 +18,15 @@ Sub OverviewTileViewer()
   CreateFolder OverViewerCache
   CreateFolder OverViewerOutput
 
-	cmd = """{CMD}"" ""{OVERVIEWER}"" --cachedir ""{CACHEDIR}"" ""{WORLD}"" ""{OUTPUT}"""
+  Procs = ""
+  If (OverviewerNumProcesses > 0) Then
+    Procs = "-p " & OverviewerNumProcesses
+  End If
+
+	cmd = """{CMD}"" ""{OVERVIEWER}"" {PROCS} --cachedir ""{CACHEDIR}"" ""{WORLD}"" ""{OUTPUT}"""
   cmd = Replace(cmd, "{CMD}", PYTHON)
   cmd = Replace(cmd, "{OVERVIEWER}", OVERVIEWMAPPER)
+  cmd = Replace(cmd, "{PROCS}", Procs)
   cmd = Replace(cmd, "{CACHEDIR}", OverViewerCache)
   cmd = Replace(cmd, "{WORLD}", WORLD)
   cmd = Replace(cmd, "{OUTPUT}", OverViewerOutput)
