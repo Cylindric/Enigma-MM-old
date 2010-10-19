@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>EnigmaMM.Program</StartupObject>
+    <StartupObject>EnigmaMM.ServerProgram</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="ComandParser.cs" />
     <Compile Include="Server.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="ServerProgram.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
