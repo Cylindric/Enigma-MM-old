@@ -10,14 +10,14 @@ namespace EnigmaMM
     {
         public CommandEventArgs(string s)
         {
-            message = s;
+            command = s;
         }
-        private string message;
+        private string command;
 
-        public string Message
+        public string Command
         {
-            get { return message; }
-            set { message = value; }
+            get { return command; }
+            set { command = value; }
         }
     }
 
@@ -42,7 +42,7 @@ namespace EnigmaMM
                     switch (key.Key)
                     {
                         case ConsoleKey.Backspace:
-                            cmd = cmd.Substring(0, cmd.Length - 1);
+                            cmd = cmd.Substring(0, Math.Max(cmd.Length - 1, 0));
                             break;
                         case ConsoleKey.Enter:
                             OnCommandReceivedEvent(new CommandEventArgs(cmd));
@@ -59,6 +59,13 @@ namespace EnigmaMM
                 }
             }
         }
+
+
+        public void StopListening()
+        {
+            mKeepRunning = false;
+        }
+
 
         protected virtual void OnCommandReceivedEvent(CommandEventArgs e)
         {

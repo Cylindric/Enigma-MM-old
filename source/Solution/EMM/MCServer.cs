@@ -1,9 +1,28 @@
 ﻿using System.Diagnostics;
 using System.Configuration;
 using System;
+using System.Threading;
 
 namespace EnigmaMM
 {
+
+    public class ServerMessageEventArgs : EventArgs
+    {
+        public ServerMessageEventArgs(string s)
+        {
+            message = s;
+        }
+        private string message;
+
+        public string Message
+        {
+            get { return message; }
+            set { message = value; }
+        }
+    }
+
+
+
     public class MCServer
     {
 
@@ -26,6 +45,8 @@ namespace EnigmaMM
 
         public event LogMessageEventHandler LogMessage;
         public delegate void LogMessageEventHandler(string Message);
+
+
 
         public enum Status
         {
@@ -65,6 +86,7 @@ namespace EnigmaMM
         }
 
 
+
         /// <summary>
         /// Server Constructor
         /// </summary>
@@ -72,6 +94,8 @@ namespace EnigmaMM
         {
             m_ServerStatus = Status.Stopped;
         }
+
+
 
         /// <summary>
         /// Starts the Minecraft server process.
@@ -82,7 +106,13 @@ namespace EnigmaMM
         /// </remarks>
         public void StartServer()
         {
-            
+
+            if (m_ServerStatus == Status.Running)
+            {
+                InfoMessage("Server already running, cannot start!");
+                return;
+            }
+
             string cmdArgs = null;
             if (m_JavaHeapInit > 0)
             {
@@ -124,17 +154,35 @@ namespace EnigmaMM
             m_ServerProcess.BeginOutputReadLine();
             m_ServerProcess.BeginErrorReadLine();
 
+            InfoMessage("Server started.");
+
         }
 
+
+
+        /// <summary>
+        /// Shutdowns a running Server.
+        /// </summary>
         public void Shutdown()
         {
-            SendCommand("stop");
+            if (m_ServerStatus == Status.Running)
+            {
+                SendCommand("stop");
+                while (m_ServerStatus != Status.Stopped)
+                {
+                    Thread.Sleep(100);
+                }
+            }
         }
+
+
 
         private void ForceShutdown()
         {
             m_ServerProcess.Kill();
         }
+
+
 
         public string OnlineUsers()
         {
@@ -142,10 +190,12 @@ namespace EnigmaMM
             SendCommand("list");
             while (!(m_OnlineUserListReady))
             {
-                System.Threading.Thread.Sleep(100);
+                Thread.Sleep(100);
             }
             return m_OnlineUserList;
         }
+
+
 
         public void SendCommand(string Command)
         {
@@ -218,6 +268,7 @@ namespace EnigmaMM
         private void ServerExited(object sender, System.EventArgs args)
         {
             m_ServerStatus = Status.Stopped;
+            InfoMessage("Server exited");
         }
 
     
