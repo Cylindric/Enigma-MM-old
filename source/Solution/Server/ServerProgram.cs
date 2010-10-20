@@ -31,7 +31,7 @@ namespace EnigmaMM
             mCLI.WriteLine("Getting Minecraft server object");
             mMinecraft = new MCServer();
             mMinecraft.ServerRoot = config.Default.ServerRoot;
-            mMinecraft.JavaExec = config.Default.ServerJar;
+            mMinecraft.JavaExec = config.Default.JavaExec;
             mMinecraft.ServerJar = config.Default.ServerJar;
             mMinecraft.JavaHeapInit = config.Default.JavaHeapInit;
             mMinecraft.JavaHeapMax = config.Default.JavaHeapMax;
