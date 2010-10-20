@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="EnigmaMM" GeneratedClassName="config">
+  <Profiles />
+  <Settings>
+    <Setting Name="ServerRoot" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">D:\Minecraft\MCServerRoot\Server</Value>
+    </Setting>
+    <Setting Name="ServerJar" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">minecraft_server.jar</Value>
+    </Setting>
+    <Setting Name="JavaHeapInit" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">512</Value>
+    </Setting>
+    <Setting Name="JavaHeapMax" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">512</Value>
+    </Setting>
+    <Setting Name="JavaExec" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">java.exe</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

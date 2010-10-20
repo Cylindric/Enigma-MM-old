@@ -25,28 +25,28 @@ namespace EnigmaMM.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[INFO] Done!")]
-        public string SrvReady {
+        [global::System.Configuration.DefaultSettingValueAttribute("[INFO] {username} [{ip}:{port}] logged in")]
+        public string SrvUserConnected {
             get {
-                return ((string)(this["SrvReady"]));
+                return ((string)(this["SrvUserConnected"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[INFO] Connected players:")]
-        public string SrvUsers {
+        [global::System.Configuration.DefaultSettingValueAttribute("[INFO] {username} lost connection: {reason}")]
+        public string SrvUserLostConnection {
             get {
-                return ((string)(this["SrvUsers"]));
+                return ((string)(this["SrvUserLostConnection"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("[WARNING] Perhaps a server is already running on that port")]
-        public string SrvPortBusy {
+        [global::System.Configuration.DefaultSettingValueAttribute("Player count: {count}")]
+        public string SrvUserCount {
             get {
-                return ((string)(this["SrvPortBusy"]));
+                return ((string)(this["SrvUserCount"]));
             }
         }
     }

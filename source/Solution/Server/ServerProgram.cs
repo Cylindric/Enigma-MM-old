@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+
 namespace EnigmaMM
 {
     class ServerProgram
@@ -7,7 +8,8 @@ namespace EnigmaMM
         //static Server mServer;
         static MCServer mMinecraft;
         static CLIHelper mCLI;
-        static bool mKeepRunning;
+        static CommandParser mParser;
+        public static bool mKeepRunning;
 
         static void Main(string[] args)
         {
@@ -26,25 +28,34 @@ namespace EnigmaMM
                 Thread.Sleep(1);
             }
             
-            Console.WriteLine("Getting Minecraft server object");
+            mCLI.WriteLine("Getting Minecraft server object");
             mMinecraft = new MCServer();
-            mMinecraft.ServerRoot = "D:\\Minecraft\\MCServerRoot\\Server";
-            mMinecraft.LogMessage += HandleServerOutput;
-            mMinecraft.InfoMessage += HandleServerOutput;
+            mMinecraft.ServerRoot = config.Default.ServerRoot;
+            mMinecraft.JavaExec = config.Default.ServerJar;
+            mMinecraft.ServerJar = config.Default.ServerJar;
+            mMinecraft.JavaHeapInit = config.Default.JavaHeapInit;
+            mMinecraft.JavaHeapMax = config.Default.JavaHeapMax;
+
+            mMinecraft.ServerMessage += HandleServerOutput;
             mMinecraft.StartServer();
 
+            mParser = new CommandParser(mMinecraft);
 
+            // Just loop until something sets mKeepRunning to false.
+            // The loop sleeps for a little to stop it hogging the CPU
             mKeepRunning = true;
             while (mKeepRunning)
             {
                 System.Threading.Thread.Sleep(100);
             }
 
+            // Make sure the Minecraft server is stopped if we're exiting
+            mParser.ParseCommand("stop");
 
-            mMinecraft.Shutdown();
+            // Stop listening for CLI commands
             mCLI.StopListening();
             
-            Console.WriteLine("Done.");
+            mCLI.WriteLine("Done.");
         }
 
 
@@ -52,46 +63,18 @@ namespace EnigmaMM
         /// <summary>
         /// Handle a command from the CLI.
         /// </summary>
-        /// <remarks>
-        /// Commands fall into one of several categories:
-        /// a) commands that are processed by the server manager
-        /// b) commands that are intended for Minecraft but handled by the manager
-        /// c) commands that are passed straight on to Minecraft as-is
-        /// </remarks>
         /// <param name="Sender"></param>
         /// <param name="e"></param>
         private static void HandleCommand(object Sender, CommandEventArgs e)
         {
-            switch (e.Command)
-            {
-                case ("quit"):
-                    mKeepRunning = false;
-                    break;
-
-                case ("start"):
-                    mMinecraft.StartServer();
-                    break;
-
-                case ("restart"):
-                    mMinecraft.Shutdown();
-                    mMinecraft.StartServer();
-                    break;
-
-                case ("stop"):
-                    mMinecraft.Shutdown();
-                    break;
-
-                default:
-                    mMinecraft.SendCommand(e.Command);
-                    break;
-            }
+            mParser.ParseCommand(e.Command);
         }
 
 
 
         private static void HandleServerOutput(string Message)
         {
-            Console.WriteLine("SRV: " + Message);
+            mCLI.WriteLine("SRV: " + Message);
         }
 
 

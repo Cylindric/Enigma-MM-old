@@ -2,6 +2,7 @@
 using System.Configuration;
 using System;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace EnigmaMM
 {
@@ -26,25 +27,23 @@ namespace EnigmaMM
     public class MCServer
     {
 
-        private Process m_ServerProcess;
-        private Status m_ServerStatus;
-        private string m_StatusMessage;
-        private bool m_OnlineUserListReady = false;
-        private string m_OnlineUserList = "";
+        private Process mServerProcess;
+        private Status mServerStatus;
+        private string mStatusMessage;
+        private bool mOnlineUserListReady = false;
+        private string mOnlineUserList = "";
+        private int mUsersOnline = 0;
 
-        private string m_JavaExec = "java.exe";
-        private string m_ServerRoot = "";
-        private string m_ServerJar = "minecraft_server.jar";
-        private int m_JavaHeapInit = 1024;
-        private int m_JavaHeapMax = 1024;
+        private string mJavaExec = "java.exe";
+        private string mServerRoot = "";
+        private string mServerJar = "minecraft_server.jar";
+        private int mJavaHeapInit = 1024;
+        private int mJavaHeapMax = 1024;
 
         private System.IO.StreamWriter ioWriter;
 
-        public event InfoMessageEventHandler InfoMessage;
-        public delegate void InfoMessageEventHandler(string Message);
-
-        public event LogMessageEventHandler LogMessage;
-        public delegate void LogMessageEventHandler(string Message);
+        public event ServerMessageEventHandler ServerMessage;
+        public delegate void ServerMessageEventHandler(string Message);
 
 
 
@@ -53,6 +52,7 @@ namespace EnigmaMM
             Starting,
             Running,
             Busy,
+            PendingRestart,
             Stopping,
             Stopped,
             Failed
@@ -60,29 +60,33 @@ namespace EnigmaMM
 
         public Status CurrentStatus
         {
-            get { return m_ServerStatus; }
+            get { return mServerStatus; }
         }
 
         public string LastStatusMessage
         {
-            get { return m_StatusMessage; }
+            get { return mStatusMessage; }
         }
 
+        public string JavaExec
+        {
+            set { mJavaExec = value; }
+        }
         public string ServerRoot
         {
-            set { m_ServerRoot = value; }
+            set { mServerRoot = value; }
         }
         public string ServerJar
         {
-            set { m_ServerJar = value; }
+            set { mServerJar = value; }
         }
         public int JavaHeapInit
         {
-            set { m_JavaHeapInit = value; }
+            set { mJavaHeapInit = value; }
         }
         public int JavaHeapMax
         {
-            set { m_JavaHeapMax = value; }
+            set { mJavaHeapMax = value; }
         }
 
 
@@ -92,7 +96,7 @@ namespace EnigmaMM
         /// </summary>
         public MCServer()
         {
-            m_ServerStatus = Status.Stopped;
+            mServerStatus = Status.Stopped;
         }
 
 
@@ -107,54 +111,54 @@ namespace EnigmaMM
         public void StartServer()
         {
 
-            if (m_ServerStatus == Status.Running)
+            if (mServerStatus == Status.Running)
             {
-                InfoMessage("Server already running, cannot start!");
+                ServerMessage("Server already running, cannot start!");
                 return;
             }
 
             string cmdArgs = null;
-            if (m_JavaHeapInit > 0)
+            if (mJavaHeapInit > 0)
             {
-                cmdArgs += "-Xms" + m_JavaHeapInit + "M ";
+                cmdArgs += "-Xms" + mJavaHeapInit + "M ";
             }
-            if (m_JavaHeapMax > 0)
+            if (mJavaHeapMax > 0)
             {
-                cmdArgs += "-Xmx" + m_JavaHeapMax + "M ";
+                cmdArgs += "-Xmx" + mJavaHeapMax + "M ";
             }
-            cmdArgs = "-jar \"" + m_ServerJar + "\" ";
+            cmdArgs = "-jar \"" + mServerJar + "\" ";
             cmdArgs = cmdArgs + "nogui ";
 
             // Configure the main server process
-            m_ServerProcess = new Process();
-            m_ServerProcess.StartInfo.WorkingDirectory = m_ServerRoot;
-            m_ServerProcess.StartInfo.FileName = m_JavaExec;
-            m_ServerProcess.StartInfo.Arguments = cmdArgs;
-            m_ServerProcess.StartInfo.UseShellExecute = false;
-            m_ServerProcess.StartInfo.CreateNoWindow = false;
-            m_ServerProcess.StartInfo.RedirectStandardError = true;
-            m_ServerProcess.StartInfo.RedirectStandardInput = true;
-            m_ServerProcess.StartInfo.RedirectStandardOutput = true;
-            m_ServerProcess.EnableRaisingEvents = true;
+            mServerProcess = new Process();
+            mServerProcess.StartInfo.WorkingDirectory = mServerRoot;
+            mServerProcess.StartInfo.FileName = mJavaExec;
+            mServerProcess.StartInfo.Arguments = cmdArgs;
+            mServerProcess.StartInfo.UseShellExecute = false;
+            mServerProcess.StartInfo.CreateNoWindow = false;
+            mServerProcess.StartInfo.RedirectStandardError = true;
+            mServerProcess.StartInfo.RedirectStandardInput = true;
+            mServerProcess.StartInfo.RedirectStandardOutput = true;
+            mServerProcess.EnableRaisingEvents = true;
 
             // Wire up an event handler to catch messages out of the process
-            m_ServerProcess.OutputDataReceived += new DataReceivedEventHandler(LogOutputHandler);
-            m_ServerProcess.ErrorDataReceived += new DataReceivedEventHandler(InfoOutputHandler);
-            m_ServerProcess.Exited += new EventHandler(ServerExited);
+            mServerProcess.OutputDataReceived += new DataReceivedEventHandler(ServerOutputHandler);
+            mServerProcess.ErrorDataReceived += new DataReceivedEventHandler(ServerOutputHandler);
+            mServerProcess.Exited += new EventHandler(ServerExited);
 
             // Start the server process
-            m_ServerStatus = Status.Starting;
-            m_ServerProcess.Start();
+            mServerStatus = Status.Starting;
+            mServerProcess.Start();
 
             // Wire up the writer to send messages to the process
-            ioWriter = m_ServerProcess.StandardInput;
+            ioWriter = mServerProcess.StandardInput;
             ioWriter.AutoFlush = true;
 
             // Start listening for output
-            m_ServerProcess.BeginOutputReadLine();
-            m_ServerProcess.BeginErrorReadLine();
+            mServerProcess.BeginOutputReadLine();
+            mServerProcess.BeginErrorReadLine();
 
-            InfoMessage("Server started.");
+            ServerMessage("Server started.");
 
         }
 
@@ -165,10 +169,10 @@ namespace EnigmaMM
         /// </summary>
         public void Shutdown()
         {
-            if (m_ServerStatus == Status.Running)
+            if (mServerStatus == Status.Running)
             {
                 SendCommand("stop");
-                while (m_ServerStatus != Status.Stopped)
+                while (mServerStatus != Status.Stopped)
                 {
                     Thread.Sleep(100);
                 }
@@ -176,89 +180,101 @@ namespace EnigmaMM
         }
 
 
+        public void Restart()
+        {
+            Shutdown();
+            StartServer();
+        }
+
+
+        public void GracefulRestart()
+        {
+            if (mUsersOnline == 0)
+            {
+                Restart();
+            }
+            else
+            {
+                mServerStatus = Status.PendingRestart;
+            }
+        }
+
 
         private void ForceShutdown()
         {
-            m_ServerProcess.Kill();
+            mServerProcess.Kill();
         }
 
 
 
         public string OnlineUsers()
         {
-            m_OnlineUserListReady = false;
+            mOnlineUserListReady = false;
             SendCommand("list");
-            while (!(m_OnlineUserListReady))
+            while (!(mOnlineUserListReady))
             {
                 Thread.Sleep(100);
             }
-            return m_OnlineUserList;
+            return mOnlineUserList;
         }
 
 
 
         public void SendCommand(string Command)
         {
-            if (m_ServerStatus == Status.Running)
+            if (mServerStatus == Status.Running)
             {
                 ioWriter.WriteLine(Command);
             }
         }
 
 
+
         /// <summary>
-        /// Called whenever the server issues a "LOG" message.
+        /// Called whenever the server issues a message.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="OutLine"></param>
-        private void LogOutputHandler(object sender, DataReceivedEventArgs OutLine)
-        {
-            if ((OutLine.Data != null))
-            {
-                if (LogMessage != null)
-                {
-                    LogMessage(OutLine.Data);
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Called whenever the server issues an "INFO" message.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="OutLine"></param>
-        private void InfoOutputHandler(object sender, DataReceivedEventArgs OutLine)
+        private void ServerOutputHandler(object sender, DataReceivedEventArgs OutLine)
         {
             string T = null;
             if ((OutLine.Data != null))
             {
                 T = OutLine.Data;
 
-                if (T.Contains(Properties.Settings.Default.SrvReady))
+                if (MsgIsUserCount(T))
                 {
-                    m_ServerStatus = Status.Running;
-
+                    mUsersOnline = ExtractPlayerCount(T);
+                    if ((mUsersOnline == 0) && (mServerStatus == Status.PendingRestart))
+                    {
+                        Restart();
+                    }
                 }
-                else if (T.Contains(Properties.Settings.Default.SrvPortBusy))
+                else if (MsgIsUserList(T))
                 {
-                    m_ServerStatus = Status.Failed;
-                    m_StatusMessage = T;
-
+                    ExtractUsers(T);
+                    mOnlineUserListReady = true;
                 }
-                else if (T.Contains(Properties.Settings.Default.SrvUsers))
+                else if (MsgIsServerStarted(T))
                 {
-                    m_OnlineUserList = T.Substring(T.IndexOf(Properties.Settings.Default.SrvUsers) + Properties.Settings.Default.SrvUsers.Length);
-                    m_OnlineUserListReady = true;
-
+                    mServerStatus = Status.Running;
+                }
+                else if (MsgIsServerErrPortBusy(T))
+                {
+                    mServerStatus = Status.Failed;
+                    mStatusMessage = T;
                 }
 
-                if (InfoMessage != null)
+
+                // raise an InfoMessage Event too
+                if (ServerMessage != null)
                 {
-                    InfoMessage(OutLine.Data);
+                    ServerMessage(OutLine.Data);
                 }
             }
         }
+
+
 
         /// <summary>
         /// Called when the server process terminates.
@@ -267,11 +283,65 @@ namespace EnigmaMM
         /// <param name="args"></param>
         private void ServerExited(object sender, System.EventArgs args)
         {
-            m_ServerStatus = Status.Stopped;
-            InfoMessage("Server exited");
+            mServerStatus = Status.Stopped;
+            ServerMessage("Server exited");
         }
 
-    
+
+        private bool MsgIsServerStarted(string msg)
+        {
+            string regex = @"^(?<timestamp>.+?)\[INFO]\ Done!.*?$";
+            return Regex.IsMatch(msg, regex);
+        }
+
+        private bool MsgIsServerErrPortBusy(string msg)
+        {
+            string regex = @"^(?<timestamp>.+?)\[WARNING]\ \*\*\*\*\ FAILED\ TO\ BIND\ TO\ PORT!.*?$";
+            return Regex.IsMatch(msg, regex);
+        }
+
+        private bool MsgIsUserList(string msg)
+        {
+            string regex = @"^(?<timestamp>.+?)\[INFO]\ Connected\ players:\ .*?$";
+            return Regex.IsMatch(msg, regex);
+        }
+
+        private bool MsgIsUserCount(string msg)
+        {
+            string regex = @"^Player\ count:\ (?<count>\d+)$";
+            return Regex.IsMatch(msg, regex);
+        }
+
+
+
+        private int ExtractPlayerCount(string msg)
+        {
+            int count = 0;
+            string regex = @"^Player\ count:\ (?<count>\d+)$";
+            MatchCollection matches = Regex.Matches(msg, regex);
+            if (matches.Count > 0)
+            {
+                int.TryParse(matches[0].Groups["count"].Value, out count);
+            }
+            return count;
+        }
+
+
+
+        private string ExtractUsers(string msg)
+        {
+            string regex = @"^(?<timestamp>.+?)\ \[INFO]\ Connected\ players:\ (?<userlist>.*?)$";
+            MatchCollection matches = Regex.Matches(msg, regex);
+            if (matches.Count > 0)
+            {
+                return matches[0].Groups["userlist"].Value;
+            }
+            else
+            {
+                return "";
+            }
+        }
+
     }
 
 

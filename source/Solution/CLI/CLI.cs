@@ -13,8 +13,7 @@ namespace EnigmaMM
         public CLI(MCServer ServerInstance)
         {
             m_Server = ServerInstance;
-            m_Server.LogMessage += new MCServer.LogMessageEventHandler(this.Server_OnLogMessage);
-            m_Server.InfoMessage += new MCServer.InfoMessageEventHandler(this.Server_OnInfoMessage);
+            m_Server.ServerMessage += new MCServer.ServerMessageEventHandler(this.Server_OnMessageReceived);
         }
 
         public void WriteLine(string Tag, string Message)
@@ -32,14 +31,9 @@ namespace EnigmaMM
             WriteLine("Console", Message);
         }
 
-        private void Server_OnLogMessage(string Message) 
+        private void Server_OnMessageReceived(string Message)
         {
-            WriteLine("LOG", Message);
-        }
-
-        private void Server_OnInfoMessage(string Message)
-        {
-            WriteLine("INF", Message);
+            WriteLine("SRV", Message);
         }
 
     }

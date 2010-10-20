@@ -2,14 +2,14 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="EnigmaMM.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="SrvReady" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">[INFO] Done!</Value>
+    <Setting Name="SrvUserConnected" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">[INFO] {username} [{ip}:{port}] logged in</Value>
     </Setting>
-    <Setting Name="SrvUsers" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">[INFO] Connected players:</Value>
+    <Setting Name="SrvUserLostConnection" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">[INFO] {username} lost connection: {reason}</Value>
     </Setting>
-    <Setting Name="SrvPortBusy" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">[WARNING] Perhaps a server is already running on that port</Value>
+    <Setting Name="SrvUserCount" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Player count: {count}</Value>
     </Setting>
   </Settings>
 </SettingsFile>

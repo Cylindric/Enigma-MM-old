@@ -61,10 +61,19 @@ namespace EnigmaMM
         }
 
 
+
+        public void WriteLine(string Message)
+        {
+            Console.WriteLine(Message);
+        }
+
+
+
         public void StopListening()
         {
             mKeepRunning = false;
         }
+
 
 
         protected virtual void OnCommandReceivedEvent(CommandEventArgs e)
