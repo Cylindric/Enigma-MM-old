@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="yes"?>
+<ConfigOpt>
+  <ConfigValues>
+    <OptionName>ServerRoot</OptionName>
+    <OptionValue>C:\Minecraft\Server</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>ServerJar</OptionName>
+    <OptionValue>minecraft_server.jar</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>JavaHeapInit</OptionName>
+    <OptionValue>512</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>JavaHeapMax</OptionName>
+    <OptionValue>512</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>JavaExec</OptionName>
+    <OptionValue>java.exe</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName></OptionName>
+    <OptionValue></OptionValue>
+  </ConfigValues>
+</ConfigOpt>
