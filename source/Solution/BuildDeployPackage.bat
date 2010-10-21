@@ -12,6 +12,7 @@ SET ROOT=%SCRIPTPATH%\Deploy
 SET MCSROOT=%ROOT%\MCServer
 SET MCROOT=%MCSROOT%\Minecraft
 SET SMROOT=%MCSROOT%\ServerManager
+SET AVROOT=%MCSROOT%\AlphaVespucci
 
 :: Change to the script's path
 %SCRIPTDRIVE%
@@ -25,6 +26,7 @@ MKDIR "%ROOT%"
 MKDIR "%MCSROOT%"
 MKDIR "%MCROOT%"
 MKDIR "%SMROOT%"
+MKDIR "%AVROOT%"
 
 ::Copy the files we need to the package
 XCOPY /Y ..\..\readme.txt %MCSROOT%

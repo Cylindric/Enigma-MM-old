@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.IO;
 
 namespace EnigmaMM
 {
@@ -13,8 +14,7 @@ namespace EnigmaMM
         static void Main(string[] args)
         {
 
-            // TODO: Get current exe path
-            Config.Initialize(@"D:\Dev\Enigma-MM\source\Solution\Build\settings.xml");
+            Config.Initialize(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.xml"));
 
             // Start a new CLI helper thread to catch user input
             // After this we might start getting user commands through HandleCommands
@@ -29,7 +29,7 @@ namespace EnigmaMM
             
             mCLI.WriteLine("Getting Minecraft server object");
             mMinecraft = new MCServer();
-            mMinecraft.ServerRoot = Config.ServerRoot;
+            mMinecraft.ServerRoot = Config.MinecraftRoot;
             mMinecraft.JavaExec = Config.JavaExec;
             mMinecraft.ServerJar = Config.ServerJar;
             mMinecraft.JavaHeapInit = Config.JavaHeapInit;
