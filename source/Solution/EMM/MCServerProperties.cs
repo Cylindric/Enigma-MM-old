@@ -5,7 +5,7 @@ namespace EnigmaMM
 {
     public class MCServerProperties
     {
-        private Dictionary<string, string> mSettings;
+        private Dictionary<string, string> mSettings = new Dictionary<string, string>();
         private bool mSettingsNeedSaving = false;
 
         // Standard server settings
