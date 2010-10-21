@@ -14,7 +14,7 @@ namespace EnigmaMM
         private bool mOnlineUserListReady = false;
         private string mOnlineUserList = "";
         private int mUsersOnline = 0;
-        private MCServerProperties mServerProperties;
+        private MCServerProperties mServerProperties = new MCServerProperties();
 
         private string mJavaExec = "java.exe";
         private string mServerRoot = "";

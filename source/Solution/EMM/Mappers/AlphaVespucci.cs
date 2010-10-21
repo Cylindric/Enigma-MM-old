@@ -9,7 +9,7 @@ namespace EnigmaMM
     {
         private MCServer mMinecraft;
 
-        public void AlphaVespucci(MCServer Minecraft)
+        public AlphaVespucci(MCServer Minecraft)
         {
             mMinecraft = Minecraft;
         }
