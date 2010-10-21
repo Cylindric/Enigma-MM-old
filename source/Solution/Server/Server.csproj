@@ -118,8 +118,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY /Y "$(TargetDir)$(TargetFileName)" "$(SolutionDir)\Deploy\"
-XCOPY /Y "$(TargetDir)emm.dll" "$(SolutionDir)\Deploy\"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
