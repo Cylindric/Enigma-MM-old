@@ -111,25 +111,35 @@ namespace EnigmaMM
 
 
         // Some strongly-typed "well-known" options
-        public static string ServerRoot {
+        public static string ServerRoot
+        {
+            get { return Path.GetFullPath(GetOption("ServerRoot")); }
+        }
+
+        public static string MinecraftRoot
+        {
             get {
                 string path = GetOption("MinecraftRoot");
                 if (path.StartsWith(".")) {
-                    path = Path.Combine(GetOption("ServerRoot"), path);
+                    path = Path.Combine(ServerRoot, path);
                     path = Path.GetFullPath(path);
                 }
                 return path; 
             }
         }
+
         public static string JavaExec {
             get { return GetOption("JavaExec"); }
         }
+
         public static string ServerJar {
             get { return GetOption("ServerJar"); }
         }
+
         public static int JavaHeapInit {
             get { return int.Parse(GetOption("JavaHeapInit")); }
         }
+
         public static int JavaHeapMax {
             get { return int.Parse(GetOption("JavaHeapMax")); }
         }

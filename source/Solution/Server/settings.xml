@@ -2,7 +2,7 @@
 <ConfigOpt>
   <ConfigValues>
     <OptionName>ServerRoot</OptionName>
-    <OptionValue>C:\Minecraft</OptionValue>
+    <OptionValue>..\</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>MinecraftRoot</OptionName>
@@ -25,7 +25,11 @@
     <OptionValue>java.exe</OptionValue>
   </ConfigValues>
   <ConfigValues>
-    <OptionName></OptionName>
-    <OptionValue></OptionValue>
+    <OptionName>AlphaVespucciInstalled</OptionName>
+    <OptionValue>True</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>AlphaVespucciRoot</OptionName>
+    <OptionValue>.\AlphaVespucci</OptionValue>
   </ConfigValues>
 </ConfigOpt>

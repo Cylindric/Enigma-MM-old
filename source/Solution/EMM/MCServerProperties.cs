@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace EnigmaMM
 {
@@ -32,6 +33,10 @@ namespace EnigmaMM
         public string ServerIp
         {
             get { return GetString("server-ip"); }
+        }
+        public string WorldPath
+        {
+            get { return Path.Combine(Config.MinecraftRoot, LevelName); }
         }
 
 

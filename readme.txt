@@ -59,7 +59,7 @@ Mapping Settings
 			Default: false
 			Whether or not to use the AlphaVespucci map output options.
 
-	* AlphaVespucciPath
+	* AlphaVespucciRoot
 			Default: .\AlphaVespucci
 
 Requirements
