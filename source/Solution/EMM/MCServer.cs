@@ -1,29 +1,10 @@
-﻿using System.Diagnostics;
-using System.Configuration;
-using System;
-using System.Threading;
+﻿using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace EnigmaMM
 {
-
-    public class ServerMessageEventArgs : EventArgs
-    {
-        public ServerMessageEventArgs(string s)
-        {
-            message = s;
-        }
-        private string message;
-
-        public string Message
-        {
-            get { return message; }
-            set { message = value; }
-        }
-    }
-
-
-
     public class MCServer
     {
 
@@ -33,6 +14,7 @@ namespace EnigmaMM
         private bool mOnlineUserListReady = false;
         private string mOnlineUserList = "";
         private int mUsersOnline = 0;
+        private MCServerProperties mServerProperties;
 
         private string mJavaExec = "java.exe";
         private string mServerRoot = "";
@@ -45,17 +27,22 @@ namespace EnigmaMM
         public event ServerMessageEventHandler ServerMessage;
         public delegate void ServerMessageEventHandler(string Message);
 
-
-
         public enum Status
         {
             Starting,
             Running,
             Busy,
             PendingRestart,
+            PendingStop,
             Stopping,
             Stopped,
             Failed
+        }
+
+
+        public MCServerProperties ServerProperties
+        {
+            get { return mServerProperties; }
         }
 
         public Status CurrentStatus
@@ -142,6 +129,8 @@ namespace EnigmaMM
             mServerProcess.EnableRaisingEvents = true;
 
             // Wire up an event handler to catch messages out of the process
+            // Minecraft uses a mix of standard output and error output, with important messages 
+            // on both.  Therefore, we just wire up both to a single handler.
             mServerProcess.OutputDataReceived += new DataReceivedEventHandler(ServerOutputHandler);
             mServerProcess.ErrorDataReceived += new DataReceivedEventHandler(ServerOutputHandler);
             mServerProcess.Exited += new EventHandler(ServerExited);
@@ -165,9 +154,9 @@ namespace EnigmaMM
 
 
         /// <summary>
-        /// Shutdowns a running Server.
+        /// Shuts down the running Server.
         /// </summary>
-        public void Shutdown()
+        public void StopServer()
         {
             if (mServerStatus == Status.Running)
             {
@@ -180,24 +169,84 @@ namespace EnigmaMM
         }
 
 
-        public void Restart()
+        /// <summary>
+        /// Performs a simple restart of the server.
+        /// </summary>
+        /// <remarks>
+        /// Same as StopServer() followed by StartServer().
+        /// </remarks>
+        public void RestartServer()
         {
-            Shutdown();
+            StopServer();
             StartServer();
         }
 
 
+        /// <summary>
+        /// Performs a graceful shutdown of the server.  
+        /// </summary>
+        /// <remarks>
+        /// This will put the server in the "pending shutdown" state, whereby it waits
+        /// until all users have logged out, then shuts down the server.
+        /// </remarks>
+        public void GracefulStop()
+        {
+            if (mUsersOnline == 0)
+            {
+                StopServer();
+            }
+            else
+            {
+                mServerStatus = Status.PendingStop;
+            }
+        }
+
+
+        /// <summary>
+        /// Aborts a pending stop operation.
+        /// </summary>
+        public void AbortPendingStop()
+        {
+            if ((mServerStatus == Status.Running) && (mServerStatus == Status.PendingStop))
+            {
+                mServerStatus = Status.Running;
+            }
+        }
+
+        
+        
+        /// <summary>
+        /// Performs a graceful restart of the server.
+        /// </summary>
+        /// <remarks>
+        /// This will put the server in the "pending restart" state, whereby it waits
+        /// until all users have logged out, then restarts the server.
+        /// </remarks>
         public void GracefulRestart()
         {
             if (mUsersOnline == 0)
             {
-                Restart();
+                RestartServer();
             }
             else
             {
                 mServerStatus = Status.PendingRestart;
             }
         }
+
+
+
+        /// <summary>
+        /// Aborts a pending restart.
+        /// </summary>
+        public void AbortPendingRestart()
+        {
+            if ((mServerStatus == Status.Running) && (mServerStatus == Status.PendingRestart))
+            {
+                mServerStatus = Status.Running;
+            }
+        }
+
 
 
         private void ForceShutdown()
@@ -247,7 +296,11 @@ namespace EnigmaMM
                     mUsersOnline = ExtractPlayerCount(T);
                     if ((mUsersOnline == 0) && (mServerStatus == Status.PendingRestart))
                     {
-                        Restart();
+                        RestartServer();
+                    }
+                    if ((mUsersOnline == 0) && (mServerStatus == Status.PendingStop))
+                    {
+                        StopServer();
                     }
                 }
                 else if (MsgIsUserList(T))

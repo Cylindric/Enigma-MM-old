@@ -1,12 +1,74 @@
 Minecraft Server Manager
 ========================
 
+Usage
+=====
+Available commands within the Server Manager (SM) console:
+
+	start            - starts the Minecraft server
+	stop             - stops the Minecraft server
+	stop-graceful    - same as stop, but waits until there are no users online
+	restart          - stops and then restarts the Minecraft server
+	restart-graceful - same as restart, but waits until there are no users online
+	abort-graceful   - cancels any pending graceful actions
+	quit             - stop the server if it's running, then quit the SM console
+
+Any other commands are passed straight to the Minecraft server instance.
+Examples:
+
+	save-all
+	save-on
+	save-off
+
+
+
+Configuration
+=============
+Core Settings
+-------------
+	* ServerRoot
+			Default: C:\Minecraft
+	    Full path to where the Minecraft server is.
+
+	* MinecraftRoot
+			Default: .\Server
+	    Full path to where the Minecraft server is.
+			Either specify the full path, or if following the recommended directory
+			layout, use a path relative to ServerRoot.  (That's what the default does)
+
+	* ServerJar
+			Default: minecraft_server.jar
+	    The filename of the server JAR file.
+
+	* JavaHeapInit
+			Default: 1024
+	    The initial memory-heap size for Java, in megabytes.
+
+	* JavaHeapMax
+			Default: 1024
+	    The maximum memory-heap size for Java, in megabytes.
+
+	* JavaExec
+			Default: java.exe
+	    The executable to use for Java.
+
+
+Mapping Settings
+----------------
+	* AlphaVespucciInstalled
+			Default: false
+			Whether or not to use the AlphaVespucci map output options.
+
+	* AlphaVespucciPath
+			Default: .\AlphaVespucci
+
 Requirements
 ============
 
   * Microsoft .NET Framework 3.5 (not tested on Mono, but might work)
   * The Sun "JVM" (Tested with 1.6 update 21)
   * Minecraft Server (Java version)
+
 
 Setup
 =====

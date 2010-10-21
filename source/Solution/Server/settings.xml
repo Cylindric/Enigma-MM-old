@@ -2,7 +2,11 @@
 <ConfigOpt>
   <ConfigValues>
     <OptionName>ServerRoot</OptionName>
-    <OptionValue>C:\Minecraft\Server</OptionValue>
+    <OptionValue>C:\Minecraft</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>MinecraftRoot</OptionName>
+    <OptionValue>.\Server</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>ServerJar</OptionName>

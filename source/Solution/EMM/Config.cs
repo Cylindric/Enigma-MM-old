@@ -112,7 +112,14 @@ namespace EnigmaMM
 
         // Some strongly-typed "well-known" options
         public static string ServerRoot {
-            get { return GetOption("ServerRoot"); }
+            get {
+                string path = GetOption("MinecraftRoot");
+                if (path.StartsWith(".")) {
+                    path = Path.Combine(GetOption("ServerRoot"), path);
+                    path = Path.GetFullPath(path);
+                }
+                return path; 
+            }
         }
         public static string JavaExec {
             get { return GetOption("JavaExec"); }

@@ -14,6 +14,7 @@ namespace EnigmaMM
 
         /// <summary>
         /// Handle a command from the CLI.
+        /// Commands for the server manager are prefixed with the command-character.
         /// </summary>
         /// <remarks>
         /// Quit: shutdown the Minecraft server and then exit the Server Manager.
@@ -41,12 +42,21 @@ namespace EnigmaMM
                     mMinecraft.StartServer();
                     break;
 
-                case ("graceful"):
+                case ("restart-graceful"):
                     mMinecraft.GracefulRestart();
                     break;
 
                 case ("stop"):
-                    mMinecraft.Shutdown();
+                    mMinecraft.StopServer();
+                    break;
+
+                case ("stop-graceful"):
+                    mMinecraft.GracefulStop();
+                    break;
+
+                case ("abort-graceful"):
+                    mMinecraft.AbortPendingRestart();
+                    mMinecraft.AbortPendingStop();
                     break;
 
                 default:

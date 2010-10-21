@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 
 namespace EnigmaMM
 {
@@ -13,9 +12,9 @@ namespace EnigmaMM
 
         static void Main(string[] args)
         {
-            //Console.WriteLine("Starting server listener");
-            //mServer = new Server();
-            //mServer.StartListener();
+
+            // TODO: Get current exe path
+            Config.Initialize(@"D:\Dev\Enigma-MM\source\Solution\Build\settings.xml");
 
             // Start a new CLI helper thread to catch user input
             // After this we might start getting user commands through HandleCommands
@@ -30,11 +29,11 @@ namespace EnigmaMM
             
             mCLI.WriteLine("Getting Minecraft server object");
             mMinecraft = new MCServer();
-            mMinecraft.ServerRoot = config.Default.ServerRoot;
-            mMinecraft.JavaExec = config.Default.JavaExec;
-            mMinecraft.ServerJar = config.Default.ServerJar;
-            mMinecraft.JavaHeapInit = config.Default.JavaHeapInit;
-            mMinecraft.JavaHeapMax = config.Default.JavaHeapMax;
+            mMinecraft.ServerRoot = Config.ServerRoot;
+            mMinecraft.JavaExec = Config.JavaExec;
+            mMinecraft.ServerJar = Config.ServerJar;
+            mMinecraft.JavaHeapInit = Config.JavaHeapInit;
+            mMinecraft.JavaHeapMax = Config.JavaHeapMax;
 
             mMinecraft.ServerMessage += HandleServerOutput;
             mMinecraft.StartServer();
