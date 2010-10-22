@@ -9,6 +9,7 @@ namespace EnigmaMM
         static MCServer mMinecraft;
         static CLIHelper mCLI;
         static CommandParser mParser;
+        
         public static bool mKeepRunning;
 
         static void Main(string[] args)
@@ -34,6 +35,9 @@ namespace EnigmaMM
             mMinecraft.ServerJar = Config.ServerJar;
             mMinecraft.JavaHeapInit = Config.JavaHeapInit;
             mMinecraft.JavaHeapMax = Config.JavaHeapMax;
+
+            mMinecraft.MapRoot = Config.MapRoot;
+            mMinecraft.AlphaVespucciInstalled = Config.AlphaVespucciInstalled;
 
             mMinecraft.ServerMessage += HandleServerOutput;
             mMinecraft.StartServer();

@@ -17,11 +17,14 @@ namespace EnigmaMM
         /// Commands for the server manager are prefixed with the command-character.
         /// </summary>
         /// <remarks>
-        /// Quit: shutdown the Minecraft server and then exit the Server Manager.
-        /// Start: start the Minecraft server.
-        /// Stop: stop the Minecraft server.
-        /// Restart: Restart the Minecraft server.
-        /// Graceful: Restart the Minecraft server as soon as no users are online.
+        /// quit: shutdown the Minecraft server and then exit the Server Manager.
+        /// start: start the Minecraft server.
+        /// stop: stop the Minecraft server.
+        /// stop-graceful: Stop the Minecraft server as soon as no users are online.
+        /// restart: Restart the Minecraft server.
+        /// restart-graceful: Restart the Minecraft server as soon as no users are online.
+        /// abort-graceful: Abort a pending graceful stop or restart.
+        /// generate-maps: Regenerate maps.
         /// </remarks>
         /// <param name="Command">The command to parse.</param>
         public void ParseCommand(String Command)
@@ -57,6 +60,10 @@ namespace EnigmaMM
                 case ("abort-graceful"):
                     mMinecraft.AbortPendingRestart();
                     mMinecraft.AbortPendingStop();
+                    break;
+
+                case ("generate-maps"):
+                    mMinecraft.GenerateMaps();
                     break;
 
                 default:

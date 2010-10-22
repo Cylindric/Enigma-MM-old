@@ -9,13 +9,14 @@ namespace EnigmaMM
     {
         private MCServer mMinecraft;
         private string mExePath;
-        private string mWorldPath;
+        private string mOutputPath;
 
-        public AlphaVespucci(MCServer Minecraft)
+
+        public AlphaVespucci(MCServer server)
         {
-            mMinecraft = Minecraft;
-            mExePath = Path.Combine(Config.GetOption("AlphaVespucciRoot"), "AlphaVespucci.exe");
-            mWorldPath = mMinecraft.ServerProperties.WorldPath;
+            mMinecraft = server;
+            mExePath = Config.AlphaVespucciRoot;
+            mExePath = Path.Combine(mExePath, "AlphaVespucci.exe");
         }
 
 
@@ -23,7 +24,7 @@ namespace EnigmaMM
         {
             string cmd = string.Format(
                 "-{0} -{1} -path \"{2}\" -fullname \"{4}\" -outputdir \"{3}\"",
-                Mode, Type, mWorldPath,  Filepath, Filename
+                Mode, Type, mMinecraft.ServerProperties.WorldPath,  Filepath, Filename
             );
 
             Process p = new Process();

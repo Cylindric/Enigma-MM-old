@@ -110,6 +110,17 @@ namespace EnigmaMM
         }
 
 
+        private static string RootedPath(string OptionName)
+        {
+            string path = GetOption(OptionName);
+            if (path.StartsWith("."))
+            {
+                path = Path.Combine(ServerRoot, path);
+                path = Path.GetFullPath(path);
+            }
+            return path;
+        }
+
         // Some strongly-typed "well-known" options
         public static string ServerRoot
         {
@@ -118,14 +129,7 @@ namespace EnigmaMM
 
         public static string MinecraftRoot
         {
-            get {
-                string path = GetOption("MinecraftRoot");
-                if (path.StartsWith(".")) {
-                    path = Path.Combine(ServerRoot, path);
-                    path = Path.GetFullPath(path);
-                }
-                return path; 
-            }
+            get{ return RootedPath("MinecraftRoot"); }
         }
 
         public static string JavaExec {
@@ -144,6 +148,20 @@ namespace EnigmaMM
             get { return int.Parse(GetOption("JavaHeapMax")); }
         }
 
+        public static string MapRoot
+        {
+            get { return RootedPath("MapRoot"); }
+        }
+
+        public static bool AlphaVespucciInstalled
+        {
+            get { return bool.Parse(GetOption("AlphaVespucciInstalled")); }
+        }
+
+        public static string AlphaVespucciRoot
+        {
+            get { return Path.GetFullPath(GetOption("AlphaVespucciRoot")); }
+        }
     }
 
 }

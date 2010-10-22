@@ -2,25 +2,31 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.IO;
 
 namespace EnigmaMM
 {
     public class MCServer
     {
-
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
         private bool mOnlineUserListReady = false;
         private string mOnlineUserList = "";
         private int mUsersOnline = 0;
-        private MCServerProperties mServerProperties = new MCServerProperties();
 
+        // Java and Minecraft Server settings
+        private MCServerProperties mServerProperties = new MCServerProperties();
         private string mJavaExec = "java.exe";
         private string mServerRoot = "";
         private string mServerJar = "minecraft_server.jar";
         private int mJavaHeapInit = 1024;
         private int mJavaHeapMax = 1024;
+
+        // Map objects and settings
+        private AlphaVespucci mMapAlphaVespucci;
+        private bool mAlphaVespucciInstalled = false;
+        private string mMapRoot;
 
         private System.IO.StreamWriter ioWriter;
 
@@ -75,8 +81,14 @@ namespace EnigmaMM
         {
             set { mJavaHeapMax = value; }
         }
-
-
+        public string MapRoot
+        {
+            set { mMapRoot = value; }
+        }
+        public bool AlphaVespucciInstalled
+        {
+            set { mAlphaVespucciInstalled = value; }
+        }
 
         /// <summary>
         /// Server Constructor
@@ -84,7 +96,9 @@ namespace EnigmaMM
         public MCServer()
         {
             mServerStatus = Status.Stopped;
+            mMapAlphaVespucci = new AlphaVespucci(this);
         }
+
 
 
 
@@ -103,6 +117,9 @@ namespace EnigmaMM
                 ServerMessage("Server already running, cannot start!");
                 return;
             }
+
+            // See if we need to swap in a new config file
+            mServerProperties.LookForNewSettings();
 
             string cmdArgs = null;
             if (mJavaHeapInit > 0)
@@ -274,6 +291,23 @@ namespace EnigmaMM
             if (mServerStatus == Status.Running)
             {
                 ioWriter.WriteLine(Command);
+            }
+        }
+
+
+
+        public void GenerateMaps()
+        {
+            if (mAlphaVespucciInstalled)
+            {
+                mMapAlphaVespucci.RenderMap("obleft", "day", "mainmap", mMapRoot);
+                mMapAlphaVespucci.RenderMap("obleft", "night", "nightmap", mMapRoot);
+                mMapAlphaVespucci.RenderMap("obleft", "cave", "caves", mMapRoot);
+                mMapAlphaVespucci.RenderMap("obleft", "cavelimit 15", "surfacecaves", mMapRoot);
+                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond", mMapRoot);
+                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone", mMapRoot);
+                mMapAlphaVespucci.RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch", mMapRoot);
+                mMapAlphaVespucci.RenderMap("flat", "day", "flatmap", mMapRoot);
             }
         }
 

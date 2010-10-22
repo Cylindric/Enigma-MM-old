@@ -6,7 +6,7 @@
   </ConfigValues>
   <ConfigValues>
     <OptionName>MinecraftRoot</OptionName>
-    <OptionValue>.\Server</OptionValue>
+    <OptionValue>.\Minecraft</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>ServerJar</OptionName>
@@ -26,7 +26,7 @@
   </ConfigValues>
   <ConfigValues>
     <OptionName>AlphaVespucciInstalled</OptionName>
-    <OptionValue>True</OptionValue>
+    <OptionValue>False</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>AlphaVespucciRoot</OptionName>
