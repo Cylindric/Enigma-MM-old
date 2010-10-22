@@ -15,6 +15,9 @@ namespace EnigmaMM
         private String mServerIP = "127.0.0.1";
         private int mServerPort = 8221;
 
+        public delegate void ClientMessageEventHandler(string Message);
+        public event ClientMessageEventHandler MessageReceived;
+
         public AsyncCallback pfnCallBack;
         public Socket mSocClient;
 
@@ -36,13 +39,19 @@ namespace EnigmaMM
             IPAddress remoteIPAddress = IPAddress.Parse(mServerIP);
             IPEndPoint remoteEndpoint = new IPEndPoint(remoteIPAddress, mServerPort);
             mSocClient.Connect(remoteEndpoint);
-            WaitForData();
+            if (mSocClient.Connected)
+            {
+                WaitForData();
+            }
         }
 
         public void SendData(string Data)
         {
             byte[] DataToSend = System.Text.Encoding.UTF8.GetBytes(Data);
-            mSocClient.Send(DataToSend);
+            if (mSocClient != null)
+            {
+                mSocClient.Send(DataToSend);
+            }
         }
 
         public void StopClient()
@@ -60,9 +69,8 @@ namespace EnigmaMM
             {
                 pfnCallBack = new AsyncCallback(OnDataReceived);
             }
-            CSocketPacket theSocPkt = new CSocketPacket();
-            theSocPkt.thisSocket = mSocClient;
-            mAsynResult = mSocClient.BeginReceive(theSocPkt.dataBuffer, 0, theSocPkt.dataBuffer.Length, SocketFlags.None, pfnCallBack, theSocPkt);
+            CSocketPacket theSocPkt = new CSocketPacket(mSocClient);
+            mAsynResult = mSocClient.BeginReceive(theSocPkt.DataBuffer, 0, theSocPkt.DataBuffer.Length, SocketFlags.None, pfnCallBack, theSocPkt);
         }
 
         public void OnDataReceived(IAsyncResult asyn)
@@ -70,13 +78,29 @@ namespace EnigmaMM
             try
             {
                 CSocketPacket theSocketId = (CSocketPacket)asyn.AsyncState;
-                int iRx = 0;
-                iRx = theSocketId.thisSocket.EndReceive(asyn);
+
+                // Get the number of chars in the buffer
+                int iRx = theSocketId.ThisSocket.EndReceive(asyn);
+
                 char[] chars = new char[iRx + 1];
-                System.Text.Decoder d = System.Text.Encoding.UTF8.GetDecoder();
-                int charLen = d.GetChars(theSocketId.dataBuffer, 0, iRx, chars, 0);
-                System.String Data = new System.String(chars);
-                mData += Data;
+
+                // Decode the received data, making sure to only get iRx
+                // characters (buffer is filled with \0)
+                System.String szData = Encoding.UTF8.GetString(theSocketId.DataBuffer, 0, iRx);
+
+                // If the buffer contains any new-line characters, then we need
+                // to parse out each of the sent commands
+                string mText = "";
+                while (szData.Contains("\n"))
+                {
+                    mText += szData.Substring(0, szData.IndexOf("\n"));
+                    szData = szData.Substring(szData.IndexOf("\n") + 1);
+                    OnMessageReceived(mText);
+                    mText = "";
+                }
+                mText = mText + szData;
+
+                // Wait for more commands
                 WaitForData();
             }
             catch (ObjectDisposedException)
@@ -84,5 +108,14 @@ namespace EnigmaMM
                 System.Diagnostics.Debugger.Log(0, "1", "OnDataReceived: Socket closed");
             }
         }
+
+        protected virtual void OnMessageReceived(String Message)
+        {
+            if (MessageReceived != null)
+            {
+                MessageReceived(Message);
+            }
+        }
+
     }
 }

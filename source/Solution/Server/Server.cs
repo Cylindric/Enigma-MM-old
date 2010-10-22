@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Collections;
 
 namespace EnigmaMM
 {
@@ -10,10 +11,15 @@ namespace EnigmaMM
         private String mServerIP = "any";
         private int mServerPort = 8221;
         private Socket mSocketListener;
-        private Socket mSocketWorker;
         private AsyncCallback pfnWorkerCallBack;
-        private string mText;
         private bool mListening = false;
+
+        private ArrayList mSocketList = new ArrayList();
+        private int mClientCount = 0;
+
+        public delegate void ServerMessageEventHandler(string Message);
+        public event ServerMessageEventHandler CommandReceived;
+        public event ServerMessageEventHandler ClientConnected;
 
         public String ServerIP
         {
@@ -46,66 +52,38 @@ namespace EnigmaMM
             }
             mSocketListener.Bind(LocalIp);
             mSocketListener.Listen(4);
-            mSocketListener.BeginAccept(new AsyncCallback(OnClientConnect), null);
+            mSocketListener.BeginAccept(new AsyncCallback(HandleClientConnect), null);
             mListening = true;
         }
 
-        private void OnClientConnect(IAsyncResult asyn)
+        private void HandleClientConnect(IAsyncResult asyn)
         {
             try
             {
-                mSocketWorker = mSocketListener.EndAccept(asyn);
-                WaitForData(mSocketWorker);
+                OnClientConnected("Client connected");
+                Socket WorkerSocket = mSocketListener.EndAccept(asyn);
+                mClientCount++;
+                mSocketList.Add(WorkerSocket);
+                WaitForData(WorkerSocket, mClientCount);
+                mSocketListener.BeginAccept(new AsyncCallback(HandleClientConnect), null);
             }
-            catch (ObjectDisposedException)
+            catch (ObjectDisposedException e)
             {
-                System.Diagnostics.Debugger.Log(0, "1", "OnClientConnect: Socket closed");
+                System.Diagnostics.Debugger.Log(0, "1", "HandleClientConnect ObjectDisposedException: " + e.Message);
             }
         }
 
-        private void WaitForData(Socket soc)
+        private void WaitForData(Socket soc, int ClientCount)
         {
             if (pfnWorkerCallBack == null)
             {
-                pfnWorkerCallBack = new AsyncCallback(OnDataReceived);
+                pfnWorkerCallBack = new AsyncCallback(HandleDataReceived);
             }
-            CSocketPacket theSocPkt = new CSocketPacket();
-            theSocPkt.thisSocket = soc;
+            CSocketPacket theSocPkt = new CSocketPacket(soc, ClientCount);
 
-            soc.BeginReceive(theSocPkt.dataBuffer, 0, theSocPkt.dataBuffer.Length, SocketFlags.None, pfnWorkerCallBack, theSocPkt);
-        }
-
-        private void OnDataReceived(IAsyncResult asyn)
-        {
             try
             {
-                CSocketPacket theSocketId = (CSocketPacket)asyn.AsyncState;
-
-                // Get the number of chars in the buffer
-                int iRx = theSocketId.thisSocket.EndReceive(asyn);
-
-                char[] chars = new char[iRx + 1];
-
-                // Decode the received data, making sure to only get iRx
-                // characters (buffer is filled with \0)
-                System.String szData = Encoding.UTF8.GetString(theSocketId.dataBuffer, 0, iRx);
-
-                // If the buffer contains any new-line characters, then we need
-                // to parse out each of the sent commands
-                while (szData.Contains("\n"))
-                {
-                    mText += szData.Substring(0, szData.IndexOf("\n"));
-                    szData = szData.Substring(szData.IndexOf("\n") + 1);
-
-                    Console.WriteLine("OnDataReceived: COMMAND: [" + mText + "]");
-                    theSocketId.thisSocket.Send(System.Text.Encoding.UTF8.GetBytes("Executing command [" + mText + "]"));
-
-                    mText = "";
-                }
-                mText = mText + szData;
-
-                // Wait for more commands
-                WaitForData(mSocketWorker);
+                soc.BeginReceive(theSocPkt.DataBuffer, 0, theSocPkt.DataBuffer.Length, SocketFlags.None, pfnWorkerCallBack, theSocPkt);
             }
             catch (ObjectDisposedException e)
             {
@@ -120,5 +98,70 @@ namespace EnigmaMM
                 System.Diagnostics.Debugger.Log(0, "1", "OnDataReceived uh-oh? :( " + e.Message);
             }
         }
+
+        private void HandleDataReceived(IAsyncResult asyn)
+        {
+            try
+            {
+                CSocketPacket theSocketId = (CSocketPacket)asyn.AsyncState;
+
+                // Get the number of chars in the buffer
+                int iRx = theSocketId.ThisSocket.EndReceive(asyn);
+
+                char[] chars = new char[iRx + 1];
+
+                // Decode the received data, making sure to only get iRx
+                // characters (buffer is filled with \0)
+                System.String szData = Encoding.UTF8.GetString(theSocketId.DataBuffer, 0, iRx);
+
+                // If the buffer contains any new-line characters, then we need
+                // to parse out each of the sent commands
+                string mText = "";
+                while (szData.Contains("\n"))
+                {
+                    mText += szData.Substring(0, szData.IndexOf("\n"));
+                    szData = szData.Substring(szData.IndexOf("\n") + 1);
+
+                    Console.WriteLine("HandleDataReceived(" + theSocketId.ClientNumber +"): COMMAND: [" + mText + "]");
+                    theSocketId.ThisSocket.Send(System.Text.Encoding.UTF8.GetBytes("Executing command [" + mText + "]"));
+                    OnCommandReceived(mText);
+
+                    mText = "";
+                }
+                mText = mText + szData;
+
+                // Wait for more commands
+                WaitForData(theSocketId.ThisSocket, theSocketId.ClientNumber);
+            }
+            catch (ObjectDisposedException e)
+            {
+                System.Diagnostics.Debugger.Log(0, "1", "HandleDataReceived ObjectDisposedException: " + e.Message);
+            }
+            catch (SocketException e)
+            {
+                System.Diagnostics.Debugger.Log(0, "1", "HandleDataReceived SocketException :( " + e.Message);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debugger.Log(0, "1", "HandleDataReceived uh-oh? :( " + e.Message);
+            }
+        }
+
+        protected virtual void OnCommandReceived(String Message)
+        {
+            if (CommandReceived != null)
+            {
+                CommandReceived(Message);
+            }
+        }
+
+        protected virtual void OnClientConnected(string Message)
+        {
+            if (ClientConnected != null)
+            {
+                ClientConnected(Message);
+            }
+        }
+
     }
 }

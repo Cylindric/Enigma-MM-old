@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace EnigmaMM
 {
     class ServerProgram
     {
-        //static Server mServer;
+        static Server mServer;
         static MCServer mMinecraft;
         static CLIHelper mCLI;
         static CommandParser mParser;
@@ -16,6 +17,13 @@ namespace EnigmaMM
         {
 
             Config.Initialize(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.xml"));
+
+            // Start the server up and begin listening for connections
+            mServer = new Server();
+            mServer.CommandReceived += HandleClientCommand;
+            mServer.ClientConnected += HandleClientConnected;
+            mServer.StartListener();
+            Debug.WriteLine("Well, here we are");
 
             // Start a new CLI helper thread to catch user input
             // After this we might start getting user commands through HandleCommands
@@ -77,7 +85,18 @@ namespace EnigmaMM
             mParser.ParseCommand(e.Command);
         }
 
-        
+        private static void HandleClientCommand(string Command)
+        {
+            mParser.ParseCommand(Command);
+        }
+
+
+        private static void HandleClientConnected(string Command)
+        {
+            mCLI.WriteLine("Host: Client connected");
+        }
+
+
         private static void HandleServerOutput(string Message)
         {
             mCLI.WriteLine("SRV: " + Message);
