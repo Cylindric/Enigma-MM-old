@@ -40,6 +40,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSocketPacket.cs" />
     <Compile Include="Mappers\AlphaVespucci.cs" />
     <Compile Include="CLIHelper.cs" />
     <Compile Include="Config.cs" />
