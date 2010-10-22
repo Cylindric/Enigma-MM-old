@@ -40,6 +40,10 @@ namespace EnigmaMM
             mMinecraft.AlphaVespucciInstalled = Config.AlphaVespucciInstalled;
 
             mMinecraft.ServerMessage += HandleServerOutput;
+            mMinecraft.ServerError += HandleServerError;
+            mMinecraft.ServerStarted += HandleServerStarted;
+            mMinecraft.ServerStopped += HandleServerStopped;
+
             mMinecraft.StartServer();
 
             mParser = new CommandParser(mMinecraft);
@@ -73,13 +77,29 @@ namespace EnigmaMM
             mParser.ParseCommand(e.Command);
         }
 
-
-
+        
         private static void HandleServerOutput(string Message)
         {
             mCLI.WriteLine("SRV: " + Message);
         }
+        
 
+        private static void HandleServerError(string Message)
+        {
+            mCLI.WriteLine("Server error! " + Message);
+        }
+
+
+        private static void HandleServerStarted(string Message)
+        {
+            mCLI.WriteLine("Server started");
+        }
+
+
+        private static void HandleServerStopped(string Message)
+        {
+            mCLI.WriteLine("Server stopped");
+        }
 
 
     }

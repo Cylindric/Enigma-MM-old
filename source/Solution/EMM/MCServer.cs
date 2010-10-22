@@ -30,8 +30,12 @@ namespace EnigmaMM
 
         private System.IO.StreamWriter ioWriter;
 
-        public event ServerMessageEventHandler ServerMessage;
+        // Events raised at key Minecraft events
         public delegate void ServerMessageEventHandler(string Message);
+        public event ServerMessageEventHandler ServerStopped;
+        public event ServerMessageEventHandler ServerStarted;
+        public event ServerMessageEventHandler ServerMessage;
+        public event ServerMessageEventHandler ServerError;
 
         public enum Status
         {
@@ -134,6 +138,14 @@ namespace EnigmaMM
             cmdArgs = cmdArgs + "nogui ";
 
             // Configure the main server process
+            if (Directory.Exists(mServerRoot) == false)
+            {
+                throw new FileNotFoundException("Could not fine Minecraft root: " + mServerRoot);
+            }
+            if (File.Exists(Path.Combine(mServerRoot, mServerJar)) == false)
+            {
+                throw new FileNotFoundException("Could not fine Minecraft server jar: " + Path.Combine(mServerRoot, mServerJar));
+            }
             mServerProcess = new Process();
             mServerProcess.StartInfo.WorkingDirectory = mServerRoot;
             mServerProcess.StartInfo.FileName = mJavaExec;
@@ -344,12 +356,14 @@ namespace EnigmaMM
                 }
                 else if (MsgIsServerStarted(T))
                 {
-                    mServerStatus = Status.Running;
+                    OnServerStarted("Server started");
                 }
                 else if (MsgIsServerErrPortBusy(T))
                 {
+                    OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
                     mServerStatus = Status.Failed;
                     mStatusMessage = T;
+                    ForceShutdown();
                 }
 
 
@@ -366,14 +380,41 @@ namespace EnigmaMM
         /// <summary>
         /// Called when the server process terminates.
         /// </summary>
+        /// <remarks>
+        /// Don't put any logic in here, keep it in the standard onServerStopped event handler.</remarks>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void ServerExited(object sender, System.EventArgs args)
         {
-            mServerStatus = Status.Stopped;
-            ServerMessage("Server exited");
+            OnServerStopped("Server Stopped");
         }
 
+        protected virtual void OnServerStarted(string Message)
+        {
+            mServerStatus = Status.Running;
+            mServerProperties.LoadServerProperties();
+            if (ServerStarted != null)
+            {
+                ServerStarted(Message);
+            }
+        }
+
+        protected virtual void OnServerStopped(string Message)
+        {
+            mServerStatus = Status.Stopped;
+            if (ServerStopped != null)
+            {
+                ServerStopped(Message);
+            }
+        }
+
+        protected virtual void OnServerError(string Message)
+        {
+            if (ServerError != null)
+            {
+                ServerError(Message);
+            }
+        }
 
         private bool MsgIsServerStarted(string msg)
         {
@@ -399,8 +440,6 @@ namespace EnigmaMM
             return Regex.IsMatch(msg, regex);
         }
 
-
-
         private int ExtractPlayerCount(string msg)
         {
             int count = 0;
@@ -412,8 +451,6 @@ namespace EnigmaMM
             }
             return count;
         }
-
-
 
         private string ExtractUsers(string msg)
         {
