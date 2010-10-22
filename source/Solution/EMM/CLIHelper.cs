@@ -4,25 +4,7 @@ using System.Linq;
 using System.Text;
 
 namespace EnigmaMM
-{
-
-    public class CommandEventArgs : EventArgs
-    {
-        public CommandEventArgs(string s)
-        {
-            command = s;
-        }
-        private string command;
-
-        public string Command
-        {
-            get { return command; }
-            set { command = value; }
-        }
-    }
-
-    
-    
+{    
     public class CLIHelper
     {
         private bool mKeepRunning = true;
