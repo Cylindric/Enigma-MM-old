@@ -40,8 +40,33 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Checks for a server.new.properties file, and if it exists swaps it in for
+        /// server.properties.  The current properties file is copied to server.old.properties.
+        /// </summary>
+        public void LookForNewSettings()
+        {
+            string currentSettings = Path.Combine(Config.MinecraftRoot, "server.properties");
+            string newSettings = Path.Combine(Config.MinecraftRoot, "server.new.properties");
+            string oldSettings = Path.Combine(Config.MinecraftRoot, "server.old.properties");
 
-        public void ParseServerProperties(string filename)
+            if (File.Exists(newSettings))
+            {
+                if (File.Exists(oldSettings))
+                {
+                    File.Delete(oldSettings);
+                }
+                if (File.Exists(currentSettings))
+                {
+                    File.Move(currentSettings, oldSettings);
+                }
+                File.Move(newSettings, currentSettings);
+            }
+            ParseServerProperties();
+        }
+
+
+        private void ParseServerProperties()
         {
             // TODO: load these values from the server file
             mSettings.Add("level-name", "world");

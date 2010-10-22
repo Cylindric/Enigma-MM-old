@@ -55,6 +55,10 @@ Core Settings
 
 Mapping Settings
 ----------------
+	* MapOutputRoot
+			Default: .\Maps
+			Where to save the generated maps.
+
 	* AlphaVespucciInstalled
 			Default: false
 			Whether or not to use the AlphaVespucci map output options.

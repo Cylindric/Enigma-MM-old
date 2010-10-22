@@ -13,6 +13,7 @@ SET MCSROOT=%ROOT%\MCServer
 SET MCROOT=%MCSROOT%\Minecraft
 SET SMROOT=%MCSROOT%\ServerManager
 SET AVROOT=%MCSROOT%\AlphaVespucci
+SET MAPROOT=%MCSROOT%\Maps
 
 :: Change to the script's path
 %SCRIPTDRIVE%
@@ -27,6 +28,7 @@ MKDIR "%MCSROOT%"
 MKDIR "%MCROOT%"
 MKDIR "%SMROOT%"
 MKDIR "%AVROOT%"
+MKDIR "%MAPROOT%"
 
 ::Copy the files we need to the package
 XCOPY /Y ..\..\readme.txt %MCSROOT%

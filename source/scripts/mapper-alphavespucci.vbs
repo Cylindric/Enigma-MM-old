@@ -22,18 +22,18 @@ Sub alphavespucci_onCreateMaps()
     CreateFolder DefaultSave
     CreateFolder DatedSave
 
-    'AlphaVespucciMap "obleft", "day", "mainmap", DefaultSave, True
-    'objFS.CopyFile objFS.BuildPath(OUTPUT, "mainmap.png"), objFS.BuildPath(DatedSave, DatedName & ".png")
-    'AlphaVespucciMap "obleft", "day", DatedName, DatedSave, False
+    AlphaVespucciMap "obleft", "day", "mainmap", DefaultSave, True
+    objFS.CopyFile objFS.BuildPath(OUTPUT, "mainmap.png"), objFS.BuildPath(DatedSave, DatedName & ".png")
+    AlphaVespucciMap "obleft", "day", DatedName, DatedSave, False
 
     If (CreateLayeredMap Or CreateSingleMaps) Then
-      'AlphaVespucciMap "obleft", "night", "nightmap", DefaultSave, True
-  	  'AlphaVespucciMap "obleft", "cave", "caves", DefaultSave, True
-  	  'AlphaVespucciMap "obleft", "cavelimit 15", "surfacecaves", DefaultSave, True
-  	  'AlphaVespucciMap "obleft", "whitelist ""Diamond ore""", "resource-diamond", DefaultSave, True
-  	  'AlphaVespucciMap "obleft", "whitelist ""Redstone ore""", "resource-redstone", DefaultSave, True
+      AlphaVespucciMap "obleft", "night", "nightmap", DefaultSave, True
+  	  AlphaVespucciMap "obleft", "cave", "caves", DefaultSave, True
+  	  AlphaVespucciMap "obleft", "cavelimit 15", "surfacecaves", DefaultSave, True
+  	  AlphaVespucciMap "obleft", "whitelist ""Diamond ore""", "resource-diamond", DefaultSave, True
+  	  AlphaVespucciMap "obleft", "whitelist ""Redstone ore""", "resource-redstone", DefaultSave, True
   	  AlphaVespucciMap "obleft", "night -whitelist ""Torch""", "resource-torch", DefaultSave, True
-  	  'AlphaVespucciMap "flat", "day", "flatmap", DefaultSave, True
+  	  AlphaVespucciMap "flat", "day", "flatmap", DefaultSave, True
     End If
 	End If
 
