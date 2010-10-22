@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace EnigmaMM
 {
@@ -62,39 +63,83 @@ namespace EnigmaMM
                 }
                 File.Move(newSettings, currentSettings);
             }
-            ParseServerProperties();
+            LoadServerProperties();
         }
 
 
-        private void ParseServerProperties()
+
+        /// <summary>
+        /// Loads the current server.properties.
+        /// </summary>
+        /// <remarks>
+        /// It is possible that the server.properties file doesn't exist, usually because it's the first
+        /// time the server has been started.  This method should be called <em>after</em> the Minecraft server
+        /// has started, to be sure to get something.</remarks>
+        /// <returns>true if a file was found and loaded, else false.</returns>
+        public bool LoadServerProperties()
         {
-            // TODO: load these values from the server file
-            mSettings.Add("level-name", "world");
-            mSettings.Add("server-port", "25565");
-            mSettings.Add("server-ip", "");
-            mSettings.Add("online-mode", "true");
-            mSettings.Add("monsters", "false");
-            mSettings.Add("max-players", "20");
-            
-            mSettings.Add("spawn-protection-size", "16");
-            mSettings.Add("disalloweditems", "");
-            mSettings.Add("alloweditems", "");
-            mSettings.Add("itemstxtlocation", "items.txt");
-            mSettings.Add("group-txt-location", "groups.txt");
-            mSettings.Add("whitelist", "false");
-            mSettings.Add("homelocation", "homes.txt");
-            mSettings.Add("logging", "false");
-            mSettings.Add("kitstxtlocation", "kits.txt");
-            mSettings.Add("whitelist-txt-location", "whitelist.txt");
-            mSettings.Add("itemspawnblacklist", "");
-            mSettings.Add("whitelist-message", "Not on whitelist.");
-            mSettings.Add("warplocation", "warps.txt");
-            mSettings.Add("plugins", "");
-            mSettings.Add("reservelist-txt-location", "reservelist.txt");
-            mSettings.Add("admintxtlocation", "users.txt");
-            mSettings.Add("save-homes", "true");
-            mSettings.Add("data-source", "flatfile");
-            mSettings.Add("motd", "Type /help for a list of commands.");
+            string currentSettings = Path.Combine(Config.MinecraftRoot, "server.properties");
+
+            if (File.Exists(currentSettings) == false)
+            {
+                return false;
+            }
+
+            mSettingsNeedSaving = false;
+            StreamReader Sr;
+            string S;
+            Sr = File.OpenText(currentSettings);
+            S = Sr.ReadLine();
+            string[] vars;
+            string key;
+            string value;
+            while (S != null)
+            {
+                S = S.Trim();
+
+                if (S.StartsWith("#"))
+                {
+                    // comment lines can be ignored
+                }
+                else
+                {
+                    // Split the config line into a key and a value, separated by a "="
+                    // If the value contains an "=" symbol, then we need to be sure to join
+                    // them all together again
+                    key = "";
+                    value = "";
+                    vars = S.Split('=');
+                    if (vars.Length > 0)
+                    {
+                        key = vars[0];
+                        if (vars.Length >= 1)
+                        {
+                            value = string.Join("=", vars, 1, vars.Length - 1);
+                        }
+                        value = value.Trim();
+                        SetValue(key, value);
+                    }
+                }
+                S = Sr.ReadLine();
+            }
+            Sr.Close();
+            return true;
+        }
+
+
+        private void SaveServerProperties()
+        {
+            if (mSettingsNeedSaving)
+            {
+                string newSettings = Path.Combine(Config.MinecraftRoot, "server.new.properties");
+                StreamWriter Sw;
+                Sw = File.CreateText(newSettings);
+                foreach (KeyValuePair<string, string> setting in mSettings)
+                {
+                    Sw.WriteLine(setting.Key + '=' + setting.Value);
+                }
+                Sw.Close();
+            }
         }
 
 
@@ -120,6 +165,33 @@ namespace EnigmaMM
             bool value = false;
             bool.TryParse(GetString(key), out value);
             return value;
+        }
+
+        public void SetValue(string key, int value)
+        {
+            SetValue(key, value.ToString());
+        }
+
+        public void SetValue(string key, bool value)
+        {
+            SetValue(key, value.ToString().ToLower());
+        }
+
+        public void SetValue(string key, string value)
+        {
+            if (mSettings.ContainsKey(key))
+            {
+                if (mSettings[key] != value)
+                {
+                    mSettings[key] = value;
+                    mSettingsNeedSaving = true;
+                }
+            }
+            else
+            {
+                mSettings.Add(key, value);
+                mSettingsNeedSaving = true;
+            }
         }
 
     }
