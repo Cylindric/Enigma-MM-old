@@ -48,14 +48,25 @@ namespace EnigmaMM
             mMinecraft.MapRoot = Config.MapRoot;
             mMinecraft.AlphaVespucciInstalled = Config.AlphaVespucciInstalled;
 
+            // See if we need to swap in a new config file, and load current config
+            mMinecraft.ServerProperties.LookForNewSettings();
+
             mMinecraft.ServerMessage += HandleServerOutput;
             mMinecraft.ServerError += HandleServerError;
             mMinecraft.ServerStarted += HandleServerStarted;
             mMinecraft.ServerStopped += HandleServerStopped;
 
-            mMinecraft.StartServer();
-
             mParser = new CommandParser(mMinecraft);
+
+            // If any commands were passed on the command-line, execute them and then quit
+            if (args.Length > 0)
+            {
+                foreach (string arg in args)
+                {
+                    mParser.ParseCommand(arg);
+                }
+            }
+
 
             // Just loop until something sets mKeepRunning to false.
             // The loop sleeps for a little to stop it hogging the CPU

@@ -82,12 +82,17 @@ Here's the bare minimum to get started.  A lot of other files will be created at
 
 C:\Minecraft\
 
-C:\Minecraft\Server\                         <-- The actual Minecraft server
-C:\Minecraft\Server\minecraft_server.jar
+C:\Minecraft\Minecraft\                         <-- The actual Minecraft server
+C:\Minecraft\Minecraft\minecraft_server.jar
 
 C:\Minecraft\ServerManager\                  <-- Put the EMM files here
 C:\Minecraft\ServerManager\emm.dll
 C:\Minecraft\ServerManager\emmserver.exe
+C:\Minecraft\ServerManager\emmclient.exe
+C:\Minecraft\ServerManager\settings.xml
+
+C:\Minecraft\Maps
+C:\Minecraft\Maps\History
 
 
 So the setup process would be something like:

@@ -160,7 +160,7 @@ namespace EnigmaMM
 
         public static string AlphaVespucciRoot
         {
-            get { return Path.GetFullPath(GetOption("AlphaVespucciRoot")); }
+            get { return RootedPath("AlphaVespucciRoot"); }
         }
     }
 

@@ -25,6 +25,10 @@
     <OptionValue>java.exe</OptionValue>
   </ConfigValues>
   <ConfigValues>
+    <OptionName>MapRoot</OptionName>
+    <OptionValue>.\Maps</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
     <OptionName>AlphaVespucciInstalled</OptionName>
     <OptionValue>False</OptionValue>
   </ConfigValues>

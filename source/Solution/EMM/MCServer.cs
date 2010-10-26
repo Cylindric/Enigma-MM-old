@@ -105,6 +105,15 @@ namespace EnigmaMM
 
 
 
+        /// <summary>
+        /// Helper-method to raise ServerMessage Events from other places.
+        /// </summary>
+        /// <param name="Message">The message to throw</param>
+        internal void RaiseServerMessage(string Message)
+        {
+            ServerMessage(Message);
+        }
+
 
         /// <summary>
         /// Starts the Minecraft server process.
@@ -310,9 +319,24 @@ namespace EnigmaMM
 
         public void GenerateMaps()
         {
+            if (!Directory.Exists(mMapRoot))
+            {
+                throw new DirectoryNotFoundException("Cannot find maproot: " + mMapRoot);
+            }
+            string HistoryRoot = Path.Combine(mMapRoot, "History");
+            if (!Directory.Exists(HistoryRoot))
+            {
+                Directory.CreateDirectory(HistoryRoot);
+            }
+
             if (mAlphaVespucciInstalled)
             {
+                string HistoryFile = Path.Combine(HistoryRoot, string.Format("mainmap-{0:yyyy-MM-dd_HH}.jpg", DateTime.Now));
+
+                ServerMessage("Generating AlphaVespucci Maps...");
                 mMapAlphaVespucci.RenderMap("obleft", "day", "mainmap", mMapRoot);
+                File.Copy(Path.Combine(mMapRoot, "mainmap.jpg"), HistoryFile, true);
+
                 mMapAlphaVespucci.RenderMap("obleft", "night", "nightmap", mMapRoot);
                 mMapAlphaVespucci.RenderMap("obleft", "cave", "caves", mMapRoot);
                 mMapAlphaVespucci.RenderMap("obleft", "cavelimit 15", "surfacecaves", mMapRoot);
@@ -320,6 +344,7 @@ namespace EnigmaMM
                 mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone", mMapRoot);
                 mMapAlphaVespucci.RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch", mMapRoot);
                 mMapAlphaVespucci.RenderMap("flat", "day", "flatmap", mMapRoot);
+                ServerMessage("Done.");
             }
         }
 
