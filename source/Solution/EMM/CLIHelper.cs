@@ -9,7 +9,8 @@ namespace EnigmaMM
     {
         private bool mKeepRunning = true;
 
-        public event EventHandler<CommandEventArgs> RaiseCommandReceivedEvent;
+        public delegate void ServerMessageEventHandler(string Message);
+        public event ServerMessageEventHandler RaiseCommandReceivedEvent;
 
         public void StartListening()
         {
@@ -27,7 +28,7 @@ namespace EnigmaMM
                             cmd = cmd.Substring(0, Math.Max(cmd.Length - 1, 0));
                             break;
                         case ConsoleKey.Enter:
-                            OnCommandReceivedEvent(new CommandEventArgs(cmd));
+                            OnCommandReceivedEvent(cmd);
                             cmd = "";
                             break;
                         default:
@@ -58,15 +59,13 @@ namespace EnigmaMM
 
 
 
-        protected virtual void OnCommandReceivedEvent(CommandEventArgs e)
+        protected virtual void OnCommandReceivedEvent(string Message)
         {
-            EventHandler<CommandEventArgs> handler = RaiseCommandReceivedEvent;
-            if(handler != null)
+            if (RaiseCommandReceivedEvent != null)
             {
-                handler(this, e);
+                RaiseCommandReceivedEvent(Message);
             }
 
         }
-
     }
 }
