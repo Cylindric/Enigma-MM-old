@@ -10,7 +10,7 @@
   </ConfigValues>
   <ConfigValues>
     <OptionName>ServerJar</OptionName>
-    <OptionValue>Minecraft_Mod.jar</OptionValue>
+    <OptionValue>minecraft_server.jar</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>JavaHeapInit</OptionName>
@@ -29,11 +29,27 @@
     <OptionValue>.\Maps</OptionValue>
   </ConfigValues>
   <ConfigValues>
+    <OptionName>CacheRoot</OptionName>
+    <OptionValue>.\Cache</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
     <OptionName>AlphaVespucciInstalled</OptionName>
     <OptionValue>True</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>AlphaVespucciRoot</OptionName>
     <OptionValue>.\AlphaVespucci</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>PythonExe</OptionName>
+    <OptionValue>C:\Program Files\Python27\python.exe</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>MinecraftOverviewerInstalled</OptionName>
+    <OptionValue>True</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>MinecraftOverviewerRoot</OptionName>
+    <OptionValue>.\Overviewer</OptionValue>
   </ConfigValues>
 </ConfigOpt>

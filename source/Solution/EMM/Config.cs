@@ -153,6 +153,11 @@ namespace EnigmaMM
             get { return RootedPath("MapRoot"); }
         }
 
+        public static string CacheRoot
+        {
+            get { return RootedPath("CacheRoot"); }
+        }
+
         public static bool AlphaVespucciInstalled
         {
             get { return bool.Parse(GetOption("AlphaVespucciInstalled")); }
@@ -161,6 +166,21 @@ namespace EnigmaMM
         public static string AlphaVespucciRoot
         {
             get { return RootedPath("AlphaVespucciRoot"); }
+        }
+
+        public static bool OverviewerInstalled
+        {
+            get { return bool.Parse(GetOption("MinecraftOverviewerInstalled")); }
+        }
+
+        public static string OverviewerRoot
+        {
+            get { return RootedPath("MinecraftOverviewerRoot"); }
+        }
+
+        public static string PythonExe
+        {
+            get { return RootedPath("PythonExe"); }
         }
     }
 
