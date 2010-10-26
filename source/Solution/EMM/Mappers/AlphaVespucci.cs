@@ -9,7 +9,6 @@ namespace EnigmaMM
     {
         private MCServer mMinecraft;
         private string mExePath;
-        private string mOutputPath;
 
 
         public AlphaVespucci(MCServer server)
@@ -20,38 +19,50 @@ namespace EnigmaMM
         }
 
 
-        public void RenderMap(string Mode, string Type, string Filename, string Filepath)
+        public void RenderMap(string display, string features, string Filename, string Filepath)
         {
+            mMinecraft.RaiseServerMessage(string.Format("AV: Creating map {0} {1}...", display, features));
+
+            if (!Directory.Exists(mMinecraft.ServerProperties.WorldPath))
+            {
+                throw new DirectoryNotFoundException("World path missing: " + mMinecraft.ServerProperties.WorldPath);
+            }
+            if (!Directory.Exists(Filepath))
+            {
+                throw new DirectoryNotFoundException("Map output path missing: " + Filepath);
+            }
+
             string cmd = string.Format(
                 "-{0} -{1} -path \"{2}\" -fullname \"{4}\" -outputdir \"{3}\"",
-                Mode, Type, mMinecraft.ServerProperties.WorldPath,  Filepath, Filename
+                display, features, mMinecraft.ServerProperties.WorldPath, Filepath, Filename
             );
 
             Process p = new Process();
             p.StartInfo.FileName = mExePath;
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.CreateNoWindow = true;
             p.StartInfo.Arguments = cmd;
-            p.StartInfo.CreateNoWindow = false;
             p.Start();
+            p.WaitForExit();
 
+            // save a JPEG-version
             ToJpeg(Path.Combine(Filepath, Filename + ".png"), Path.Combine(Filepath, Filename + ".jpg"));
+
+            mMinecraft.RaiseServerMessage("AV: Done.");
         }
 
 
         private void ToJpeg(string InputFile, string OutputFile)
         {
-            EncoderParameter quality = new EncoderParameter(Encoder.Quality, 80);
-            ImageCodecInfo jpegCodec = GetEncoderInfo("image/jpeg");
-
-            if (jpegCodec == null)
-            {
-                return;
-            }
-
-            EncoderParameters encoderParams = new EncoderParameters(1);
-            encoderParams.Param[0] = quality;
-
             Bitmap input = new Bitmap(InputFile);
-            input.Save(OutputFile, jpegCodec, encoderParams);
+
+            Encoder qualityEncoder = Encoder.Quality;
+            long quality = 80;
+            EncoderParameter ratio = new EncoderParameter(qualityEncoder, quality);
+            EncoderParameters codecParams = new EncoderParameters(1);
+            codecParams.Param[0] = ratio;
+            ImageCodecInfo jpegCodecInfo = GetEncoderInfo("image/jpeg");
+            input.Save(OutputFile, jpegCodecInfo, codecParams);
         }
 
 
