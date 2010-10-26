@@ -2,39 +2,32 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System;
 
 namespace EnigmaMM
 {
-    class AlphaVespucci
+    class AlphaVespucci : Mapper
     {
-        private MCServer mMinecraft;
-        private string mExePath;
-
-
-        public AlphaVespucci(MCServer server)
+        public AlphaVespucci(MCServer server) : base(server, "alphavespucci")
         {
-            mMinecraft = server;
-            mExePath = Config.AlphaVespucciRoot;
-            mExePath = Path.Combine(mExePath, "AlphaVespucci.exe");
+            mExePath = Path.Combine(Config.AlphaVespucciRoot, "AlphaVespucci.exe");
         }
 
 
-        public void RenderMap(string display, string features, string Filename, string Filepath)
+        public void RenderMaps(string display, string features, string Filename)
         {
-            mMinecraft.RaiseServerMessage(string.Format("AV: Creating map {0} {1}...", display, features));
+            RenderMaps(display, features, Filename, false);
+        }
 
-            if (!Directory.Exists(mMinecraft.ServerProperties.WorldPath))
-            {
-                throw new DirectoryNotFoundException("World path missing: " + mMinecraft.ServerProperties.WorldPath);
-            }
-            if (!Directory.Exists(Filepath))
-            {
-                throw new DirectoryNotFoundException("Map output path missing: " + Filepath);
-            }
+
+        public void RenderMaps(string display, string features, string Filename, bool createHistory)
+        {
+            base.RenderMaps();
+            mMinecraft.RaiseServerMessage(string.Format("AV: Creating map {0} {1}...", display, features));
 
             string cmd = string.Format(
                 "-{0} -{1} -path \"{2}\" -fullname \"{4}\" -outputdir \"{3}\"",
-                display, features, mMinecraft.ServerProperties.WorldPath, Filepath, Filename
+                display, features, mMinecraft.ServerProperties.WorldPath, mOutputPath, Filename
             );
 
             Process p = new Process();
@@ -46,7 +39,16 @@ namespace EnigmaMM
             p.WaitForExit();
 
             // save a JPEG-version
-            ToJpeg(Path.Combine(Filepath, Filename + ".png"), Path.Combine(Filepath, Filename + ".jpg"));
+            ToJpeg(Path.Combine(mOutputPath, Filename + ".png"), Path.Combine(mOutputPath, Filename + ".jpg"));
+
+            // save a history version
+            string HistoryRoot = Path.Combine(mOutputPath, "History");
+            if (!Directory.Exists(HistoryRoot))
+            {
+                Directory.CreateDirectory(HistoryRoot);
+            }
+            string HistoryFile = Path.Combine(HistoryRoot, string.Format("-{1:yyyy-MM-dd_HH}.jpg", Filename, DateTime.Now));
+            File.Copy(Path.Combine(mOutputPath, Filename + ".jpg"), HistoryFile, true);
 
             mMinecraft.RaiseServerMessage("AV: Done.");
         }

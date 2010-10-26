@@ -47,9 +47,10 @@ namespace EnigmaMM
 
             mMinecraft.MapRoot = Config.MapRoot;
             mMinecraft.AlphaVespucciInstalled = Config.AlphaVespucciInstalled;
+            mMinecraft.OverviewerInstalled = Config.OverviewerInstalled;
 
             // See if we need to swap in a new config file, and load current config
-            mMinecraft.ServerProperties.LookForNewSettings();
+            mMinecraft.ReloadConfig();
 
             mMinecraft.ServerMessage += HandleServerOutput;
             mMinecraft.ServerError += HandleServerError;

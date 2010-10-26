@@ -62,8 +62,20 @@ namespace EnigmaMM
                     mMinecraft.AbortPendingStop();
                     break;
 
-                case ("generate-maps"):
+                case ("maps-all"):
                     mMinecraft.GenerateMaps();
+                    break;
+
+                case ("maps-av"):
+                    mMinecraft.GenerateMapAV();
+                    break;
+
+                case ("maps-avextra"):
+                    mMinecraft.GenerateMapAVExtra();
+                    break;
+
+                case ("maps-overviewer"):
+                    mMinecraft.GenerateMapOverviewer();
                     break;
 
                 default:

@@ -29,12 +29,20 @@
     <OptionValue>.\Maps</OptionValue>
   </ConfigValues>
   <ConfigValues>
+    <OptionName>CacheRoot</OptionName>
+    <OptionValue>.\Cache</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
     <OptionName>AlphaVespucciInstalled</OptionName>
     <OptionValue>False</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>AlphaVespucciRoot</OptionName>
     <OptionValue>.\AlphaVespucci</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>PythonExe</OptionName>
+    <OptionValue>C:\Program Files\Python27\python.exe</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>MinecraftOverviewerInstalled</OptionName>

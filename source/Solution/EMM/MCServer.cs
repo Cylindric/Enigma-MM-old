@@ -17,6 +17,7 @@ namespace EnigmaMM
 
         // Java and Minecraft Server settings
         private MCServerProperties mServerProperties = new MCServerProperties();
+        private MCServerWarps mServerWarps;
         private string mJavaExec = "java.exe";
         private string mServerRoot = "";
         private string mServerJar = "minecraft_server.jar";
@@ -28,6 +29,8 @@ namespace EnigmaMM
         // Map objects and settings
         private AlphaVespucci mMapAlphaVespucci;
         private bool mAlphaVespucciInstalled = false;
+        private Overviewer mMapOverviewer;
+        private bool mOverviewerInstalled = false;
         private string mMapRoot;
 
         private System.IO.StreamWriter ioWriter;
@@ -55,6 +58,11 @@ namespace EnigmaMM
         public MCServerProperties ServerProperties
         {
             get { return mServerProperties; }
+        }
+
+        public MCServerWarps ServerWarps
+        {
+            get { return mServerWarps; }
         }
 
         public Status CurrentStatus
@@ -95,6 +103,10 @@ namespace EnigmaMM
         {
             set { mAlphaVespucciInstalled = value; }
         }
+        public bool OverviewerInstalled
+        {
+            set { mOverviewerInstalled = value; }
+        }
 
         /// <summary>
         /// Server Constructor
@@ -103,9 +115,21 @@ namespace EnigmaMM
         {
             mServerStatus = Status.Stopped;
             mMapAlphaVespucci = new AlphaVespucci(this);
+            mMapOverviewer = new Overviewer(this);
         }
 
 
+
+        public void ReloadConfig()
+        {
+            // See if we need to swap in a new config file
+            mServerProperties.LookForNewSettings();
+            if (mServerProperties.WarpLocation != "")
+            {
+                mServerWarps = new MCServerWarps(mServerProperties.WarpLocation);
+                mServerWarps.LookForNewSettings();
+            }
+        }
 
         /// <summary>
         /// Helper-method to raise ServerMessage Events from other places.
@@ -133,8 +157,7 @@ namespace EnigmaMM
                 return;
             }
 
-            // See if we need to swap in a new config file
-            mServerProperties.LookForNewSettings();
+            ReloadConfig();
 
             string cmdArgs = null;
             if (mJavaHeapInit > 0)
@@ -188,7 +211,6 @@ namespace EnigmaMM
             mServerProcess.BeginErrorReadLine();
 
             ServerMessage("Server started.");
-
         }
 
 
@@ -335,43 +357,49 @@ namespace EnigmaMM
 
 
 
-        public void GenerateMaps()
+        public void GenerateMapAV()
         {
-            if (!Directory.Exists(mMapRoot))
-            {
-                throw new DirectoryNotFoundException("Cannot find maproot: " + mMapRoot);
-            }
-            string HistoryRoot = Path.Combine(mMapRoot, "History");
-            if (!Directory.Exists(HistoryRoot))
-            {
-                Directory.CreateDirectory(HistoryRoot);
-            }
-
-
-            // turn off auto-save while maps are being generated
-            AutoSave(false);
-
-            
             if (mAlphaVespucciInstalled)
             {
-                string HistoryFile = Path.Combine(HistoryRoot, string.Format("mainmap-{0:yyyy-MM-dd_HH}.jpg", DateTime.Now));
-
+                AutoSave(false);
                 ServerMessage("Generating AlphaVespucci Maps...");
-                mMapAlphaVespucci.RenderMap("obleft", "day", "mainmap", mMapRoot);
-                File.Copy(Path.Combine(mMapRoot, "mainmap.jpg"), HistoryFile, true);
-
-                mMapAlphaVespucci.RenderMap("obleft", "night", "nightmap", mMapRoot);
-                mMapAlphaVespucci.RenderMap("obleft", "cave", "caves", mMapRoot);
-                mMapAlphaVespucci.RenderMap("obleft", "cavelimit 15", "surfacecaves", mMapRoot);
-                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond", mMapRoot);
-                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone", mMapRoot);
-                mMapAlphaVespucci.RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch", mMapRoot);
-                mMapAlphaVespucci.RenderMap("flat", "day", "flatmap", mMapRoot);
+                mMapAlphaVespucci.RenderMaps("obleft", "day", "mainmap", true);
                 ServerMessage("Done.");
+                AutoSave(true);
             }
+        }
 
-            // turn auto-save back on
-            AutoSave(true);
+
+        public void GenerateMapAVExtra()
+        {
+            ServerMessage("Generating more AlphaVespucci Maps...");
+            mMapAlphaVespucci.RenderMaps("obleft", "night", "nightmap");
+            mMapAlphaVespucci.RenderMaps("obleft", "cave", "caves");
+            mMapAlphaVespucci.RenderMaps("obleft", "cavelimit 15", "surfacecaves");
+            mMapAlphaVespucci.RenderMaps("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
+            mMapAlphaVespucci.RenderMaps("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
+            mMapAlphaVespucci.RenderMaps("obleft", "night -whitelist \"Torch\"", "resource-torch");
+            mMapAlphaVespucci.RenderMaps("flat", "day", "flatmap");
+            ServerMessage("Done.");
+        }
+
+
+        public void GenerateMapOverviewer()
+        {
+            if (mOverviewerInstalled)
+            {
+                AutoSave(false);
+                mMapOverviewer.RenderMaps();
+                AutoSave(true);
+            }
+        }
+
+        
+        public void GenerateMaps()
+        {
+            GenerateMapOverviewer();
+            GenerateMapAV();
+            GenerateMapAVExtra();
         }
 
 
