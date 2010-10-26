@@ -13,6 +13,14 @@
     <OptionValue>minecraft_server.jar</OptionValue>
   </ConfigValues>
   <ConfigValues>
+    <OptionName>ServerIp</OptionName>
+    <OptionValue>localhost</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>ServerPort</OptionName>
+    <OptionValue>8221</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
     <OptionName>JavaHeapInit</OptionName>
     <OptionValue>512</OptionValue>
   </ConfigValues>

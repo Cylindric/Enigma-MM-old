@@ -39,7 +39,20 @@ namespace EnigmaMM
         public void StartClient()
         {
             mSocClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            IPAddress remoteIPAddress = IPAddress.Parse(mServerIP);
+            IPAddress remoteIPAddress;
+            if (IPAddress.TryParse(mServerIP, out remoteIPAddress) == false)
+            {
+                // parse of IP failed, is it a hostname?
+                IPAddress[] remoteAddresses = Dns.GetHostAddresses(mServerIP);
+                if (remoteAddresses.Length > 0)
+                {
+                    remoteIPAddress = remoteAddresses[0];
+                }
+                else
+                {
+                    throw new Exception("Cannot resolve server address: " + mServerIP);
+                }
+            }
             IPEndPoint remoteEndpoint = new IPEndPoint(remoteIPAddress, mServerPort);
             mSocClient.Connect(remoteEndpoint);
             if (mSocClient.Connected)

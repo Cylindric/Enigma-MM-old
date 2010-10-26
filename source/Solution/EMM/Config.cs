@@ -136,11 +136,23 @@ namespace EnigmaMM
             get { return GetOption("JavaExec"); }
         }
 
-        public static string ServerJar {
+        public static string ServerJar
+        {
             get { return GetOption("ServerJar"); }
         }
 
-        public static int JavaHeapInit {
+        public static string ServerIp
+        {
+            get { return GetOption("ServerIp"); }
+        }
+
+        public static int ServerPort
+        {
+            get { return int.Parse(GetOption("ServerPort")); }
+        }
+
+        public static int JavaHeapInit
+        {
             get { return int.Parse(GetOption("JavaHeapInit")); }
         }
 
