@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.IO;
 
 namespace EnigmaMM
 {
@@ -14,9 +15,13 @@ namespace EnigmaMM
 
         static void Main(string[] args)
         {
+            Config.Initialize(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.xml"));
+            
             bool StartCLI = true;
 
             mClient.MessageReceived += HandleMessageReceived;
+            mClient.ServerIP = Config.ServerIp;
+            mClient.ServerPort = Config.ServerPort;
             mClient.StartClient();
 
             // If any commands were passed on the command-line, execute them and then quit

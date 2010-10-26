@@ -15,7 +15,6 @@ namespace EnigmaMM
 
         static void Main(string[] args)
         {
-
             Config.Initialize(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.xml"));
 
             // Start the server up and begin listening for connections
@@ -23,6 +22,7 @@ namespace EnigmaMM
             mServer.CommandReceived += HandleClientCommand;
             mServer.ClientConnected += HandleClientConnected;
             mServer.ClientDisconnected += HandleClientConnected;
+            mServer.ServerPort = Config.ServerPort;
             mServer.StartListener();
             Debug.WriteLine("Well, here we are");
 
