@@ -31,6 +31,7 @@ IF NOT EXIST "%BACKUPROOT%" MKDIR "%BACKUPROOT%"
 
 ::Copy the files we need to the package
 XCOPY /Y "%REPOSITORY%\Minecraft\minecraft_server.jar" "%MCROOT%"
+IF EXIST "%REPOSITORY%\Minecraft\Minecraft_Mod.jar" XCOPY /Y "%REPOSITORY%\Minecraft\Minecraft_Mod.jar" "%MCROOT%"
 XCOPY /Y "%REPOSITORY%\AlphaVespucci\*" "%AVROOT%"
 
 :END

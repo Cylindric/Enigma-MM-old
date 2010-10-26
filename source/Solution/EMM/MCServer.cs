@@ -22,6 +22,8 @@ namespace EnigmaMM
         private string mServerJar = "minecraft_server.jar";
         private int mJavaHeapInit = 1024;
         private int mJavaHeapMax = 1024;
+        private bool mServerRunningHey0 = false;
+        private int mHey0version = 0;
 
         // Map objects and settings
         private AlphaVespucci mMapAlphaVespucci;
@@ -273,6 +275,22 @@ namespace EnigmaMM
         }
 
 
+        private void AutoSave(bool Enabled)
+        {
+            if (mServerRunningHey0)
+            {
+                if (Enabled)
+                {
+                    SendCommand("save-on");
+                }
+                else
+                {
+                    SendCommand("save-off");
+                }
+                Thread.Sleep(1000);
+            }
+        }
+
 
         /// <summary>
         /// Aborts a pending restart.
@@ -329,6 +347,11 @@ namespace EnigmaMM
                 Directory.CreateDirectory(HistoryRoot);
             }
 
+
+            // turn off auto-save while maps are being generated
+            AutoSave(false);
+
+            
             if (mAlphaVespucciInstalled)
             {
                 string HistoryFile = Path.Combine(HistoryRoot, string.Format("mainmap-{0:yyyy-MM-dd_HH}.jpg", DateTime.Now));
@@ -346,6 +369,10 @@ namespace EnigmaMM
                 mMapAlphaVespucci.RenderMap("flat", "day", "flatmap", mMapRoot);
                 ServerMessage("Done.");
             }
+
+            // turn auto-save back on
+            AutoSave(true);
+
         }
 
 
@@ -382,6 +409,12 @@ namespace EnigmaMM
                 else if (MsgIsServerStarted(T))
                 {
                     OnServerStarted("Server started");
+                }
+                else if (MsgIsHey0(T))
+                {
+                    ServerMessage("Hey0 mod detected");
+                    mServerRunningHey0 = true;
+                    mHey0version = ExtractHey0Version(T);
                 }
                 else if (MsgIsServerErrPortBusy(T))
                 {
@@ -465,6 +498,12 @@ namespace EnigmaMM
             return Regex.IsMatch(msg, regex);
         }
 
+        private bool MsgIsHey0(string msg)
+        {
+            string regex = @"^(?<timestamp>.+?)\[INFO]\ Hey0\ Server\ Mod\ Build\ .*?$";
+            return Regex.IsMatch(msg, regex);
+        }
+
         private int ExtractPlayerCount(string msg)
         {
             int count = 0;
@@ -475,6 +514,18 @@ namespace EnigmaMM
                 int.TryParse(matches[0].Groups["count"].Value, out count);
             }
             return count;
+        }
+
+        private int ExtractHey0Version(string msg)
+        {
+            int version = 0;
+            string regex = @"^(?<timestamp>.+?)\[INFO]\ Hey0\ Server\ Mod\ Build\ (?<version>.*?)$";
+            MatchCollection matches = Regex.Matches(msg, regex);
+            if (matches.Count > 0)
+            {
+                int.TryParse(matches[0].Groups["version"].Value, out version);
+            }
+            return version;
         }
 
         private string ExtractUsers(string msg)

@@ -39,6 +39,9 @@ Core Settings
 	* ServerJar
 			Default: minecraft_server.jar
 	    The filename of the server JAR file.
+			If you're using the Hey0 server mod, put the name of the jar here (usually
+			Server_Mod.jar) and EMM will auto-detec it's running and enable certain
+			features.
 
 	* JavaHeapInit
 			Default: 1024
@@ -72,6 +75,8 @@ Requirements
   * Microsoft .NET Framework 3.5 (not tested on Mono, but might work)
   * The Sun "JVM" (Tested with 1.6 update 21)
   * Minecraft Server (Java version)
+	* Optionally Hey0 Server mod
+	* Optionally AlphaVespucci mapper
 
 
 Setup
