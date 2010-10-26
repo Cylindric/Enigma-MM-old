@@ -372,7 +372,6 @@ namespace EnigmaMM
 
             // turn auto-save back on
             AutoSave(true);
-
         }
 
 

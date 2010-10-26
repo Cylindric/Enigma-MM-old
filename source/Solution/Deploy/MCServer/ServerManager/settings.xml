@@ -10,7 +10,7 @@
   </ConfigValues>
   <ConfigValues>
     <OptionName>ServerJar</OptionName>
-    <OptionValue>minecraft_server.jar</OptionValue>
+    <OptionValue>Minecraft_Mod.jar</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>JavaHeapInit</OptionName>
@@ -25,8 +25,12 @@
     <OptionValue>java.exe</OptionValue>
   </ConfigValues>
   <ConfigValues>
+    <OptionName>MapRoot</OptionName>
+    <OptionValue>.\Maps</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
     <OptionName>AlphaVespucciInstalled</OptionName>
-    <OptionValue>False</OptionValue>
+    <OptionValue>True</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>AlphaVespucciRoot</OptionName>

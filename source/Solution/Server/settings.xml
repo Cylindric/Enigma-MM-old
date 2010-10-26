@@ -36,4 +36,12 @@
     <OptionName>AlphaVespucciRoot</OptionName>
     <OptionValue>.\AlphaVespucci</OptionValue>
   </ConfigValues>
+  <ConfigValues>
+    <OptionName>MinecraftOverviewerInstalled</OptionName>
+    <OptionValue>False</OptionValue>
+  </ConfigValues>
+  <ConfigValues>
+    <OptionName>MinecraftOverviewerRoot</OptionName>
+    <OptionValue>.\Overviewer</OptionValue>
+  </ConfigValues>
 </ConfigOpt>
