@@ -13,6 +13,7 @@ SET MCSROOT=%ROOT%\Build
 SET MCROOT=%MCSROOT%\Minecraft
 SET SMROOT=%MCSROOT%\ServerManager
 SET AVROOT=%MCSROOT%\AlphaVespucci
+SET BACKUPROOT=%MCSROOT%\Backups
 
 
 :: Change to the script's path
@@ -25,6 +26,7 @@ IF NOT EXIST "%MCSROOT%" MKDIR "%MCSROOT%"
 IF NOT EXIST "%MCROOT%" MKDIR "%MCROOT%"
 IF NOT EXIST "%SMROOT%" MKDIR "%SMROOT%"
 IF NOT EXIST "%AVROOT%" MKDIR "%AVROOT%"
+IF NOT EXIST "%BACKUPROOT%" MKDIR "%BACKUPROOT%"
 
 
 ::Copy the files we need to the package
