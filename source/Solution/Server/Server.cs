@@ -20,6 +20,7 @@ namespace EnigmaMM
         public delegate void ServerMessageEventHandler(string Message);
         public event ServerMessageEventHandler CommandReceived;
         public event ServerMessageEventHandler ClientConnected;
+        public event ServerMessageEventHandler ClientDisconnected;
 
         public String ServerIP
         {
@@ -36,6 +37,11 @@ namespace EnigmaMM
         public bool Listening
         {
             get { return mListening; }
+        }
+
+        public int ConnectedClients
+        {
+            get { return mClientCount; }
         }
 
         public void StartListener()
@@ -62,7 +68,6 @@ namespace EnigmaMM
             {
                 OnClientConnected("Client connected");
                 Socket WorkerSocket = mSocketListener.EndAccept(asyn);
-                mClientCount++;
                 mSocketList.Add(WorkerSocket);
                 WaitForData(WorkerSocket, mClientCount);
                 mSocketListener.BeginAccept(new AsyncCallback(HandleClientConnect), null);
@@ -89,9 +94,9 @@ namespace EnigmaMM
             {
                 System.Diagnostics.Debugger.Log(0, "1", "OnDataReceived ObjectDisposedException: " + e.Message);
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                System.Diagnostics.Debugger.Log(0, "1", "OnDataReceived SocketException :( " + e.Message);
+                OnClientDisconnected("Client disconnected");
             }
             catch (Exception e)
             {
@@ -137,15 +142,16 @@ namespace EnigmaMM
             {
                 System.Diagnostics.Debugger.Log(0, "1", "HandleDataReceived ObjectDisposedException: " + e.Message);
             }
-            catch (SocketException e)
+            catch (SocketException)
             {
-                System.Diagnostics.Debugger.Log(0, "1", "HandleDataReceived SocketException :( " + e.Message);
+                OnClientDisconnected("Client disconnected");
             }
             catch (Exception e)
             {
                 System.Diagnostics.Debugger.Log(0, "1", "HandleDataReceived uh-oh? :( " + e.Message);
             }
         }
+
 
         protected virtual void OnCommandReceived(String Message)
         {
@@ -155,11 +161,24 @@ namespace EnigmaMM
             }
         }
 
+
         protected virtual void OnClientConnected(string Message)
         {
+            mClientCount++;
             if (ClientConnected != null)
             {
                 ClientConnected(Message);
+            }
+        }
+
+
+
+        protected virtual void OnClientDisconnected(string Message)
+        {
+            mClientCount--;
+            if (ClientDisconnected != null)
+            {
+                ClientDisconnected(Message);
             }
         }
 
