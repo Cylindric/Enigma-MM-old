@@ -81,9 +81,9 @@ namespace EnigmaMM
         /// </summary>
         /// <param name="Sender"></param>
         /// <param name="e"></param>
-        private static void HandleCommand(object Sender, CommandEventArgs e)
+        private static void HandleCommand(string Command)
         {
-            mParser.ParseCommand(e.Command);
+            mParser.ParseCommand(Command);
         }
 
         private static void HandleClientCommand(string Command)

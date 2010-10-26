@@ -8,24 +8,39 @@ namespace EnigmaMM
 {
     class ClientProgram
     {
-        private static CLIHelper mCLI;
-        private static Client mClient;
+        private static CLIHelper mCLI = new CLIHelper();
+        private static Client mClient = new Client();
+        private static bool mKeepListening = true;
 
         static void Main(string[] args)
         {
-            mClient = new Client();
+            bool StartCLI = true;
+
             mClient.MessageReceived += HandleMessageReceived;
             mClient.StartClient();
 
+            // If any commands were passed on the command-line, execute them and then quit
+            if (args.Length > 0)
+            {
+                StartCLI = false;
+                foreach (string arg in args)
+                {
+                    HandleCommand(arg);
+                }
+            }
+
             // Start a new CLI helper thread to catch user input
             // After this we might start getting user commands through HandleCommands
-            mCLI = new CLIHelper();
-            mCLI.RaiseCommandReceivedEvent += HandleCommand;
-            Thread CLIThread = new Thread(new ThreadStart(mCLI.StartListening));
-            CLIThread.Start();
-            while (!CLIThread.IsAlive)
+            if (StartCLI)
             {
-                Thread.Sleep(1);
+                mCLI.RaiseCommandReceivedEvent += HandleCommand;
+                Thread CLIThread = new Thread(new ThreadStart(mCLI.StartListening));
+                CLIThread.Start();
+                // wait for the CLI thread to start
+                while (!CLIThread.IsAlive)
+                {
+                    Thread.Sleep(1);
+                }
             }
         }
 
@@ -35,9 +50,18 @@ namespace EnigmaMM
         /// </summary>
         /// <param name="Sender"></param>
         /// <param name="e"></param>
-        private static void HandleCommand(object Sender, CommandEventArgs e)
+        private static void HandleCommand(string Command)
         {
-            mClient.SendData(e.Command + "\n");
+            if (Command == "quit")
+            {
+                // intercept quit command
+                mCLI.StopListening();
+                // TODO: move this to the server end as well
+            }
+            else
+            {
+                mClient.SendData(Command + "\n");
+            }
         }
 
 
