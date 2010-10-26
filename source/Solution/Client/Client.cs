@@ -21,17 +21,20 @@ namespace EnigmaMM
         public AsyncCallback pfnCallBack;
         public Socket mSocClient;
 
+
         public String ServerIP
         {
             get { return mServerIP; }
             set { mServerIP = value; }
         }
 
+
         public int ServerPort
         {
             get { return mServerPort; }
             set { mServerPort = value; }
         }
+
 
         public void StartClient()
         {
@@ -45,6 +48,7 @@ namespace EnigmaMM
             }
         }
 
+
         public void SendData(string Data)
         {
             byte[] DataToSend = System.Text.Encoding.UTF8.GetBytes(Data);
@@ -53,6 +57,7 @@ namespace EnigmaMM
                 mSocClient.Send(DataToSend);
             }
         }
+
 
         public void StopClient()
         {
@@ -63,6 +68,7 @@ namespace EnigmaMM
             }
         }
 
+
         public void WaitForData()
         {
             if (pfnCallBack == null)
@@ -72,6 +78,7 @@ namespace EnigmaMM
             CSocketPacket theSocPkt = new CSocketPacket(mSocClient);
             mAsynResult = mSocClient.BeginReceive(theSocPkt.DataBuffer, 0, theSocPkt.DataBuffer.Length, SocketFlags.None, pfnCallBack, theSocPkt);
         }
+
 
         public void OnDataReceived(IAsyncResult asyn)
         {
@@ -95,7 +102,6 @@ namespace EnigmaMM
                 {
                     mText += szData.Substring(0, szData.IndexOf("\n"));
                     szData = szData.Substring(szData.IndexOf("\n") + 1);
-                    OnMessageReceived(mText);
                     mText = "";
                 }
                 mText = mText + szData;
@@ -109,10 +115,12 @@ namespace EnigmaMM
             }
         }
 
+
         protected virtual void OnMessageReceived(String Message)
         {
             if (MessageReceived != null)
             {
+                SendData(Message);
                 MessageReceived(Message);
             }
         }
