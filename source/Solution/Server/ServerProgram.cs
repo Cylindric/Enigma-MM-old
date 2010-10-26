@@ -22,6 +22,7 @@ namespace EnigmaMM
             mServer = new Server();
             mServer.CommandReceived += HandleClientCommand;
             mServer.ClientConnected += HandleClientConnected;
+            mServer.ClientDisconnected += HandleClientConnected;
             mServer.StartListener();
             Debug.WriteLine("Well, here we are");
 
@@ -93,7 +94,13 @@ namespace EnigmaMM
 
         private static void HandleClientConnected(string Command)
         {
-            mCLI.WriteLine("Host: Client connected");
+            mCLI.WriteLine("Host: Client connected (now " + mServer.ConnectedClients + ")");
+        }
+
+
+        private static void HandleClientDisconnected(string Command)
+        {
+            mCLI.WriteLine("Host: Client disconnected (now " + mServer.ConnectedClients + ")");
         }
 
 
