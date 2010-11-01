@@ -72,6 +72,10 @@ namespace EnigmaMM
 
         public void SendData(string Data)
         {
+            // Add a terminator so the other end knows the data is ended
+            Data += "\n";
+
+            // Convert the data and send it
             byte[] DataToSend = System.Text.Encoding.UTF8.GetBytes(Data);
             if (mSocClient != null)
             {
@@ -118,14 +122,14 @@ namespace EnigmaMM
 
                 // If the buffer contains any new-line characters, then we need
                 // to parse out each of the sent commands
-                string mText = "";
                 while (szData.Contains("\n"))
                 {
-                    mText += szData.Substring(0, szData.IndexOf("\n"));
+                    mData += szData.Substring(0, szData.IndexOf("\n"));
                     szData = szData.Substring(szData.IndexOf("\n") + 1);
-                    mText = "";
+                    Console.WriteLine(mData);
+                    mData = "";
                 }
-                mText = mText + szData;
+                mData += szData;
 
                 // Wait for more commands
                 WaitForData();

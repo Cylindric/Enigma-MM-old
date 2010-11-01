@@ -13,6 +13,9 @@ namespace EnigmaMM
         private Socket mSocketListener;
         private AsyncCallback pfnWorkerCallBack;
         private bool mListening = false;
+        private string mUsername = "";
+        private string mPassword = "";
+        private String mData;
 
         private ArrayList mSocketList = new ArrayList();
         private int mClientCount = 0;
@@ -34,6 +37,16 @@ namespace EnigmaMM
             set { mServerPort = value; }
         }
 
+        public string Username
+        {
+            set { mUsername = value; }
+        }
+
+        public string Password
+        {
+            set { mPassword = value; }
+        }
+
         public bool Listening
         {
             get { return mListening; }
@@ -46,6 +59,16 @@ namespace EnigmaMM
 
         public void StartListener()
         {
+
+            if ((mUsername == "") || (mUsername == "changeme"))
+            {
+                throw new InvalidOperationException("No username specified in settings file.");
+            }
+            if ((mPassword == "") || (mPassword == "changeme"))
+            {
+                throw new InvalidOperationException("No password specified in settings file");
+            }
+
             IPEndPoint LocalIp;
             if (mServerIP == "any")
             {
@@ -70,12 +93,34 @@ namespace EnigmaMM
                 OnClientConnected("Client connected");
                 Socket WorkerSocket = mSocketListener.EndAccept(asyn);
                 mSocketList.Add(WorkerSocket);
+                SendData(WorkerSocket, "Connected to server");
                 WaitForData(WorkerSocket, mClientCount);
                 mSocketListener.BeginAccept(new AsyncCallback(HandleClientConnect), null);
             }
             catch (ObjectDisposedException e)
             {
                 System.Diagnostics.Debugger.Log(0, "1", "HandleClientConnect ObjectDisposedException: " + e.Message);
+            }
+        }
+
+        public void SendData(string Data)
+        {
+            foreach (Socket socket in mSocketList)
+            {
+                SendData(socket, Data);
+            }
+        }
+
+        public void SendData(Socket mSoc, string Data)
+        {
+            // Add a terminator so the other end knows the data is ended
+            Data += "\n";
+
+            // Convert the data and send it
+            byte[] DataToSend = System.Text.Encoding.UTF8.GetBytes(Data);
+            if ((mSoc != null) && (mSoc.Connected == true))
+            {
+                mSoc.Send(DataToSend);
             }
         }
 
@@ -122,19 +167,17 @@ namespace EnigmaMM
 
                 // If the buffer contains any new-line characters, then we need
                 // to parse out each of the sent commands
-                string mText = "";
                 while (szData.Contains("\n"))
                 {
-                    mText += szData.Substring(0, szData.IndexOf("\n"));
+                    mData += szData.Substring(0, szData.IndexOf("\n"));
                     szData = szData.Substring(szData.IndexOf("\n") + 1);
 
-                    Console.WriteLine("HandleDataReceived(" + theSocketId.ClientNumber +"): COMMAND: [" + mText + "]");
-                    theSocketId.ThisSocket.Send(System.Text.Encoding.UTF8.GetBytes("Executing command [" + mText + "]"));
-                    OnCommandReceived(mText);
+                    Console.WriteLine("HandleDataReceived(" + theSocketId.ClientNumber +"): COMMAND: [" + mData + "]");
+                    OnCommandReceived(mData);
 
-                    mText = "";
+                    mData = "";
                 }
-                mText = mText + szData;
+                mData += szData;
 
                 // Wait for more commands
                 WaitForData(theSocketId.ThisSocket, theSocketId.ClientNumber);

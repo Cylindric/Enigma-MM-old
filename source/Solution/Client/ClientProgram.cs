@@ -65,7 +65,7 @@ namespace EnigmaMM
             }
             else
             {
-                mClient.SendData(Command + "\n");
+                mClient.SendData(Command);
             }
         }
 
