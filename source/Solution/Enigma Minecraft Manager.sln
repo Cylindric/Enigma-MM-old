@@ -5,6 +5,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMM", "EMM\EMM.csproj", "{E6CD972B-28CF-4096-8E1A-368AD575A62C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{5EBEB150-905F-4D2B-A938-605AEF2E763D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A7D733AC-A044-415F-AF83-7F01CA9C9DA8} = {A7D733AC-A044-415F-AF83-7F01CA9C9DA8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

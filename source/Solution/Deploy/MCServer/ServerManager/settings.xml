@@ -22,11 +22,11 @@
   </ConfigValues>
   <ConfigValues>
     <OptionName>JavaHeapInit</OptionName>
-    <OptionValue>512</OptionValue>
+    <OptionValue>1024</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>JavaHeapMax</OptionName>
-    <OptionValue>512</OptionValue>
+    <OptionValue>1024</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>JavaExec</OptionName>
