@@ -38,22 +38,30 @@ namespace EnigmaMM
 
         public void StartClient()
         {
-            mSocClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             IPAddress remoteIPAddress;
             if (IPAddress.TryParse(mServerIP, out remoteIPAddress) == false)
             {
                 // parse of IP failed, is it a hostname?
                 IPAddress[] remoteAddresses = Dns.GetHostAddresses(mServerIP);
-                if (remoteAddresses.Length > 0)
+                foreach (IPAddress ip in remoteAddresses)
                 {
-                    remoteIPAddress = remoteAddresses[0];
+                    // currently only support ip4 addresses
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        remoteIPAddress = ip;
+                        break;
+                    }
+
                 }
-                else
+
+                if (remoteIPAddress == null)
                 {
                     throw new Exception("Cannot resolve server address: " + mServerIP);
                 }
             }
             IPEndPoint remoteEndpoint = new IPEndPoint(remoteIPAddress, mServerPort);
+ 
+            mSocClient = new Socket(remoteIPAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             mSocClient.Connect(remoteEndpoint);
             if (mSocClient.Connected)
             {
