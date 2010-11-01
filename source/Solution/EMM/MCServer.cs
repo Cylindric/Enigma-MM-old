@@ -159,7 +159,7 @@ namespace EnigmaMM
 
             ReloadConfig();
 
-            string cmdArgs = null;
+            string cmdArgs = "";
             if (mJavaHeapInit > 0)
             {
                 cmdArgs += "-Xms" + mJavaHeapInit + "M ";
@@ -168,8 +168,8 @@ namespace EnigmaMM
             {
                 cmdArgs += "-Xmx" + mJavaHeapMax + "M ";
             }
-            cmdArgs = "-jar \"" + mServerJar + "\" ";
-            cmdArgs = cmdArgs + "nogui ";
+            cmdArgs += "-jar \"" + mServerJar + "\" ";
+            cmdArgs += "nogui ";
 
             // Configure the main server process
             if (Directory.Exists(mServerRoot) == false)
