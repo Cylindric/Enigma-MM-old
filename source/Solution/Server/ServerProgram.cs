@@ -23,6 +23,8 @@ namespace EnigmaMM
             mServer.ClientConnected += HandleClientConnected;
             mServer.ClientDisconnected += HandleClientConnected;
             mServer.ServerPort = Config.ServerPort;
+            mServer.Username = Config.ServerUsername;
+            mServer.Password = Config.ServerPassword;
             mServer.StartListener();
             Debug.WriteLine("Well, here we are");
 
@@ -118,7 +120,11 @@ namespace EnigmaMM
 
         private static void HandleServerOutput(string Message)
         {
+            // Echo the message to the console
             mCLI.WriteLine("SRV: " + Message);
+
+            // Pass all messages back out to clients
+            mServer.SendData(Message);
         }
         
 

@@ -22,8 +22,8 @@ namespace EnigmaMM
 
 
         /// <summary>
-        /// Checks for a server.new.properties file, and if it exists swaps it in for
-        /// server.properties.  The current properties file is copied to server.old.properties.
+        /// Checks for a new.settingsfile file, and if it exists swaps it in for
+        /// settingsfile.  The current properties file is copied to old.settingsfile.
         /// </summary>
         public void LookForNewSettings()
         {

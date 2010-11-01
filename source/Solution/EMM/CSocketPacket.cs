@@ -3,7 +3,7 @@ namespace EnigmaMM
  {
      public class CSocketPacket
      {
-         public const int BUFFER_SIZE = 32;
+         public const int BUFFER_SIZE = 8;
 
          public Socket ThisSocket;
          public int ClientNumber;

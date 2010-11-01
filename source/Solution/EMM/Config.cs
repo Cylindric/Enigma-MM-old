@@ -151,6 +151,16 @@ namespace EnigmaMM
             get { return int.Parse(GetOption("ServerPort")); }
         }
 
+        public static string ServerUsername
+        {
+            get { return GetOption("ServerUsername"); }
+        }
+
+        public static string ServerPassword
+        {
+            get { return GetOption("ServerPassword"); }
+        }
+
         public static int JavaHeapInit
         {
             get { return int.Parse(GetOption("JavaHeapInit")); }
