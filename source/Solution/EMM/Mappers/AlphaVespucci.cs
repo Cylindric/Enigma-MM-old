@@ -25,6 +25,8 @@ namespace EnigmaMM
             base.RenderMaps();
             mMinecraft.RaiseServerMessage(string.Format("AV: Creating map {0} {1}...", display, features));
 
+            string fullFilename = Path.Combine(mOutputPath, Filename + ".png");
+
             string cmd = string.Format(
                 "-{0} -{1} -path \"{2}\" -fullname \"{4}\" -outputdir \"{3}\"",
                 display, features, mMinecraft.ServerProperties.WorldPath, mOutputPath, Filename
@@ -39,7 +41,10 @@ namespace EnigmaMM
             p.WaitForExit();
 
             // save a JPEG-version
-            ToJpeg(Path.Combine(mOutputPath, Filename + ".png"), Path.Combine(mOutputPath, Filename + ".jpg"));
+            ToJpeg(fullFilename, Path.Combine(mOutputPath, Filename + ".jpg"));
+
+            // save a thumbnail version
+            Resize(fullFilename, Path.Combine(mOutputPath, Filename + "-small.png"));
 
             // save a history version
             string HistoryRoot = Path.Combine(mOutputPath, "History");
@@ -65,6 +70,29 @@ namespace EnigmaMM
             codecParams.Param[0] = ratio;
             ImageCodecInfo jpegCodecInfo = GetEncoderInfo("image/jpeg");
             input.Save(OutputFile, jpegCodecInfo, codecParams);
+        }
+
+
+        private void Resize(string InputFile, string OutputFile)
+        {
+            Bitmap input = new Bitmap(InputFile);
+
+            int sourceWidth = input.Width;
+            int sourceHeight = input.Height;
+
+            int destWidth = 640;
+
+            float ratio = (float)destWidth / (float)sourceWidth;
+            int destHeight = (int)(sourceHeight * ratio);
+            
+            Bitmap output = new Bitmap(destWidth, destHeight);
+            Graphics g = Graphics.FromImage((Image)output);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+
+            g.DrawImage(input, 0, 0, destWidth, destHeight);
+            g.Dispose();
+
+            output.Save(OutputFile);
         }
 
 

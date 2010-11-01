@@ -46,7 +46,6 @@ namespace EnigmaMM
 
         public void StartListener()
         {
-            mSocketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             IPEndPoint LocalIp;
             if (mServerIP == "any")
             {
@@ -56,6 +55,8 @@ namespace EnigmaMM
             {
                 LocalIp = new IPEndPoint(IPAddress.Parse(mServerIP), mServerPort);
             }
+
+            mSocketListener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
             mSocketListener.Bind(LocalIp);
             mSocketListener.Listen(4);
             mSocketListener.BeginAccept(new AsyncCallback(HandleClientConnect), null);

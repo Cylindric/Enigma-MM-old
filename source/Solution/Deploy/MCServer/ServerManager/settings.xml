@@ -14,11 +14,11 @@
   </ConfigValues>
   <ConfigValues>
     <OptionName>ServerIp</OptionName>
-    <OptionValue>minecraft.cylindric.net</OptionValue>
+    <OptionValue>localhost</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>ServerPort</OptionName>
-    <OptionValue>9001</OptionValue>
+    <OptionValue>8221</OptionValue>
   </ConfigValues>
   <ConfigValues>
     <OptionName>JavaHeapInit</OptionName>

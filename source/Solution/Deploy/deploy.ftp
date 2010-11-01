@@ -1,8 +1,0 @@
-{username}
-{password}
-bin
-prompt
-lcd MCServer\ServerManager
-cd ServerManager
-mput *
-quit
