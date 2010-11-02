@@ -19,9 +19,9 @@ namespace EnigmaMM
 
             // Start the server up and begin listening for connections
             mServer = new Server();
-            mServer.CommandReceived += HandleClientCommand;
-            mServer.ClientConnected += HandleClientConnected;
-            mServer.ClientDisconnected += HandleClientConnected;
+            mServer.MessageReceived += HandleClientCommand;
+            mServer.RemoteConnection += HandleClientConnected;
+            mServer.RemoteDisconnection += HandleClientConnected;
             mServer.ServerPort = Config.ServerPort;
             mServer.Username = Config.ServerUsername;
             mServer.Password = Config.ServerPassword;
@@ -108,13 +108,13 @@ namespace EnigmaMM
 
         private static void HandleClientConnected(string Command)
         {
-            mCLI.WriteLine("Host: Client connected (now " + mServer.ConnectedClients + ")");
+            mCLI.WriteLine("Host: Client connected (now " + mServer.Connections + ")");
         }
 
 
         private static void HandleClientDisconnected(string Command)
         {
-            mCLI.WriteLine("Host: Client disconnected (now " + mServer.ConnectedClients + ")");
+            mCLI.WriteLine("Host: Client disconnected (now " + mServer.Connections + ")");
         }
 
 
