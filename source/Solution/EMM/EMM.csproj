@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandEventArgs.cs" />
-    <Compile Include="CSocketPacket.cs" />
+    <Compile Include="CommsManager.cs" />
+    <Compile Include="SocketPacket.cs" />
     <Compile Include="Mappers\AlphaVespucci.cs" />
     <Compile Include="CLIHelper.cs" />
     <Compile Include="Config.cs" />

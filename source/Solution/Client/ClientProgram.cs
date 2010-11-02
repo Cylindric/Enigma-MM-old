@@ -22,6 +22,8 @@ namespace EnigmaMM
             mClient.MessageReceived += HandleMessageReceived;
             mClient.ServerIP = Config.ServerIp;
             mClient.ServerPort = Config.ServerPort;
+            mClient.Username = Config.ServerUsername;
+            mClient.Password = Config.ServerPassword;
             mClient.StartClient();
 
             // If any commands were passed on the command-line, execute them and then quit

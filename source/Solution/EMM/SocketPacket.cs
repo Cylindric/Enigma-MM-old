@@ -1,20 +1,20 @@
 ﻿using System.Net.Sockets;
 namespace EnigmaMM
  {
-     public class CSocketPacket
+     public class SocketPacket
      {
-         public const int BUFFER_SIZE = 8;
+         public const int BUFFER_SIZE = 64;
 
          public Socket ThisSocket;
          public int ClientNumber;
          public byte[] DataBuffer = new byte[BUFFER_SIZE];
 
-         public CSocketPacket(Socket socket)
+         public SocketPacket(Socket socket)
          {
              ThisSocket = socket;
          }
 
-         public CSocketPacket(Socket socket, int clientNumber)
+         public SocketPacket(Socket socket, int clientNumber)
          {
              ThisSocket = socket;
              ClientNumber = clientNumber;
