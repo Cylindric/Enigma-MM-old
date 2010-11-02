@@ -39,7 +39,6 @@ namespace EnigmaMM
                 Thread.Sleep(1);
             }
             
-            mCLI.WriteLine("Getting Minecraft server object");
             mMinecraft = new MCServer();
             mMinecraft.ServerRoot = Config.MinecraftRoot;
             mMinecraft.JavaExec = Config.JavaExec;

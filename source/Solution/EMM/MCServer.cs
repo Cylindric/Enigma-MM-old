@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.IO;
+using System.Collections;
 
 namespace EnigmaMM
 {
@@ -25,6 +26,7 @@ namespace EnigmaMM
         private int mJavaHeapMax = 1024;
         private bool mServerRunningHey0 = false;
         private int mHey0version = 0;
+        private ArrayList mSavedUsers = new ArrayList();
 
         // Map objects and settings
         private AlphaVespucci mMapAlphaVespucci;
@@ -404,6 +406,17 @@ namespace EnigmaMM
 
 
 
+        public void LoadSavedUserInfo()
+        {
+            foreach (string fileName in Directory.GetFiles(Path.Combine(mServerProperties.WorldPath, "players")))
+            {
+                SavedUser user = new SavedUser();
+                user.LoadData(fileName);
+                mSavedUsers.Add(user);
+            }
+        }
+
+
         /// <summary>
         /// Called whenever the server issues a message.
         /// </summary>
@@ -427,6 +440,10 @@ namespace EnigmaMM
                     {
                         StopServer();
                     }
+                }
+                else if (MsgIsSaveComplete(T))
+                {
+                    LoadSavedUserInfo();
                 }
                 else if (MsgIsUserList(T))
                 {
@@ -478,6 +495,7 @@ namespace EnigmaMM
         {
             mServerStatus = Status.Running;
             mServerProperties.LoadServerProperties();
+            LoadSavedUserInfo();
             if (ServerStarted != null)
             {
                 ServerStarted(Message);
@@ -522,6 +540,12 @@ namespace EnigmaMM
         private bool MsgIsUserCount(string msg)
         {
             string regex = @"^Player\ count:\ (?<count>\d+)$";
+            return Regex.IsMatch(msg, regex);
+        }
+
+        private bool MsgIsSaveComplete(string msg)
+        {
+            string regex = @"^(?<timestamp>.+?)\[INFO]\ CONSOLE:\ Save\ Complete\.$";
             return Regex.IsMatch(msg, regex);
         }
 

@@ -15,9 +15,15 @@ namespace EnigmaMM
 
             Socket socket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(endpoint);
-            mSocketList.Add(socket);
+
             if (socket.Connected)
             {
+                mSocketList.Add(socket);
+
+                // first two commands must be the username and password
+                SendData(CreateHash(mUsername));
+                SendData(CreateHash(mPassword));
+
                 WaitForData(socket, 0);
             }
         }

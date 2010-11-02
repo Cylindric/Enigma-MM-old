@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Collections;
 using System.Net;
+using System.Security.Cryptography;
 
 namespace EnigmaMM
 {
@@ -21,7 +22,7 @@ namespace EnigmaMM
         private const string TERMINATOR = "\n";
 
         public delegate void ServerMessageEventHandler(string Message);
-        public event ServerMessageEventHandler MessageReceived;
+        public virtual event ServerMessageEventHandler MessageReceived;
         public event ServerMessageEventHandler RemoteConnection;
         public event ServerMessageEventHandler RemoteDisconnection;
 
@@ -63,7 +64,7 @@ namespace EnigmaMM
             message += TERMINATOR;
 
             // Convert the data and send it
-            byte[] DataToSend = System.Text.Encoding.UTF8.GetBytes(message);
+            byte[] DataToSend = Encoding.UTF8.GetBytes(message);
             if ((socket != null) && (socket.Connected == true))
             {
                 socket.Send(DataToSend);
@@ -131,7 +132,7 @@ namespace EnigmaMM
                     mData += szData.Substring(0, szData.IndexOf(TERMINATOR));
                     szData = szData.Substring(szData.IndexOf(TERMINATOR) + TERMINATOR.Length);
 
-                    OnCommandReceived(mData);
+                    OnMessageReceived(mData);
 
                     mData = "";
                 }
@@ -165,7 +166,7 @@ namespace EnigmaMM
             }
         }
 
-        protected virtual void OnCommandReceived(String Message)
+        protected virtual void OnMessageReceived(String Message)
         {
             if (MessageReceived != null)
             {
@@ -248,5 +249,39 @@ namespace EnigmaMM
             return new IPEndPoint(address, mServerPort);
         }
 
+
+        protected string CreateHash(string message)
+        {
+            byte[] src;
+            byte[] hash;
+            src = Encoding.UTF8.GetBytes(message);
+            hash = new MD5CryptoServiceProvider().ComputeHash(src);
+
+            StringBuilder output = new StringBuilder(hash.Length);
+            for (int i = 0; i < hash.Length; i++)
+            {
+                output.Append(hash[i].ToString("X2"));
+            }
+            return output.ToString();
+        }
+
+
+        protected bool CompareHashes(string h1, string h2)
+        {
+            bool areEqual = false;
+            if (h1.Length == h2.Length)
+            {
+                int i = 0;
+                while ((i < h1.Length) && (h1[i] == h2[i]))
+                {
+                    i += 1;
+                }
+                if (i == h1.Length)
+                {
+                    areEqual = true;
+                }
+            }
+            return areEqual;
+        }
     }
 }
