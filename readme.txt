@@ -12,11 +12,10 @@ Available commands within the Server Manager (SM) console:
 	restart-graceful - same as restart, but waits until there are no users online
 	abort-graceful   - cancels any pending graceful actions
 	quit             - stop the server if it's running, then quit the SM console
-	maps-all
-	maps-av
-	maps-avextra
-	maps-overviewer
-
+	maps-av          - generates the primary maps using AlphaVespucci
+	maps-avextra     - generates additional maps using AlphaVespucci
+	maps-overviewer  - generates the Overview map (the Google-maps style one)
+	maps-all         - generates all available maps
 
 Any other commands are passed straight to the Minecraft server instance.
 Examples:
@@ -45,7 +44,7 @@ Core Settings
 			Default: minecraft_server.jar
 	    The filename of the server JAR file.
 			If you're using the Hey0 server mod, put the name of the jar here (usually
-			Server_Mod.jar) and EMM will auto-detec it's running and enable certain
+			Server_Mod.jar) and EMM will auto-detect when it runs and enable certain
 			features.
 
 	* JavaHeapInit
