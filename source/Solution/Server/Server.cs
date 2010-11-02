@@ -9,6 +9,11 @@ namespace EnigmaMM
     public class Server : CommsManager
     {
         private bool mListening = false;
+        private string mSuppliedUsername = null;
+        private string mSuppliedPassword = null;
+        private bool mAuthenticated = false;
+
+        public override event ServerMessageEventHandler MessageReceived;
 
         public bool Listening
         {
@@ -46,6 +51,36 @@ namespace EnigmaMM
             }
         }
 
+
+        /// <summary>
+        /// Extend the base command-received method to capture the first two messages as the username
+        /// and password, and check that these match the configured username and password before
+        /// allowing the command to be passed up to the server.
+        /// </summary>
+        /// <param name="Message"></param>
+        protected override void OnMessageReceived(String Message)
+        {
+            if (!mAuthenticated)
+            {
+                if (mSuppliedUsername == null)
+                {
+                    mSuppliedUsername = Message;
+                }
+                else if (mSuppliedPassword == null)
+                {
+                    mSuppliedPassword = Message;
+                }
+                else if (CompareHashes(mSuppliedUsername, CreateHash(mUsername)) && CompareHashes(mSuppliedPassword, CreateHash(mPassword)))
+                {
+                    mAuthenticated = true;
+                }
+            }
+
+            if (mAuthenticated)
+            {
+                base.OnMessageReceived(Message);
+            }
+        }
 
     }
 }
