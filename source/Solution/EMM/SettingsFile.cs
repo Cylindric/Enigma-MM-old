@@ -14,6 +14,11 @@ namespace EnigmaMM
         private bool mSettingsNeedSaving = false;
         private char mSeparator = '=';
 
+        public Dictionary<string, string> Settings
+        {
+            get { return mSettings; }
+        }
+
         protected SettingsFile(string fileName, char separator)
         {
             mSettingsFile = fileName;
@@ -93,7 +98,7 @@ namespace EnigmaMM
                         key = vars[0];
                         if (vars.Length >= 1)
                         {
-                            value = string.Join("=", vars, 1, vars.Length - 1);
+                            value = string.Join(mSeparator.ToString(), vars, 1, vars.Length - 1);
                         }
                         value = value.Trim();
                         SetValue(key, value);
@@ -115,7 +120,7 @@ namespace EnigmaMM
                 Sw = File.CreateText(newSettings);
                 foreach (KeyValuePair<string, string> setting in mSettings)
                 {
-                    Sw.WriteLine(setting.Key + '=' + setting.Value);
+                    Sw.WriteLine(setting.Key + mSeparator + setting.Value);
                 }
                 Sw.Close();
             }
