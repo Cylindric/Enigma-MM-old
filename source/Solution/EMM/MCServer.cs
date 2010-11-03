@@ -494,7 +494,7 @@ namespace EnigmaMM
         protected virtual void OnServerStarted(string Message)
         {
             mServerStatus = Status.Running;
-            mServerProperties.LoadServerProperties();
+            mServerProperties.Load();
             LoadSavedUserInfo();
             if (ServerStarted != null)
             {

@@ -14,12 +14,12 @@ namespace EnigmaMM
         private bool mSettingsNeedSaving = false;
         private char mSeparator = '=';
 
-        public Dictionary<string, string> Settings
+        public Dictionary<string, string> Values
         {
             get { return mSettings; }
         }
 
-        protected SettingsFile(string fileName, char separator)
+        public SettingsFile(string fileName, char separator)
         {
             mSettingsFile = fileName;
             mSeparator = separator;
@@ -32,9 +32,9 @@ namespace EnigmaMM
         /// </summary>
         public void LookForNewSettings()
         {
-            string currentSettings = Path.Combine(Config.MinecraftRoot, mSettingsFile);
-            string newSettings = Path.Combine(Config.MinecraftRoot, "new." + mSettingsFile);
-            string oldSettings = Path.Combine(Config.MinecraftRoot, "old." + mSettingsFile);
+            string currentSettings = mSettingsFile;
+            string newSettings = Path.Combine(Path.GetDirectoryName(mSettingsFile), "new." + Path.GetFileName(mSettingsFile));
+            string oldSettings = Path.Combine(Path.GetDirectoryName(mSettingsFile), "old." + Path.GetFileName(mSettingsFile));
 
             if (File.Exists(newSettings))
             {
@@ -48,7 +48,7 @@ namespace EnigmaMM
                 }
                 File.Move(newSettings, currentSettings);
             }
-            LoadServerProperties();
+            Load();
         }
 
 
@@ -60,11 +60,9 @@ namespace EnigmaMM
         /// time the server has been started.  This method should be called <em>after</em> the Minecraft server
         /// has started, to be sure to get something.</remarks>
         /// <returns>true if a file was found and loaded, else false.</returns>
-        public bool LoadServerProperties()
+        public bool Load()
         {
-            string currentSettings = Path.Combine(Config.MinecraftRoot, mSettingsFile);
-
-            if (File.Exists(currentSettings) == false)
+            if (File.Exists(mSettingsFile) == false)
             {
                 return false;
             }
@@ -72,7 +70,7 @@ namespace EnigmaMM
             mSettingsNeedSaving = false;
             StreamReader Sr;
             string S;
-            Sr = File.OpenText(currentSettings);
+            Sr = File.OpenText(mSettingsFile);
             S = Sr.ReadLine();
             string[] vars;
             string key;
@@ -111,11 +109,11 @@ namespace EnigmaMM
         }
 
 
-        private void SaveServerProperties()
+        private void Save()
         {
             if (mSettingsNeedSaving)
             {
-                string newSettings = Path.Combine(Config.MinecraftRoot, "new." + mSettingsFile);
+                string newSettings = Path.Combine(Path.GetDirectoryName(mSettingsFile), "new." + Path.GetFileName(mSettingsFile));
                 StreamWriter Sw;
                 Sw = File.CreateText(newSettings);
                 foreach (KeyValuePair<string, string> setting in mSettings)
@@ -127,9 +125,9 @@ namespace EnigmaMM
         }
 
 
-        public string GetString(string key)
+        public string GetString(string key, string defaultValue)
         {
-            string value = "";
+            string value = defaultValue;
             if (mSettings.ContainsKey(key))
             {
                 value = mSettings[key];
@@ -137,18 +135,49 @@ namespace EnigmaMM
             return value;
         }
 
+        public string GetString(string key)
+        {
+            return GetString(key, "");
+        }
+
+        public int GetInt(string key, int defaultValue)
+        {
+            int value = defaultValue;
+            int.TryParse(GetString(key), out value);
+            return value;
+        }
+
         public int GetInt(string key)
         {
-            int value = 0;
-            int.TryParse(GetString(key), out value);
+            return GetInt(key, 0);
+        }
+
+        public bool GetBool(string key, bool defaultValue)
+        {
+            bool value = defaultValue;
+            bool.TryParse(GetString(key), out value);
             return value;
         }
 
         public bool GetBool(string key)
         {
-            bool value = false;
-            bool.TryParse(GetString(key), out value);
-            return value;
+            return GetBool(key, false);
+        }
+
+        public string GetRootedPath(string root, string key, string defaultValue)
+        {
+            string path = GetString(key, defaultValue);
+            if (path.StartsWith("."))
+            {
+                path = Path.Combine(root, path);
+                path = Path.GetFullPath(path);
+            }
+            return path;
+        }
+
+        public string GetRootedPath(string root, string key)
+        {
+            return GetRootedPath(root, key, "");
         }
 
         public void SetValue(string key, int value)

@@ -15,18 +15,17 @@ namespace EnigmaMM
 
         static void Main(string[] args)
         {
-            Config.Initialize(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.xml"));
+            Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.conf"));
 
             // Start the server up and begin listening for connections
             mServer = new Server();
             mServer.MessageReceived += HandleClientCommand;
             mServer.RemoteConnection += HandleClientConnected;
             mServer.RemoteDisconnection += HandleClientConnected;
-            mServer.ServerPort = Config.ServerPort;
-            mServer.Username = Config.ServerUsername;
-            mServer.Password = Config.ServerPassword;
+            mServer.ServerPort = Settings.ServerPort;
+            mServer.Username = Settings.ServerUsername;
+            mServer.Password = Settings.ServerPassword;
             mServer.StartListener();
-            Debug.WriteLine("Well, here we are");
 
             // Start a new CLI helper thread to catch user input
             // After this we might start getting user commands through HandleCommands
@@ -40,15 +39,15 @@ namespace EnigmaMM
             }
             
             mMinecraft = new MCServer();
-            mMinecraft.ServerRoot = Config.MinecraftRoot;
-            mMinecraft.JavaExec = Config.JavaExec;
-            mMinecraft.ServerJar = Config.ServerJar;
-            mMinecraft.JavaHeapInit = Config.JavaHeapInit;
-            mMinecraft.JavaHeapMax = Config.JavaHeapMax;
+            mMinecraft.ServerRoot = Settings.MinecraftRoot;
+            mMinecraft.JavaExec = Settings.JavaExec;
+            mMinecraft.ServerJar = Settings.ServerJar;
+            mMinecraft.JavaHeapInit = Settings.JavaHeapInit;
+            mMinecraft.JavaHeapMax = Settings.JavaHeapMax;
 
-            mMinecraft.MapRoot = Config.MapRoot;
-            mMinecraft.AlphaVespucciInstalled = Config.AlphaVespucciInstalled;
-            mMinecraft.OverviewerInstalled = Config.OverviewerInstalled;
+            mMinecraft.MapRoot = Settings.MapRoot;
+            mMinecraft.AlphaVespucciInstalled = Settings.AlphaVespucciInstalled;
+            mMinecraft.OverviewerInstalled = Settings.OverviewerInstalled;
 
             // See if we need to swap in a new config file, and load current config
             mMinecraft.ReloadConfig();

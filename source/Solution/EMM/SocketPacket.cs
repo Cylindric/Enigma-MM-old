@@ -8,6 +8,9 @@ namespace EnigmaMM
          public Socket ThisSocket;
          public int ClientNumber;
          public byte[] DataBuffer = new byte[BUFFER_SIZE];
+         public string UserHash;
+         public string PassHash;
+         public bool Authenticated = false;
 
          public SocketPacket(Socket socket)
          {

@@ -114,16 +114,16 @@ namespace EnigmaMM
         {
             try
             {
-                SocketPacket theSocketId = (SocketPacket)asyn.AsyncState;
+                SocketPacket socketPacket = (SocketPacket)asyn.AsyncState;
 
                 // Get the number of chars in the buffer
-                int iRx = theSocketId.ThisSocket.EndReceive(asyn);
+                int iRx = socketPacket.ThisSocket.EndReceive(asyn);
 
                 char[] chars = new char[iRx + 1];
 
                 // Decode the received data, making sure to only get iRx
                 // characters (buffer is filled with \0)
-                System.String szData = Encoding.UTF8.GetString(theSocketId.DataBuffer, 0, iRx);
+                System.String szData = Encoding.UTF8.GetString(socketPacket.DataBuffer, 0, iRx);
 
                 // If the buffer contains any new-line characters, then we need
                 // to parse out each of the sent commands
@@ -132,14 +132,42 @@ namespace EnigmaMM
                     mData += szData.Substring(0, szData.IndexOf(TERMINATOR));
                     szData = szData.Substring(szData.IndexOf(TERMINATOR) + TERMINATOR.Length);
 
-                    OnMessageReceived(mData);
+                    if (!socketPacket.Authenticated)
+                    {
+                        if (socketPacket.UserHash == null)
+                        {
+                            socketPacket.UserHash = mData;
+                        }
+                        else if (socketPacket.PassHash == null)
+                        {
+                            socketPacket.PassHash = mData;
+                        }
+                        else 
+                        {
+                            if (CompareHashes(socketPacket.UserHash, CreateHash(mUsername)) && CompareHashes(socketPacket.PassHash, CreateHash(mPassword)))
+                            {
+                                socketPacket.Authenticated = true;
+                            }
+                            else
+                            {
+                                socketPacket.UserHash = null;
+                                socketPacket.PassHash = null;
+                                socketPacket.Authenticated = false;
+                            }
+                        }
+                    }
+
+                    if (socketPacket.Authenticated)
+                    {
+                        OnMessageReceived(mData);
+                    }
 
                     mData = "";
                 }
                 mData += szData;
 
                 // Wait for more commands
-                WaitForData(theSocketId.ThisSocket, theSocketId.ClientNumber);
+                WaitForData(socketPacket.ThisSocket, socketPacket.ClientNumber);
             }
             catch (ObjectDisposedException e)
             {

@@ -43,10 +43,10 @@
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommsManager.cs" />
     <Compile Include="SavedUser.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="SocketPacket.cs" />
     <Compile Include="Mappers\AlphaVespucci.cs" />
     <Compile Include="CLIHelper.cs" />
-    <Compile Include="Config.cs" />
     <Compile Include="Mappers\Mapper.cs" />
     <Compile Include="Mappers\Overviewer.cs" />
     <Compile Include="MCServerWarps.cs" />
@@ -58,12 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="settings.xml">
-      <SubType>Designer</SubType>
+    <None Include="settings.conf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibNbt\LibNbt.csproj">
