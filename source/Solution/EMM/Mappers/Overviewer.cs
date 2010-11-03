@@ -9,9 +9,9 @@ namespace EnigmaMM
     {
         public Overviewer(MCServer server) : base(server, "overviewer")
         {
-            mExePath = Config.OverviewerRoot;
+            mExePath = Settings.OverviewerRoot;
             mExePath = Path.Combine(mExePath, "gmap.py");
-            mCachePath = Path.Combine(Config.CacheRoot, "Overviewer");
+            mCachePath = Path.Combine(Settings.CacheRoot, "Overviewer");
         }
 
 
@@ -20,9 +20,9 @@ namespace EnigmaMM
             base.RenderMaps();
             mMinecraft.RaiseServerMessage("OVERVIEWER: Creating map");
 
-            if (!Directory.Exists(Config.CacheRoot))
+            if (!Directory.Exists(Settings.CacheRoot))
             {
-                throw new DirectoryNotFoundException("Cache path missing: " + Config.CacheRoot);
+                throw new DirectoryNotFoundException("Cache path missing: " + Settings.CacheRoot);
             }
             if (!Directory.Exists(mCachePath))
             {
@@ -30,12 +30,12 @@ namespace EnigmaMM
             }
 
             string cmd = string.Format(
-                "\"{0}\" --cachedir \"{1}\" \"{2}\" \"{3}\"",
+                "\"{0}\" -p 0 --cachedir \"{1}\" \"{2}\" \"{3}\"",
                 mExePath, mCachePath, mMinecraft.ServerProperties.WorldPath, mOutputPath
             );
 
             Process p = new Process();
-            p.StartInfo.FileName = Config.PythonExe;
+            p.StartInfo.FileName = Settings.PythonExe;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.Arguments = cmd;
@@ -52,7 +52,7 @@ namespace EnigmaMM
         {
             StringBuilder markers = new StringBuilder();
             markers.Append("var markerData=[\n");
-            foreach (KeyValuePair<string, string> kvp in mMinecraft.ServerWarps.Settings)
+            foreach (KeyValuePair<string, string> kvp in mMinecraft.ServerWarps.Values)
             {
                 string[] warp = kvp.Value.Split(':');
 

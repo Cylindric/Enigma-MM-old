@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 
 namespace EnigmaMM
 {
     public class MCServerWarps : SettingsFile
     {
         public MCServerWarps(string warpsLocation)
-            : base(warpsLocation, ':')
+            : base(Path.Combine(Settings.MinecraftRoot, warpsLocation), ':')
         {
         }
     }

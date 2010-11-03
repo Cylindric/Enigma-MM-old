@@ -8,7 +8,7 @@ namespace EnigmaMM
     public class MCServerProperties: SettingsFile
     {
 
-        public MCServerProperties() : base("server.properties", '=')
+        public MCServerProperties() : base(Path.Combine(Settings.MinecraftRoot, "server.properties"), '=')
         {
         }
 
@@ -39,7 +39,7 @@ namespace EnigmaMM
         }
         public string WorldPath
         {
-            get { return Path.Combine(Config.MinecraftRoot, LevelName); }
+            get { return Path.Combine(Settings.MinecraftRoot, LevelName); }
         }
 
         // Hey0 Extensions

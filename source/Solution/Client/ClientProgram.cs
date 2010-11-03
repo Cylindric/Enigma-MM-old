@@ -11,19 +11,18 @@ namespace EnigmaMM
     {
         private static CLIHelper mCLI = new CLIHelper();
         private static Client mClient = new Client();
-        private static bool mKeepListening = true;
-
+ 
         static void Main(string[] args)
         {
-            Config.Initialize(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.xml"));
+            Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.conf"));
             
             bool StartCLI = true;
 
             mClient.MessageReceived += HandleMessageReceived;
-            mClient.ServerIP = Config.ServerIp;
-            mClient.ServerPort = Config.ServerPort;
-            mClient.Username = Config.ServerUsername;
-            mClient.Password = Config.ServerPassword;
+            mClient.ServerIP = Settings.ServerIp;
+            mClient.ServerPort = Settings.ServerPort;
+            mClient.Username = Settings.ServerUsername;
+            mClient.Password = Settings.ServerPassword;
             mClient.StartClient();
 
             // If any commands were passed on the command-line, execute them and then quit

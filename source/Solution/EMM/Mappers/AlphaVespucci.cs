@@ -10,7 +10,7 @@ namespace EnigmaMM
     {
         public AlphaVespucci(MCServer server) : base(server, "alphavespucci")
         {
-            mExePath = Path.Combine(Config.AlphaVespucciRoot, "AlphaVespucci.exe");
+            mExePath = Path.Combine(Settings.AlphaVespucciRoot, "AlphaVespucci.exe");
         }
 
 
@@ -92,7 +92,12 @@ namespace EnigmaMM
             g.DrawImage(input, 0, 0, destWidth, destHeight);
             g.Dispose();
 
-            output.Save(OutputFile);
+            Encoder encoder = Encoder.Compression;
+            EncoderParameter p1 = new EncoderParameter(encoder, 100);
+            EncoderParameters codecParams = new EncoderParameters(1);
+            codecParams.Param[0] = p1;
+            ImageCodecInfo codecInfo = GetEncoderInfo("image/png");
+            output.Save(OutputFile, codecInfo, codecParams);
         }
 
 

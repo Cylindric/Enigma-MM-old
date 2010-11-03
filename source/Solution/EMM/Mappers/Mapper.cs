@@ -16,9 +16,9 @@ namespace EnigmaMM
             mTag = tag;
 
             mMinecraft = server;
-            mExePath = Path.Combine(Config.OverviewerRoot, "gmap.py");
-            mCachePath = Path.Combine(Config.CacheRoot, "Overviewer");
-            mOutputPath = Path.Combine(Config.MapRoot, mTag);
+            mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.py");
+            mCachePath = Path.Combine(Settings.CacheRoot, "Overviewer");
+            mOutputPath = Path.Combine(Settings.MapRoot, mTag);
         }
 
 
@@ -28,9 +28,9 @@ namespace EnigmaMM
             {
                 throw new DirectoryNotFoundException("World path missing: " + mMinecraft.ServerProperties.WorldPath);
             }
-            if (!Directory.Exists(Config.MapRoot))
+            if (!Directory.Exists(Settings.MapRoot))
             {
-                throw new DirectoryNotFoundException("Map output path missing: " + Config.MapRoot);
+                throw new DirectoryNotFoundException("Map output path missing: " + Settings.MapRoot);
             }
             if (!Directory.Exists(mOutputPath))
             {
