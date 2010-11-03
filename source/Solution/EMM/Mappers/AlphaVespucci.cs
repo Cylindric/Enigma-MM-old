@@ -52,7 +52,7 @@ namespace EnigmaMM
             {
                 Directory.CreateDirectory(HistoryRoot);
             }
-            string HistoryFile = Path.Combine(HistoryRoot, string.Format("-{1:yyyy-MM-dd_HH}.jpg", Filename, DateTime.Now));
+            string HistoryFile = Path.Combine(HistoryRoot, string.Format("{0}-{1:yyyy-MM-dd_HH}.jpg", Filename, DateTime.Now));
             File.Copy(Path.Combine(mOutputPath, Filename + ".jpg"), HistoryFile, true);
 
             mMinecraft.RaiseServerMessage("AV: Done.");
