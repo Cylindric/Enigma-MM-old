@@ -227,11 +227,11 @@ namespace EnigmaMM
         protected void VerifySecurity() {
             if ((mUsername == "") || (mUsername == "changeme"))
             {
-                throw new InvalidOperationException("No username specified.");
+                throw new UnauthorizedAccessException("No username specified.");
             }
             if ((mPassword == "") || (mPassword == "changeme"))
             {
-                throw new InvalidOperationException("No password specified");
+                throw new UnauthorizedAccessException("No password specified");
             }
         }
 

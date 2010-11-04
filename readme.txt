@@ -128,3 +128,14 @@ Solution
    * Deploy - Final deployment files go here
    * EMM - The main Minecraft interfacing library, and common helpers
    * Server - The main Server Manager
+
+
+External Libraries and Tools
+============================
+Project:  OptiPNG
+Homepage: http://sourceforge.net/projects/optipng/
+License:  zlib/libpng License
+
+Project:  LibNbt
+Homepage: https://github.com/aphistic/libnbt
+License:  lGPL
