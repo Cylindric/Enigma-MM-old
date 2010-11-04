@@ -15,9 +15,9 @@ namespace EnigmaMM
         }
 
 
-        public override void RenderMaps()
+        public override void RenderMap()
         {
-            base.RenderMaps();
+            base.RenderMap();
             mMinecraft.RaiseServerMessage("OVERVIEWER: Creating map");
 
             if (!Directory.Exists(Settings.CacheRoot))
@@ -40,6 +40,7 @@ namespace EnigmaMM
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.Arguments = cmd;
             p.Start();
+            p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
 
             CreateMarkersFromWarpLocations();

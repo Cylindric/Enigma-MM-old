@@ -365,7 +365,7 @@ namespace EnigmaMM
             {
                 AutoSave(false);
                 ServerMessage("Generating AlphaVespucci Maps...");
-                mMapAlphaVespucci.RenderMaps("obleft", "day", "mainmap", true);
+                mMapAlphaVespucci.RenderMap("obleft", "day", "mainmap", true);
                 ServerMessage("Done.");
                 AutoSave(true);
             }
@@ -375,13 +375,13 @@ namespace EnigmaMM
         public void GenerateMapAVExtra()
         {
             ServerMessage("Generating more AlphaVespucci Maps...");
-            mMapAlphaVespucci.RenderMaps("obleft", "night", "nightmap");
-            mMapAlphaVespucci.RenderMaps("obleft", "cave", "caves");
-            mMapAlphaVespucci.RenderMaps("obleft", "cavelimit 15", "surfacecaves");
-            mMapAlphaVespucci.RenderMaps("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
-            mMapAlphaVespucci.RenderMaps("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
-            mMapAlphaVespucci.RenderMaps("obleft", "night -whitelist \"Torch\"", "resource-torch");
-            mMapAlphaVespucci.RenderMaps("flat", "day", "flatmap");
+            mMapAlphaVespucci.RenderMap("obleft", "night", "nightmap");
+            mMapAlphaVespucci.RenderMap("obleft", "cave", "caves");
+            mMapAlphaVespucci.RenderMap("obleft", "cavelimit 15", "surfacecaves");
+            mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
+            mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
+            mMapAlphaVespucci.RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch");
+            mMapAlphaVespucci.RenderMap("flat", "day", "flatmap");
             ServerMessage("Done.");
         }
 
@@ -391,7 +391,7 @@ namespace EnigmaMM
             if (mOverviewerInstalled)
             {
                 AutoSave(false);
-                mMapOverviewer.RenderMaps();
+                mMapOverviewer.RenderMap();
                 AutoSave(true);
             }
         }

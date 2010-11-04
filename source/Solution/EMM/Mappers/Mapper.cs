@@ -22,7 +22,7 @@ namespace EnigmaMM
         }
 
 
-        public virtual void RenderMaps()
+        public virtual void RenderMap()
         {
             if (!Directory.Exists(mMinecraft.ServerProperties.WorldPath))
             {

@@ -39,16 +39,24 @@ namespace EnigmaMM
             get { return mSettings.GetString("ServerPassword", "changeme"); }
         }
 
-        public static string MapRoot
-        {
-            get { return mSettings.GetRootedPath(ServerRoot, "MapRoot", @".\Maps"); }
-        }
-
         public static string CacheRoot
         {
             get { return mSettings.GetRootedPath(ServerRoot, "CacheRoot", @".\Cache"); }
         }
 
+        #endregion
+
+        #region General Map Settings
+
+        public static string MapRoot
+        {
+            get { return mSettings.GetRootedPath(ServerRoot, "MapRoot", @".\Maps"); }
+        }
+
+        public static int OptimisePng
+        {
+            get { return mSettings.GetInt("OptimisePng", 3); }
+        }
         #endregion
 
         #region Minecraft Server Settings

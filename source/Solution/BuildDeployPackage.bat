@@ -41,28 +41,20 @@ IF NOT EXIST "%BACKUPROOT%" MKDIR "%BACKUPROOT%"
 ::Copy the files we need to the package
 ECHO Copying files...
 XCOPY /Y ..\..\readme.txt %MCSROOT%
-XCOPY /Y Build\ServerManager\*.exe "%SMROOT%"
 XCOPY /Y Build\ServerManager\*.dll "%SMROOT%"
-XCOPY /Y Build\ServerManager\settings.xml "%SMROOT%"
+XCOPY /Y Build\ServerManager\*.exe "%SMROOT%"
+XCOPY /Y Build\ServerManager\*.txt "%SMROOT%"
 ERASE /F /Q "%SMROOT%\*.vshost.exe"
+
+:: Copy the config from the source folder, not the build folder, to ensure
+:: we don't get any modified-for-test versions
+XCOPY /Y EMM\*.conf "%SMROOT%"
+
 
 : Create the archive
 CD Deploy
 ..\Tools\7za.exe a -mx9 MCServer%BUILDVERSION%.zip MCServer\
 
-
-: Create the FTP script
-ECHO {username}> deploy.ftp
-ECHO {password}>> deploy.ftp
-ECHO bin>> deploy.ftp
-ECHO prompt>> deploy.ftp
-ECHO lcd MCServer\ServerManager>> deploy.ftp
-ECHO cd ServerManager>> deploy.ftp
-ECHO mput *>> deploy.ftp
-ECHO quit>> deploy.ftp
-
-ECHO @ECHO OFF> deploy.bat
-ECHO ftp -s:deploy.ftp {sitename}>> deploy.bat
 
 :END
 PAUSE
