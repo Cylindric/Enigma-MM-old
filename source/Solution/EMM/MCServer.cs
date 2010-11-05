@@ -343,8 +343,14 @@ namespace EnigmaMM
 
         public void Backup()
         {
-            Backup backup = new Backup(this);
-            backup.PerformBackup();
+            ServerMessage("Starting backup...");
+            BlockAutoSave();
+            using (Backup backup = new Backup(this))
+            {
+                backup.PerformBackup();
+            }
+            UnblockAutoSave();
+            ServerMessage("Backup complete.");
         }
 
 
