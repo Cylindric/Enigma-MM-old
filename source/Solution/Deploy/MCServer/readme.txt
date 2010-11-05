@@ -28,50 +28,10 @@ Examples:
 
 Configuration
 =============
-Core Settings
--------------
-	* ServerRoot
-			Default: C:\Minecraft
-	    Full path to where the Minecraft server is.
-
-	* MinecraftRoot
-			Default: .\Server
-	    Full path to where the Minecraft server is.
-			Either specify the full path, or if following the recommended directory
-			layout, use a path relative to ServerRoot.  (That's what the default does)
-
-	* ServerJar
-			Default: minecraft_server.jar
-	    The filename of the server JAR file.
-			If you're using the Hey0 server mod, put the name of the jar here (usually
-			Server_Mod.jar) and EMM will auto-detect when it runs and enable certain
-			features.
-
-	* JavaHeapInit
-			Default: 1024
-	    The initial memory-heap size for Java, in megabytes.
-
-	* JavaHeapMax
-			Default: 1024
-	    The maximum memory-heap size for Java, in megabytes.
-
-	* JavaExec
-			Default: java.exe
-	    The executable to use for Java.
+Copy the sample.settings.conf to just "settings.conf", and customise as required.
+Details about each setting are in the sample file.
 
 
-Mapping Settings
-----------------
-	* MapOutputRoot
-			Default: .\Maps
-			Where to save the generated maps.
-
-	* AlphaVespucciInstalled
-			Default: false
-			Whether or not to use the AlphaVespucci map output options.
-
-	* AlphaVespucciRoot
-			Default: .\AlphaVespucci
 
 Requirements
 ============
@@ -79,29 +39,38 @@ Requirements
   * Microsoft .NET Framework 3.5 (not tested on Mono, but might work)
   * The Sun "JVM" (Tested with 1.6 update 21)
   * Minecraft Server (Java version)
-	* Optionally Hey0 Server mod
-	* Optionally AlphaVespucci mapper
+  * Optionally Hey0 Server mod
+  * Optionally AlphaVespucci mapper
+  * Optionally Minecraft Overviewer mapper
 
 
 Setup
 =====
-Suggested installation is to have a master "server" folder somewhere on the server, for example C:\Minecraft, which contains the necessary files and folders.
+Suggested installation is to have a master "server" folder somewhere on the server, for example C:\EnigmaMM\, which contains the necessary files and folders.
 
 Here's the bare minimum to get started.  A lot of other files will be created at the first run, not least the world itself...
 
-C:\Minecraft\
+C:\EnigmaMM\
 
-C:\Minecraft\Minecraft\                         <-- The actual Minecraft server
-C:\Minecraft\Minecraft\minecraft_server.jar
+C:\EnigmaMM\Minecraft\                      <-- The actual Minecraft server
+C:\EnigmaMM\Minecraft\minecraft_server.jar
 
-C:\Minecraft\ServerManager\                  <-- Put the EMM files here
-C:\Minecraft\ServerManager\emm.dll
-C:\Minecraft\ServerManager\emmserver.exe
-C:\Minecraft\ServerManager\emmclient.exe
-C:\Minecraft\ServerManager\settings.xml
+C:\EnigmaMM\ServerManager\                  <-- Put the EMM files here
+C:\EnigmaMM\ServerManager\emm.dll
+C:\EnigmaMM\ServerManager\emmclient.exe
+C:\EnigmaMM\ServerManager\emmserver.exe
+C:\EnigmaMM\ServerManager\LibNbt.dll
+C:\EnigmaMM\ServerManager\LibNbt.txt
+C:\EnigmaMM\ServerManager\optipng.exe
+C:\EnigmaMM\ServerManager\optipng.txt
+C:\EnigmaMM\ServerManager\settings.conf
 
-C:\Minecraft\Maps
-C:\Minecraft\Maps\History
+C:\EnigmaMM\Cache         <-- The cache files will end up in here as needed
+C:\EnigmaMM\Maps          <-- Maps will end up in here once generated
+
+C:\EnigmaMM\AlphaVespucci <-- Put the AlphaVespucci executable in here if needed
+C:\EnigmaMM\Overviewer    <-- Put the Overviewer files in here if needed
+
 
 
 So the setup process would be something like:
@@ -111,31 +80,12 @@ So the setup process would be something like:
   2) Install the .NET Framework if you don't already have it
 
   3) Create folders to put everything in:
-    a) C:\Minecraft\
-    b) C:\Minecraft\Server\
-    c) C:\Minecraft\ServerManager\
+    a) C:\EnigmaMM\
+    b) C:\EnigmaMM\Minecraft\
+    c) C:\EnigmaMM\ServerManager\
 
   4) Download the official Minecraft Server (Java version!) and put it in
-     C:\Minecraft\Server\
+     C:\EnigmaMM\Minecraft\
 
   5) Build or download the Server Manager and put it in
-     C:\Minecraft\ServerManager\
-
-
-Solution
-========
-   * Build - All projects' build output goes here
-   * Deploy - Final deployment files go here
-   * EMM - The main Minecraft interfacing library, and common helpers
-   * Server - The main Server Manager
-
-
-External Libraries and Tools
-============================
-Project:  OptiPNG
-Homepage: http://sourceforge.net/projects/optipng/
-License:  zlib/libpng License
-
-Project:  LibNbt
-Homepage: https://github.com/aphistic/libnbt
-License:  lGPL
+     C:\EnigmaMM\ServerManager\

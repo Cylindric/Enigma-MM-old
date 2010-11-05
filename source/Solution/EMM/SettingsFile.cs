@@ -143,7 +143,7 @@ namespace EnigmaMM
         public int GetInt(string key, int defaultValue)
         {
             int value = defaultValue;
-            int.TryParse(GetString(key), out value);
+            int.TryParse(GetString(key, defaultValue.ToString()), out value);
             return value;
         }
 

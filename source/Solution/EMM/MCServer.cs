@@ -28,6 +28,9 @@ namespace EnigmaMM
         private int mHey0version = 0;
         private ArrayList mSavedUsers = new ArrayList();
 
+        private int mAutoSaveBlocks = 0;
+        private bool mAutoSaveEnabled = false;
+
         // Map objects and settings
         private AlphaVespucci mMapAlphaVespucci;
         private bool mAlphaVespucciInstalled = false;
@@ -212,9 +215,8 @@ namespace EnigmaMM
             mServerProcess.BeginOutputReadLine();
             mServerProcess.BeginErrorReadLine();
 
-            ServerMessage("Server started.");
+            ServerMessage("Server starting...");
         }
-
 
 
         /// <summary>
@@ -299,19 +301,29 @@ namespace EnigmaMM
         }
 
 
-        private void AutoSave(bool Enabled)
+        /// <summary>
+        /// Sends a broadcast message to all players on the server.
+        /// </summary>
+        /// <param name="message">Message to send</param>
+        public void Broadcast(string message)
         {
-            if (mServerRunningHey0)
+            SendCommand("say " + message);
+        }
+
+
+        /// <summary>
+        /// Enables or disables server auto-save.
+        /// </summary>
+        /// <param name="enabled">True turns on auto-save, false turns it off</param>
+        private void AutoSave(bool enabled)
+        {
+            if (enabled)
             {
-                if (Enabled)
-                {
-                    SendCommand("save-on");
-                }
-                else
-                {
-                    SendCommand("save-off");
-                }
-                Thread.Sleep(1000);
+                SendCommand("save-on");
+            }
+            else
+            {
+                SendCommand("save-off");
             }
         }
 
@@ -361,50 +373,89 @@ namespace EnigmaMM
 
         public void GenerateMapAV()
         {
-            if (mAlphaVespucciInstalled)
+            if (!mAlphaVespucciInstalled)
             {
-                AutoSave(false);
+                ServerMessage("Skipping AlphaVespucci Maps, not installed.");
+            }
+            else
+            {
                 ServerMessage("Generating AlphaVespucci Maps...");
+                BlockAutoSave();
                 mMapAlphaVespucci.RenderMap("obleft", "day", "mainmap", true);
+                UnblockAutoSave();
                 ServerMessage("Done.");
-                AutoSave(true);
             }
         }
 
 
         public void GenerateMapAVExtra()
         {
-            ServerMessage("Generating more AlphaVespucci Maps...");
-            mMapAlphaVespucci.RenderMap("obleft", "night", "nightmap");
-            mMapAlphaVespucci.RenderMap("obleft", "cave", "caves");
-            mMapAlphaVespucci.RenderMap("obleft", "cavelimit 15", "surfacecaves");
-            mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
-            mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
-            mMapAlphaVespucci.RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch");
-            mMapAlphaVespucci.RenderMap("flat", "day", "flatmap");
-            ServerMessage("Done.");
+            if (!mAlphaVespucciInstalled)
+            {
+                ServerMessage("Skipping more AlphaVespucci Maps, not installed.");
+            }
+            else
+            {
+                ServerMessage("Generating more AlphaVespucci Maps...");
+                BlockAutoSave();
+                mMapAlphaVespucci.RenderMap("obleft", "night", "nightmap");
+                mMapAlphaVespucci.RenderMap("obleft", "cave", "caves");
+                mMapAlphaVespucci.RenderMap("obleft", "cavelimit 15", "surfacecaves");
+                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
+                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
+                mMapAlphaVespucci.RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch");
+                mMapAlphaVespucci.RenderMap("flat", "day", "flatmap");
+                UnblockAutoSave();
+                ServerMessage("Done.");
+            }
         }
 
 
         public void GenerateMapOverviewer()
         {
-            if (mOverviewerInstalled)
+            if (!mOverviewerInstalled)
             {
-                AutoSave(false);
+                ServerMessage("Skipping Overviewer Map, not installed.");
+            }
+            else
+            {
+                ServerMessage("Generating Overviewer Map...");
+                BlockAutoSave();
                 mMapOverviewer.RenderMap();
-                AutoSave(true);
+                UnblockAutoSave();
+                ServerMessage("Done.");
             }
         }
 
         
         public void GenerateMaps()
         {
+            BlockAutoSave();
             GenerateMapOverviewer();
             GenerateMapAV();
             GenerateMapAVExtra();
+            UnblockAutoSave();
         }
 
 
+
+        private void BlockAutoSave()
+        {
+            mAutoSaveBlocks += 1;
+            if ((mAutoSaveEnabled) && (mAutoSaveBlocks > 0))
+            {
+                AutoSave(false);
+            }
+        }
+
+        private void UnblockAutoSave()
+        {
+            mAutoSaveBlocks -= 1;
+            if ((!mAutoSaveEnabled) && (mAutoSaveBlocks == 0))
+            {
+                AutoSave(true);
+            }
+        }
 
         public void LoadSavedUserInfo()
         {
@@ -428,46 +479,59 @@ namespace EnigmaMM
             if ((OutLine.Data != null))
             {
                 T = OutLine.Data;
+                MCServerMessage M = new MCServerMessage(T);
 
-                if (MsgIsUserCount(T))
+                switch (M.Type)
                 {
-                    mUsersOnline = ExtractPlayerCount(T);
-                    if ((mUsersOnline == 0) && (mServerStatus == Status.PendingRestart))
-                    {
-                        RestartServer();
-                    }
-                    if ((mUsersOnline == 0) && (mServerStatus == Status.PendingStop))
-                    {
-                        StopServer();
-                    }
-                }
-                else if (MsgIsSaveComplete(T))
-                {
-                    LoadSavedUserInfo();
-                }
-                else if (MsgIsUserList(T))
-                {
-                    ExtractUsers(T);
-                    mOnlineUserListReady = true;
-                }
-                else if (MsgIsServerStarted(T))
-                {
-                    OnServerStarted("Server started");
-                }
-                else if (MsgIsHey0(T))
-                {
-                    ServerMessage("Hey0 mod detected");
-                    mServerRunningHey0 = true;
-                    mHey0version = ExtractHey0Version(T);
-                }
-                else if (MsgIsServerErrPortBusy(T))
-                {
-                    OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
-                    mServerStatus = Status.Failed;
-                    mStatusMessage = T;
-                    ForceShutdown();
-                }
+                    case MCServerMessage.MessageType.AutoSaveEnabled:
+                        mAutoSaveEnabled = true;
+                        break;
 
+                    case MCServerMessage.MessageType.AutoSaveDisabled:
+                        mAutoSaveEnabled = false;
+                        break;
+
+                    case MCServerMessage.MessageType.ErrorPortBusy:
+                        OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
+                        mServerStatus = Status.Failed;
+                        mStatusMessage = T;
+                        ForceShutdown();
+                        break;
+
+                    case MCServerMessage.MessageType.Hey0Banner:
+                        ServerMessage("Hey0 mod detected");
+                        mServerRunningHey0 = true;
+                        int.TryParse(M.Data, out mHey0version);
+                        AutoSave(true);
+                        break;
+
+                    case MCServerMessage.MessageType.SaveComplete:
+                        LoadSavedUserInfo();
+                        break;
+
+                    case MCServerMessage.MessageType.StartupComplete:
+                        OnServerStarted("Server started");
+                        break;
+
+                    case MCServerMessage.MessageType.UserCount:
+                        mUsersOnline = 0;
+                        int.TryParse(M.Data, out mUsersOnline);
+                        if ((mUsersOnline == 0) && (mServerStatus == Status.PendingRestart))
+                        {
+                            RestartServer();
+                        }
+                        if ((mUsersOnline == 0) && (mServerStatus == Status.PendingStop))
+                        {
+                            StopServer();
+                        }
+                        break;
+
+                    case MCServerMessage.MessageType.UserList:
+                        mOnlineUserList = M.Data;
+                        mOnlineUserListReady = true;
+                        break;
+
+                }
 
                 // raise an InfoMessage Event too
                 if (ServerMessage != null)
@@ -519,81 +583,5 @@ namespace EnigmaMM
             }
         }
 
-        private bool MsgIsServerStarted(string msg)
-        {
-            string regex = @"^(?<timestamp>.+?)\[INFO]\ Done!.*?$";
-            return Regex.IsMatch(msg, regex);
-        }
-
-        private bool MsgIsServerErrPortBusy(string msg)
-        {
-            string regex = @"^(?<timestamp>.+?)\[WARNING]\ \*\*\*\*\ FAILED\ TO\ BIND\ TO\ PORT!.*?$";
-            return Regex.IsMatch(msg, regex);
-        }
-
-        private bool MsgIsUserList(string msg)
-        {
-            string regex = @"^(?<timestamp>.+?)\[INFO]\ Connected\ players:\ .*?$";
-            return Regex.IsMatch(msg, regex);
-        }
-
-        private bool MsgIsUserCount(string msg)
-        {
-            string regex = @"^Player\ count:\ (?<count>\d+)$";
-            return Regex.IsMatch(msg, regex);
-        }
-
-        private bool MsgIsSaveComplete(string msg)
-        {
-            string regex = @"^(?<timestamp>.+?)\[INFO]\ CONSOLE:\ Save\ Complete\.$";
-            return Regex.IsMatch(msg, regex);
-        }
-
-        private bool MsgIsHey0(string msg)
-        {
-            string regex = @"^(?<timestamp>.+?)\[INFO]\ Hey0\ Server\ Mod\ Build\ .*?$";
-            return Regex.IsMatch(msg, regex);
-        }
-
-        private int ExtractPlayerCount(string msg)
-        {
-            int count = 0;
-            string regex = @"^Player\ count:\ (?<count>\d+)$";
-            MatchCollection matches = Regex.Matches(msg, regex);
-            if (matches.Count > 0)
-            {
-                int.TryParse(matches[0].Groups["count"].Value, out count);
-            }
-            return count;
-        }
-
-        private int ExtractHey0Version(string msg)
-        {
-            int version = 0;
-            string regex = @"^(?<timestamp>.+?)\[INFO]\ Hey0\ Server\ Mod\ Build\ (?<version>.*?)$";
-            MatchCollection matches = Regex.Matches(msg, regex);
-            if (matches.Count > 0)
-            {
-                int.TryParse(matches[0].Groups["version"].Value, out version);
-            }
-            return version;
-        }
-
-        private string ExtractUsers(string msg)
-        {
-            string regex = @"^(?<timestamp>.+?)\ \[INFO]\ Connected\ players:\ (?<userlist>.*?)$";
-            MatchCollection matches = Regex.Matches(msg, regex);
-            if (matches.Count > 0)
-            {
-                return matches[0].Groups["userlist"].Value;
-            }
-            else
-            {
-                return "";
-            }
-        }
-
     }
-
-
 }

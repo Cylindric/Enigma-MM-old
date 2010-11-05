@@ -19,8 +19,8 @@ namespace EnigmaMM
             bool StartCLI = true;
 
             mClient.MessageReceived += HandleMessageReceived;
-            mClient.ServerIP = Settings.ServerIp;
-            mClient.ServerPort = Settings.ServerPort;
+            mClient.ServerIP = Settings.ClientConnectIp;
+            mClient.ServerPort = Settings.ClientConnectPort;
             mClient.Username = Settings.ServerUsername;
             mClient.Password = Settings.ServerPassword;
             mClient.StartClient();
