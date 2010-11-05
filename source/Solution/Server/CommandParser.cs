@@ -78,6 +78,10 @@ namespace EnigmaMM
                     mMinecraft.GenerateMapOverviewer();
                     break;
 
+                case ("backup"):
+                    mMinecraft.Backup();
+                    break;
+
                 default:
                     mMinecraft.SendCommand(Command);
                     break;
