@@ -14,7 +14,12 @@ namespace EnigmaMM
         }
 
         #region Server Settings
-        
+
+        public static string Filename
+        {
+            get { return mSettings.Filename; }
+        }
+
         public static string ServerRoot
         {
             get { return Path.GetFullPath(mSettings.GetString("ServerRoot", @"..\")); }
