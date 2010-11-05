@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.IO;
 using System.Diagnostics;
+using System;
 
 namespace EnigmaMM
 {
@@ -16,20 +17,30 @@ namespace EnigmaMM
         static void Main(string[] args)
         {
             Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.conf"));
+            mCLI = new CLIHelper();
 
             // Start the server up and begin listening for connections
             mServer = new Server();
             mServer.MessageReceived += HandleClientCommand;
             mServer.RemoteConnection += HandleClientConnected;
             mServer.RemoteDisconnection += HandleClientConnected;
-            mServer.ServerPort = Settings.ServerPort;
+            mServer.ServerIP = Settings.ServerListenIp;
+            mServer.ServerPort = Settings.ServerListenPort;
             mServer.Username = Settings.ServerUsername;
             mServer.Password = Settings.ServerPassword;
-            mServer.StartListener();
+
+            try
+            {
+                mServer.StartListener();
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                mCLI.WriteLine(string.Format("Error: Unable to start server manager: {0}", e.Message));
+                return;
+            }
 
             // Start a new CLI helper thread to catch user input
             // After this we might start getting user commands through HandleCommands
-            mCLI = new CLIHelper();
             mCLI.RaiseCommandReceivedEvent += HandleCommand;
             Thread CLIThread = new Thread(new ThreadStart(mCLI.StartListening));
             CLIThread.Start();

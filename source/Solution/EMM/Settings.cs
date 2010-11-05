@@ -19,14 +19,24 @@ namespace EnigmaMM
             get { return Path.GetFullPath(mSettings.GetString("ServerRoot", @"..\")); }
         }
 
-        public static string ServerIp
+        public static string ClientConnectIp
         {
-            get { return mSettings.GetString("ServerIp", "localhost"); }
+            get { return mSettings.GetString("ClientConnectIp", "localhost"); }
         }
 
-        public static int ServerPort
+        public static int ClientConnectPort
         {
-            get { return mSettings.GetInt("ServerPort", 8221); }
+            get { return mSettings.GetInt("ClientConnectPort", 8221); }
+        }
+
+        public static string ServerListenIp
+        {
+            get { return mSettings.GetString("ServerListenIp", "any"); }
+        }
+
+        public static int ServerListenPort
+        {
+            get { return mSettings.GetInt("ServerListenPort", 8221); }
         }
 
         public static string ServerUsername

@@ -40,8 +40,10 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backup.cs" />
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommsManager.cs" />
+    <Compile Include="MCServerMessage.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SocketPacket.cs" />
@@ -58,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="settings.conf">
+    <None Include="sample.settings.conf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
