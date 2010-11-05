@@ -9,7 +9,7 @@ IF %1.==. SET BUILDVERSION=
 
 ::Set some common paths
 SET ROOT=%SCRIPTPATH%\Deploy
-SET MCSROOT=%ROOT%\MCServer
+SET MCSROOT=%ROOT%\EMMServer
 SET MCROOT=%MCSROOT%\Minecraft
 SET SMROOT=%MCSROOT%\ServerManager
 SET AVROOT=%MCSROOT%\AlphaVespucci
@@ -20,7 +20,10 @@ SET BACKUPROOT=%MCSROOT%\Backups
 
 :: Change to the script's path
 %SCRIPTDRIVE%
-CD %SCRIPTPATH%
+CD "%SCRIPTPATH%"
+
+:: Build the solution
+:: "%WINDIR%\Microsoft.NET\Framework\v3.5\MSBuild.EXE" "Enigma Minecraft Manager.sln"
 
 :: Clean out the existing deploy package
 ECHO Removing previous Deploy folder...
@@ -53,7 +56,7 @@ XCOPY /Y EMM\*.conf "%SMROOT%"
 
 : Create the archive
 CD Deploy
-..\Tools\7za.exe a -mx9 MCServer%BUILDVERSION%.zip MCServer\
+..\Tools\7za.exe a -mx9 EMMServer%BUILDVERSION%.zip EMMServer\
 
 
 :END
