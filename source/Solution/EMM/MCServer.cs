@@ -121,6 +121,18 @@ namespace EnigmaMM
             mServerStatus = Status.Stopped;
             mMapAlphaVespucci = new AlphaVespucci(this);
             mMapOverviewer = new Overviewer(this);
+            mServerRoot = Settings.MinecraftRoot;
+            mJavaExec = Settings.JavaExec;
+            mServerJar = Settings.ServerJar;
+            mJavaHeapInit = Settings.JavaHeapInit;
+            mJavaHeapMax = Settings.JavaHeapMax;
+            mMapRoot = Settings.MapRoot;
+
+            AlphaVespucciInstalled = Settings.AlphaVespucciInstalled;
+            OverviewerInstalled = Settings.OverviewerInstalled;
+
+            // See if we need to swap in a new config file, and load current config
+            ReloadConfig();
         }
 
 
