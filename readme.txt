@@ -3,7 +3,7 @@ Minecraft Server Manager
 
 Usage
 =====
-Available commands within the Server Manager (SM) console:
+Available commands within the Server Manager (emmserver or emmclient) console:
 
 	start            - starts the Minecraft server
 	stop             - stops the Minecraft server
@@ -11,7 +11,7 @@ Available commands within the Server Manager (SM) console:
 	restart          - stops and then restarts the Minecraft server
 	restart-graceful - same as restart, but waits until there are no users online
 	abort-graceful   - cancels any pending graceful actions
-	quit             - stop the server if it's running, then quit the SM console
+	quit             - stop the server if it's running, then quit the EMM console
 	maps-av          - generates the primary maps using AlphaVespucci
 	maps-avextra     - generates additional maps using AlphaVespucci
 	maps-overviewer  - generates the Overview map (the Google-maps style one)
