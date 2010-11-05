@@ -25,6 +25,11 @@ namespace EnigmaMM
             get { return Path.GetFullPath(mSettings.GetString("ServerRoot", @"..\")); }
         }
 
+        public static string ServerManagerRoot
+        {
+            get { return Path.Combine(Path.GetFullPath(mSettings.GetString("ServerRoot", @"..\")), "ServerManager"); }
+        }
+
         public static string ClientConnectIp
         {
             get { return mSettings.GetString("ClientConnectIp", "localhost"); }

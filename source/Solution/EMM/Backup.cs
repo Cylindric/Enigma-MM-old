@@ -4,7 +4,7 @@ using System;
 
 namespace EnigmaMM
 {
-    class Backup
+    class Backup : IDisposable
     {
         private MCServer mMinecraft;
         private int BackupsToKeep = 5;
@@ -12,6 +12,10 @@ namespace EnigmaMM
         public Backup(MCServer server)
         {
             mMinecraft = server;
+        }
+
+        public void Dispose() {
+            mMinecraft = null;
         }
 
         public void PerformBackup()
@@ -23,7 +27,15 @@ namespace EnigmaMM
             using (ZipFile zip = new ZipFile())
             {
                 zip.AddDirectory(Settings.MinecraftRoot, "Minecraft");
-                zip.AddFile(Settings.Filename, "ServerManager");
+                zip.AddDirectory(Settings.ServerManagerRoot, "ServerManager");
+                if (Directory.Exists(Settings.AlphaVespucciRoot))
+                {
+                    zip.AddDirectory(Settings.AlphaVespucciRoot, "AlphaVespucci");
+                }
+                if (Directory.Exists(Settings.OverviewerRoot))
+                {
+                    zip.AddDirectory(Settings.OverviewerRoot, "Overviewer");
+                }
                 zip.Save(backupFile);
             }
         }
