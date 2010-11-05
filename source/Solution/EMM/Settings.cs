@@ -9,6 +9,7 @@ namespace EnigmaMM
         public static void Initialise(string fileName)
         {
             mSettings = new SettingsFile(fileName, '=');
+            mSettings.AutoLoad = true;
             mSettings.Load();
         }
 
@@ -52,6 +53,11 @@ namespace EnigmaMM
         public static string CacheRoot
         {
             get { return mSettings.GetRootedPath(ServerRoot, "CacheRoot", @".\Cache"); }
+        }
+
+        public static string BackupRoot
+        {
+            get { return mSettings.GetRootedPath(ServerRoot, "BackupRoot", @".\Backups"); }
         }
 
         #endregion
