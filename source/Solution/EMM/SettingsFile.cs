@@ -10,6 +10,8 @@ namespace EnigmaMM
     {
         protected Dictionary<string, string> mSettings = new Dictionary<string, string>();
 
+        private const TimeSpan RELOADINTERVAL = new TimeSpan(0, 0, 60);
+
         private string mSettingsFile = "";
         private bool mSettingsNeedSaving = false;
         private char mSeparator = '=';
@@ -138,7 +140,7 @@ namespace EnigmaMM
         public string GetString(string key, string defaultValue)
         {
             // If auto-reloading is enabled, and we haven't just loaded it.
-            if ((mAutoReload) && (mLastReload.AddSeconds(30) < DateTime.Now))
+            if ((mAutoReload) && (mLastReload.Add(RELOADINTERVAL) < DateTime.Now))
             {
                 DateTime fileModifiedDate = File.GetLastWriteTime(mSettingsFile);
                 if (fileModifiedDate > mLastReload)
