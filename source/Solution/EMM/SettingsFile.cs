@@ -10,7 +10,7 @@ namespace EnigmaMM
     {
         protected Dictionary<string, string> mSettings = new Dictionary<string, string>();
 
-        private const TimeSpan RELOADINTERVAL = new TimeSpan(0, 0, 60);
+        private TimeSpan RELOADINTERVAL = new TimeSpan(0, 0, 60);
 
         private string mSettingsFile = "";
         private bool mSettingsNeedSaving = false;
@@ -27,6 +27,12 @@ namespace EnigmaMM
         {
             mSettingsFile = fileName;
             mSeparator = separator;
+        }
+
+
+        public string Filename
+        {
+            get { return mSettingsFile; }
         }
 
 
