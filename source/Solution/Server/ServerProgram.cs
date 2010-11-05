@@ -24,10 +24,6 @@ namespace EnigmaMM
             mServer.MessageReceived += HandleClientCommand;
             mServer.RemoteConnection += HandleClientConnected;
             mServer.RemoteDisconnection += HandleClientConnected;
-            mServer.ServerIP = Settings.ServerListenIp;
-            mServer.ServerPort = Settings.ServerListenPort;
-            mServer.Username = Settings.ServerUsername;
-            mServer.Password = Settings.ServerPassword;
 
             try
             {
@@ -50,19 +46,6 @@ namespace EnigmaMM
             }
             
             mMinecraft = new MCServer();
-            mMinecraft.ServerRoot = Settings.MinecraftRoot;
-            mMinecraft.JavaExec = Settings.JavaExec;
-            mMinecraft.ServerJar = Settings.ServerJar;
-            mMinecraft.JavaHeapInit = Settings.JavaHeapInit;
-            mMinecraft.JavaHeapMax = Settings.JavaHeapMax;
-
-            mMinecraft.MapRoot = Settings.MapRoot;
-            mMinecraft.AlphaVespucciInstalled = Settings.AlphaVespucciInstalled;
-            mMinecraft.OverviewerInstalled = Settings.OverviewerInstalled;
-
-            // See if we need to swap in a new config file, and load current config
-            mMinecraft.ReloadConfig();
-
             mMinecraft.ServerMessage += HandleServerOutput;
             mMinecraft.ServerError += HandleServerError;
             mMinecraft.ServerStarted += HandleServerStarted;

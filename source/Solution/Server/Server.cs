@@ -15,6 +15,14 @@ namespace EnigmaMM
             get { return mListening; }
         }
 
+        public Server()
+        {
+            this.ServerIP = Settings.ServerListenIp;
+            this.ServerPort = Settings.ServerListenPort;
+            this.Username = Settings.ServerUsername;
+            this.Password = Settings.ServerPassword;
+        }
+
         public void StartListener()
         {
             VerifySecurity();
