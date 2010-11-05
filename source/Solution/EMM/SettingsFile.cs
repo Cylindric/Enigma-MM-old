@@ -13,6 +13,8 @@ namespace EnigmaMM
         private string mSettingsFile = "";
         private bool mSettingsNeedSaving = false;
         private char mSeparator = '=';
+        private bool mAutoReload = false;
+        private DateTime mLastReload;
 
         public Dictionary<string, string> Values
         {
@@ -25,6 +27,13 @@ namespace EnigmaMM
             mSeparator = separator;
         }
 
+
+        public bool AutoLoad
+        {
+            get { return mAutoReload; }
+            set { mAutoReload = value; }
+        }
+            
 
         /// <summary>
         /// Checks for a new.settingsfile file, and if it exists swaps it in for
@@ -105,6 +114,7 @@ namespace EnigmaMM
                 S = Sr.ReadLine();
             }
             Sr.Close();
+            mLastReload = DateTime.Now;
             return true;
         }
 
@@ -127,6 +137,16 @@ namespace EnigmaMM
 
         public string GetString(string key, string defaultValue)
         {
+            // If auto-reloading is enabled, and we haven't just loaded it.
+            if ((mAutoReload) && (mLastReload.AddSeconds(30) < DateTime.Now))
+            {
+                DateTime fileModifiedDate = File.GetLastWriteTime(mSettingsFile);
+                if (fileModifiedDate > mLastReload)
+                {
+                    Load();
+                }
+            }
+
             string value = defaultValue;
             if (mSettings.ContainsKey(key))
             {
@@ -134,6 +154,7 @@ namespace EnigmaMM
             }
             return value;
         }
+
 
         public string GetString(string key)
         {
