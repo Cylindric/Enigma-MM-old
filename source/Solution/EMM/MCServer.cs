@@ -341,6 +341,14 @@ namespace EnigmaMM
 
 
 
+        public void Backup()
+        {
+            Backup backup = new Backup(this);
+            backup.PerformBackup();
+        }
+
+
+
         private void ForceShutdown()
         {
             mServerProcess.Kill();
