@@ -9,15 +9,16 @@ namespace EnigmaMM
 {
     public class MCServer
     {
+        private const int COMMAND_TIMEOUT_MS = 5000;
+
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
         private bool mOnlineUserListReady = false;
-        private string mOnlineUserList = "";
-        private int mUsersOnline = 0;
 
         // Java and Minecraft Server settings
-        private MCServerProperties mServerProperties = new MCServerProperties();
+        private System.IO.StreamWriter mCommandInjector;
+        private MCServerProperties mServerProperties;
         private MCServerWarps mServerWarps;
         private string mJavaExec = "java.exe";
         private string mServerRoot = "";
@@ -27,6 +28,7 @@ namespace EnigmaMM
         private bool mServerRunningHey0 = false;
         private int mHey0version = 0;
         private ArrayList mSavedUsers = new ArrayList();
+        private ArrayList mOnlineUsers = new ArrayList();
 
         private int mAutoSaveBlocks = 0;
         private bool mAutoSaveEnabled = false;
@@ -38,14 +40,13 @@ namespace EnigmaMM
         private bool mOverviewerInstalled = false;
         private string mMapRoot;
 
-        private System.IO.StreamWriter ioWriter;
-
-        // Events raised at key Minecraft events
+        // Events raised at key server events
         public delegate void ServerMessageEventHandler(string Message);
         public event ServerMessageEventHandler ServerStopped;
         public event ServerMessageEventHandler ServerStarted;
         public event ServerMessageEventHandler ServerMessage;
         public event ServerMessageEventHandler ServerError;
+        public event ServerMessageEventHandler StatusChanged;
 
         public enum Status
         {
@@ -59,6 +60,7 @@ namespace EnigmaMM
             Failed
         }
 
+        #region Public Properties
 
         public MCServerProperties ServerProperties
         {
@@ -113,12 +115,39 @@ namespace EnigmaMM
             set { mOverviewerInstalled = value; }
         }
 
+        public int OnlineUserCount
+        {
+            get { return mOnlineUsers.Count; }
+        }
+
+        public ArrayList OnlineUserList
+        {
+            get { return mOnlineUsers; }
+        }
+
+        #endregion
+
+        private Status ServerStatus
+        {
+            set { 
+                mServerStatus = value;
+                if (StatusChanged != null)
+                {
+                    StatusChanged("");
+                }
+            }
+        }
+
         /// <summary>
         /// Server Constructor
         /// </summary>
         public MCServer()
         {
-            mServerStatus = Status.Stopped;
+            Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.conf"));
+
+            mServerProperties = new MCServerProperties(); 
+            
+            ServerStatus = Status.Stopped;
             mMapAlphaVespucci = new AlphaVespucci(this);
             mMapOverviewer = new Overviewer(this);
             mServerRoot = Settings.MinecraftRoot;
@@ -136,25 +165,17 @@ namespace EnigmaMM
         }
 
 
-
+        /// <summary>
+        /// Reloads the Minecraft server properties files.
+        /// </summary>
         public void ReloadConfig()
         {
-            // See if we need to swap in a new config file
             mServerProperties.LookForNewSettings();
             if (mServerProperties.WarpLocation != "")
             {
                 mServerWarps = new MCServerWarps(mServerProperties.WarpLocation);
                 mServerWarps.LookForNewSettings();
             }
-        }
-
-        /// <summary>
-        /// Helper-method to raise ServerMessage Events from other places.
-        /// </summary>
-        /// <param name="Message">The message to throw</param>
-        internal void RaiseServerMessage(string Message)
-        {
-            ServerMessage(Message);
         }
 
 
@@ -202,7 +223,7 @@ namespace EnigmaMM
             mServerProcess.StartInfo.FileName = mJavaExec;
             mServerProcess.StartInfo.Arguments = cmdArgs;
             mServerProcess.StartInfo.UseShellExecute = false;
-            mServerProcess.StartInfo.CreateNoWindow = false;
+            mServerProcess.StartInfo.CreateNoWindow = true;
             mServerProcess.StartInfo.RedirectStandardError = true;
             mServerProcess.StartInfo.RedirectStandardInput = true;
             mServerProcess.StartInfo.RedirectStandardOutput = true;
@@ -216,12 +237,13 @@ namespace EnigmaMM
             mServerProcess.Exited += new EventHandler(ServerExited);
 
             // Start the server process
-            mServerStatus = Status.Starting;
+            ServerStatus = Status.Starting;
+            SetOnlineUserList();
             mServerProcess.Start();
 
             // Wire up the writer to send messages to the process
-            ioWriter = mServerProcess.StandardInput;
-            ioWriter.AutoFlush = true;
+            mCommandInjector = mServerProcess.StandardInput;
+            mCommandInjector.AutoFlush = true;
 
             // Start listening for output
             mServerProcess.BeginOutputReadLine();
@@ -238,11 +260,8 @@ namespace EnigmaMM
         {
             if (mServerStatus == Status.Running)
             {
+                ServerStatus = Status.Stopping;
                 SendCommand("stop");
-                while (mServerStatus != Status.Stopped)
-                {
-                    Thread.Sleep(100);
-                }
             }
         }
 
@@ -269,13 +288,13 @@ namespace EnigmaMM
         /// </remarks>
         public void GracefulStop()
         {
-            if (mUsersOnline == 0)
+            if (mOnlineUsers.Count == 0)
             {
                 StopServer();
             }
             else
             {
-                mServerStatus = Status.PendingStop;
+                ServerStatus = Status.PendingStop;
             }
         }
 
@@ -287,7 +306,7 @@ namespace EnigmaMM
         {
             if ((mServerStatus == Status.Running) && (mServerStatus == Status.PendingStop))
             {
-                mServerStatus = Status.Running;
+                ServerStatus = Status.Running;
             }
         }
 
@@ -302,13 +321,13 @@ namespace EnigmaMM
         /// </remarks>
         public void GracefulRestart()
         {
-            if (mUsersOnline == 0)
+            if (mOnlineUsers.Count == 0)
             {
                 RestartServer();
             }
             else
             {
-                mServerStatus = Status.PendingRestart;
+                ServerStatus = Status.PendingRestart;
             }
         }
 
@@ -347,10 +366,9 @@ namespace EnigmaMM
         {
             if ((mServerStatus == Status.Running) && (mServerStatus == Status.PendingRestart))
             {
-                mServerStatus = Status.Running;
+                ServerStatus = Status.Running;
             }
         }
-
 
 
         public void Backup()
@@ -366,35 +384,48 @@ namespace EnigmaMM
         }
 
 
-
         private void ForceShutdown()
         {
             mServerProcess.Kill();
         }
 
 
-
-        public string OnlineUsers()
+        /// <summary>
+        /// Forces a reload of the online-user list by issuing a server 'list' command.
+        /// </summary>
+        /// <remarks>
+        /// Note that this method blocks until the server replies.  If a user list refresh
+        /// is required but does not need to be guaranteed current, simply use a call of
+        /// SendCommand("list") and the online user list will be up-to-date as soon as possible.
+        /// </remarks>
+        public bool RefreshOnlineUserList()
         {
+            int waited = 0;
+            bool result = true;
             mOnlineUserListReady = false;
+
             SendCommand("list");
-            while (!(mOnlineUserListReady))
+            while (!mOnlineUserListReady)
             {
+                if (waited > COMMAND_TIMEOUT_MS)
+                {
+                    result = false;
+                    break;
+                }
+                waited += 100;
                 Thread.Sleep(100);
             }
-            return mOnlineUserList;
+            return result;
         }
-
 
 
         public void SendCommand(string Command)
         {
-            if (mServerStatus == Status.Running)
+            if (mServerStatus != Status.Stopped)
             {
-                ioWriter.WriteLine(Command);
+                mCommandInjector.WriteLine(Command);
             }
         }
-
 
 
         public void GenerateMapAV()
@@ -464,7 +495,10 @@ namespace EnigmaMM
         }
 
 
-
+        /// <summary>
+        /// Disables server auto-save by incrementing a 'block' counter. Autosaves are not
+        /// resumed until all blocks have been released.  <see cref="UnblockAutoSave"/>
+        /// </summary>
         private void BlockAutoSave()
         {
             mAutoSaveBlocks += 1;
@@ -474,6 +508,11 @@ namespace EnigmaMM
             }
         }
 
+
+        /// <summary>
+        /// Re-enables server auto-save by decrementing a 'block' counter. Autosaves are not
+        /// resumed until all blocks have been released.  <see cref="BlockAutoSave"/>
+        /// </summary>
         private void UnblockAutoSave()
         {
             mAutoSaveBlocks -= 1;
@@ -483,8 +522,13 @@ namespace EnigmaMM
             }
         }
 
+
+        /// <summary>
+        /// Populates mSavedUsers with details taken from the World's 'players' directory.
+        /// </summary>
         public void LoadSavedUserInfo()
         {
+            mSavedUsers.Clear();
             foreach (string fileName in Directory.GetFiles(Path.Combine(mServerProperties.WorldPath, "players")))
             {
                 SavedUser user = new SavedUser();
@@ -519,7 +563,7 @@ namespace EnigmaMM
 
                     case MCServerMessage.MessageType.ErrorPortBusy:
                         OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
-                        mServerStatus = Status.Failed;
+                        ServerStatus = Status.Failed;
                         mStatusMessage = T;
                         ForceShutdown();
                         break;
@@ -528,7 +572,6 @@ namespace EnigmaMM
                         ServerMessage("Hey0 mod detected");
                         mServerRunningHey0 = true;
                         int.TryParse(M.Data, out mHey0version);
-                        AutoSave(true);
                         break;
 
                     case MCServerMessage.MessageType.SaveComplete:
@@ -536,27 +579,28 @@ namespace EnigmaMM
                         break;
 
                     case MCServerMessage.MessageType.StartupComplete:
+                        mOnlineUsers = new ArrayList();
                         OnServerStarted("Server started");
                         break;
 
                     case MCServerMessage.MessageType.UserCount:
-                        mUsersOnline = 0;
-                        int.TryParse(M.Data, out mUsersOnline);
-                        if ((mUsersOnline == 0) && (mServerStatus == Status.PendingRestart))
+                        if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingRestart))
                         {
                             RestartServer();
                         }
-                        if ((mUsersOnline == 0) && (mServerStatus == Status.PendingStop))
+                        if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingStop))
                         {
                             StopServer();
                         }
                         break;
 
                     case MCServerMessage.MessageType.UserList:
-                        mOnlineUserList = M.Data;
-                        mOnlineUserListReady = true;
+                        SetOnlineUserList(M.Data);
                         break;
 
+                    case MCServerMessage.MessageType.UserLoggedIn:
+
+                        break;
                 }
 
                 // raise an InfoMessage Event too
@@ -568,9 +612,30 @@ namespace EnigmaMM
         }
 
 
+        private void SetOnlineUserList(string userlist = null)
+        {
+            mOnlineUsers.Clear();
+            if (userlist.Length > 0)
+            {
+                mOnlineUsers.AddRange(userlist.Split(','));
+            }
+            mOnlineUserListReady = true;
+        }
+
+        #region Server Events
 
         /// <summary>
-        /// Called when the server process terminates.
+        /// Helper-method to raise ServerMessage Events from other places.
+        /// </summary>
+        /// <param name="Message">The message to throw</param>
+        internal void RaiseServerMessage(string Message)
+        {
+            ServerMessage(Message);
+        }
+
+        
+        /// <summary>
+        /// Called when the Minecraft server process terminates.
         /// </summary>
         /// <remarks>
         /// Don't put any logic in here, keep it in the standard onServerStopped event handler.</remarks>
@@ -578,12 +643,21 @@ namespace EnigmaMM
         /// <param name="args"></param>
         private void ServerExited(object sender, System.EventArgs args)
         {
+            SetOnlineUserList();
             OnServerStopped("Server Stopped");
         }
 
-        protected virtual void OnServerStarted(string Message)
+
+        /// <summary>
+        /// Called when the minecraft server has fully started.
+        /// </summary>
+        /// <remarks>
+        /// Raises event ServerStarted.
+        /// </remarks>
+        /// <param name="Message"></param>
+        private void OnServerStarted(string Message)
         {
-            mServerStatus = Status.Running;
+            ServerStatus = Status.Running;
             mServerProperties.Load();
             LoadSavedUserInfo();
             if (ServerStarted != null)
@@ -592,22 +666,39 @@ namespace EnigmaMM
             }
         }
 
-        protected virtual void OnServerStopped(string Message)
+
+        /// <summary>
+        /// Called when the Minecraft server has stopped.
+        /// </summary>
+        /// <remarks>Raises event ServerStopped.</remarks>
+        /// <param name="Message"></param>
+        private void OnServerStopped(string Message)
         {
-            mServerStatus = Status.Stopped;
+            ServerStatus = Status.Stopped;
+            SetOnlineUserList();
             if (ServerStopped != null)
             {
                 ServerStopped(Message);
             }
         }
 
-        protected virtual void OnServerError(string Message)
+
+        /// <summary>
+        /// Called when the minecraft server reports an error.
+        /// </summary>
+        /// <remarks>
+        /// Raises event ServerError.
+        /// </remarks>
+        /// <param name="Message">The error message.</param>
+        private void OnServerError(string Message)
         {
             if (ServerError != null)
             {
                 ServerError(Message);
             }
         }
+
+        #endregion
 
     }
 }

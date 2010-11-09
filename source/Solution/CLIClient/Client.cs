@@ -7,6 +7,15 @@ namespace EnigmaMM
     public class Client : CommsManager
     {
 
+        public Client()
+        {
+            this.ServerIP = Settings.ClientConnectIp;
+            this.ServerPort = Settings.ClientConnectPort;
+            this.Username = Settings.ServerUsername;
+            this.Password = Settings.ServerPassword;
+        }
+
+
         public void StartClient()
         {
             VerifySecurity();
