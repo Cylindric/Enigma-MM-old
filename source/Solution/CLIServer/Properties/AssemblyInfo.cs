@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Enigma Minecraft Manager")]
-[assembly: AssemblyCopyright("Copyright ©  2010 Mark Hanford")]
+[assembly: AssemblyCopyright("Copyright Mark Hanford ©  2010")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("24e5cc7d-f681-42f4-9107-3b53a1ab4c9a")]
+[assembly: Guid("f643df69-0a9f-424b-846a-40c76f500561")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Threading;
-using System.IO;
 
 namespace EnigmaMM
 {
-    class ClientProgram
+    class CLIClientProgram
     {
         private static CLIHelper mCLI = new CLIHelper();
         private static Client mClient = new Client();
@@ -17,12 +13,9 @@ namespace EnigmaMM
             Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.conf"));
             
             bool StartCLI = true;
+            bool StartGui = false;
 
             mClient.MessageReceived += HandleMessageReceived;
-            mClient.ServerIP = Settings.ClientConnectIp;
-            mClient.ServerPort = Settings.ClientConnectPort;
-            mClient.Username = Settings.ServerUsername;
-            mClient.Password = Settings.ServerPassword;
             mClient.StartClient();
 
             // If any commands were passed on the command-line, execute them and then quit
@@ -31,7 +24,14 @@ namespace EnigmaMM
                 StartCLI = false;
                 foreach (string arg in args)
                 {
-                    HandleCommand(arg);
+                    if (arg == "gui")
+                    {
+                        StartGui = true;
+                    }
+                    else
+                    {
+                        HandleCommand(arg);
+                    }
                 }
             }
 
@@ -47,6 +47,12 @@ namespace EnigmaMM
                 {
                     Thread.Sleep(1);
                 }
+            }
+
+            if (StartGui)
+            {
+                ConsoleForm gui = new ConsoleForm();
+                gui.Show();
             }
         }
 

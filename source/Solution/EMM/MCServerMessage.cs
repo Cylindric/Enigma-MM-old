@@ -20,10 +20,12 @@ namespace EnigmaMM
             StartupComplete,
             UserCount,
             UserList,
+            UserLoggedIn,
 
             // Hey0-specific types
             Hey0Banner,
 
+            // Anything else is an 'other'
             Other
         }
 
@@ -56,6 +58,7 @@ namespace EnigmaMM
             new MessagePattern(MessageType.SaveComplete, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Save Complete"),
             new MessagePattern(MessageType.ErrorPortBusy, MessagePattern.ENDSWITH, @"[WARNING] **** FAILED TO BIND TO PORT!"),
             new MessagePattern(MessageType.SaveStarted, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Forcing save.."),
+            new MessagePattern(MessageType.UserLoggedIn, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ (?<data>\w+?)\ \[(?<data2>.+?)]\ logged\ in$"),
             new MessagePattern(MessageType.AutoSaveEnabled, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Enabling level saving.."),
             new MessagePattern(MessageType.AutoSaveDisabled, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Disabling level saving.."),
             new MessagePattern(MessageType.UserList, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ Connected\ players:\ (?<data>.*?)$"),

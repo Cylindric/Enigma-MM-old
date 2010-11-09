@@ -23,6 +23,7 @@ namespace EnigmaMM
             this.Password = Settings.ServerPassword;
         }
 
+
         public void StartListener()
         {
             VerifySecurity();

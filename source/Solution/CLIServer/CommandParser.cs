@@ -32,6 +32,7 @@ namespace EnigmaMM
             switch (Command)
             {
                 case ("quit"):
+                    CLIServerProgram.mKeepRunning = false;
                     ParseCommand("stop");
                     break;
 
