@@ -8,7 +8,6 @@ namespace EnigmaMM
     public partial class ServerForm : Form
     {
         private int mMaxLogItems = 100;
-        private CommsServer mServer;
         private MCServer mMinecraft;
         private CommandParser mParser;
 
@@ -19,13 +18,12 @@ namespace EnigmaMM
             InitializeComponent();
         }
 
-        public ServerForm(CommsServer server)
+        public ServerForm(MCServer server)
         {
             InitializeComponent();
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-            mServer = server;
-            mMinecraft = server.Minecraft;
+            mMinecraft = server;
             mMinecraft.ServerMessage += HandleServerMessage;
             mMinecraft.StatusChanged += HandleServerStatus;
             mParser = new CommandParser(mMinecraft);

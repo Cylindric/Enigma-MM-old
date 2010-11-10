@@ -4,6 +4,11 @@ using System.Net.Sockets;
 
 namespace EnigmaMM
 {
+    /// <summary>
+    /// The CommsServer class handles all communication to and from the server.
+    /// It will listen on the configured port for client connections, and subsequently
+    /// send Minecraft output to the clients, and accept commands from the clients.
+    /// </summary>
     public class CommsServer : CommsManager
     {
         private bool mListening = false;
@@ -39,7 +44,21 @@ namespace EnigmaMM
             mSocketListener.BeginAccept(new AsyncCallback(HandleClientConnect), null);
             mListening = true;
         }
-        
+
+
+        public void StopListener()
+        {
+            if (mListening)
+            {
+                DisconnectAll();
+                if (mSocketListener.Connected)
+                {
+                    mSocketListener.Disconnect(false);
+                }
+                mSocketListener.Close();                
+            }
+        }
+
 
         private void HandleClientConnect(IAsyncResult asyn)
         {

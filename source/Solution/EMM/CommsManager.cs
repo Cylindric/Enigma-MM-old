@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Net.Sockets;
-using System.Text;
 using System.Collections;
 using System.Net;
+using System.Net.Sockets;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace EnigmaMM
 {

@@ -2,7 +2,7 @@
 
 namespace EnigmaMM
 {
-    class CommandParser
+    public class CommandParser
     {
         private MCServer mMinecraft;
 
@@ -33,6 +33,7 @@ namespace EnigmaMM
             {
                 case ("quit"):
                     ParseCommand("stop");
+                    mMinecraft.StopCommsServer();
                     break;
 
                 case ("start"):
