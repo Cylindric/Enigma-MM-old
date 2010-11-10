@@ -7,6 +7,10 @@ using System.Collections;
 
 namespace EnigmaMM
 {
+    /// <summary>
+    /// The main Server Manager class.
+    /// Keeps track of the server listener, and manages the Minecraft process.
+    /// </summary>
     public class MCServer
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
@@ -50,6 +54,9 @@ namespace EnigmaMM
         public event ServerMessageEventHandler ServerError;
         public event ServerMessageEventHandler StatusChanged;
 
+        /// <summary>
+        /// Valid status-states for the server manager's Minecraft instance.
+        /// </summary>
         public enum Status
         {
             Starting,
@@ -178,6 +185,9 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Starts the CommsServer listening for new connections.
+        /// </summary>
         public void StartCommsServer()
         {
             if (Settings.ServerListenIp.Equals("none", StringComparison.CurrentCultureIgnoreCase))
@@ -192,10 +202,14 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Stops the CommsServer from listening for new connections.
+        /// </summary>
         public void StopCommsServer()
         {
             mCommsServer.StopListener();
         }
+
 
         /// <summary>
         /// Reloads the Minecraft server properties files.

@@ -2,10 +2,18 @@
 
 namespace EnigmaMM
 {
-    public  class Settings
+    /// <summary>
+    /// Utility class for handling server manager configuration.
+    /// </summary>
+    /// <remarks>Should always be statically accessed.</remarks>
+    public class Settings
     {
         private static SettingsFile mSettings;
 
+        /// <summary>
+        /// Initialises the Settings class and loads the settings from the file specified.
+        /// </summary>
+        /// <param name="fileName">The full path to the settings file.</param>
         public static void Initialise(string fileName)
         {
             mSettings = new SettingsFile(fileName, '=');
@@ -15,59 +23,195 @@ namespace EnigmaMM
 
         #region Server Settings
 
+
+        /// <summary>
+        /// Returns the filename of the currently-used settings file.
+        /// </summary>
         public static string Filename
         {
             get { return mSettings.Filename; }
         }
 
+        /// <summary>
+        /// Returns the main root path to the server installation.  This is the parent folder within which
+        /// the other main folders usually exist.
+        /// </summary>
+        /// <remarks>Defaults to the parent folder of the one where EMM is running.</remarks>
         public static string ServerRoot
         {
             get { return Path.GetFullPath(mSettings.GetString("ServerRoot", @"..\")); }
         }
 
+
+        /// <summary>
+        /// Returns the full path to the Server Manager.
+        /// </summary>
+        /// <remarks>Defaults to <code>ServerManager</code>.</remarks>
         public static string ServerManagerRoot
         {
-            get { return Path.Combine(Path.GetFullPath(mSettings.GetString("ServerRoot", @"..\")), "ServerManager"); }
+            get { return Path.Combine(ServerRoot, "ServerManager"); }
         }
 
+
+        /// <summary>
+        /// Returns the IP address of the server to connect to when in client-mode.
+        /// </summary>
+        /// <remarks>Defaults to <code>localhost</code>.</remarks>
         public static string ClientConnectIp
         {
             get { return mSettings.GetString("ClientConnectIp", "localhost"); }
         }
 
+
+        /// <summary>
+        /// Returns the Port address of the server to connect to when in client-mode.
+        /// </summary>
+        /// <remarks>Defaults to <code>8221</code>.</remarks>
         public static int ClientConnectPort
         {
             get { return mSettings.GetInt("ClientConnectPort", 8221); }
         }
 
+
+        /// <summary>
+        /// Returns the IP address that the server should listen on when in server-mode.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to <code>any</code>.
+        /// Set to <code>none</code> to disable.
+        /// </remarks>
         public static string ServerListenIp
         {
             get { return mSettings.GetString("ServerListenIp", "any"); }
         }
 
+
+        /// <summary>
+        /// Returns the Port that the server should listen on when in server-mode.
+        /// </summary>
+        /// <remarks>Defaults to <code>8221</code>.</remarks>
         public static int ServerListenPort
         {
             get { return mSettings.GetInt("ServerListenPort", 8221); }
         }
 
+
+        /// <summary>
+        /// Returns the Username that the server and client should use to communicate.
+        /// </summary>
+        /// <remarks>Defaults to the invalid <code>changeme</code>.</remarks>
         public static string ServerUsername
         {
             get { return mSettings.GetString("ServerUsername", "changeme"); }
         }
 
+
+        /// <summary>
+        /// Returns the Password that the server and client should use to communicate.
+        /// </summary>
+        /// <remarks>Defaults to the invalid <code>changeme</code>.</remarks>
         public static string ServerPassword
         {
             get { return mSettings.GetString("ServerPassword", "changeme"); }
         }
 
+
+        /// <summary>
+        /// Returns the full path to the directory to use for cache files.
+        /// </summary>
+        /// <remarks>
+        /// Can be specified relative to ServerRoot or as an absolute path.
+        /// Defaults to <code>.\Cache</code>.
+        /// </remarks>
+        /// <example>.\Cache</example>
+        /// <example>C:\MC\Cache</example>
         public static string CacheRoot
         {
             get { return mSettings.GetRootedPath(ServerRoot, "CacheRoot", @".\Cache"); }
         }
 
+
+        /// <summary>
+        /// Returns the full path to the folder to use for backups.
+        /// </summary>
+        /// <remarks>
+        /// Can be specified relative to ServerRoot or as an absolute path.
+        /// Defaults to <code>.\Backups</code>.
+        /// </remarks>
+        /// <example>.\Backups</example>
+        /// <example>C:\MC\Backups</example>
+        /// <example>\\Servername\backups\Minecraft</example>
         public static string BackupRoot
         {
             get { return mSettings.GetRootedPath(ServerRoot, "BackupRoot", @".\Backups"); }
+        }
+
+        #endregion
+
+        #region Minecraft Server Settings
+
+        /// <summary>
+        /// Returns the full path to the folder where Minecraft is installed.
+        /// </summary>
+        /// <remarks>
+        /// Can be specified relative to ServerRoot or as an absolute path.
+        /// Defaults to <code>.\Minecraft</code>.
+        /// </remarks>
+        /// <example>.\Minecraft</example>
+        /// <example>C:\MC\Minecraft</example>
+        public static string MinecraftRoot
+        {
+            get { return mSettings.GetRootedPath(ServerRoot, "MinecraftRoot", @".\Minecraft"); }
+        }
+
+
+        /// <summary>
+        /// Returns the executable to execute the Java files.
+        /// </summary>
+        /// <remarks>
+        /// Must be either the full path to the executable, 
+        /// or the executable name must be in the global system PATH.
+        /// Defaults to <code>java.exe</code>.
+        /// </remarks>
+        /// <example>java.exe</example>
+        /// <example>c:\Program Files\Java\jre6\bin\java.exe</example>
+        public static string JavaExec
+        {
+            get { return mSettings.GetString("JavaExec", "java.exe"); }
+        }
+
+
+        /// <summary>
+        /// Returns the jar to use to launch Minecraft.
+        /// </summary>
+        /// <remarks>
+        /// Must be the name of a Java jar file that is in the MinecraftRoot
+        /// Defaults to <code>minecraft_server.jar</code>.
+        /// </remarks>
+        /// <example>minecraft_server.jar</example>
+        /// <example>Minecraft_Mod.jar</example>
+        public static string ServerJar
+        {
+            get { return mSettings.GetString("ServerJar", "minecraft_server.jar"); }
+        }
+
+
+        /// <summary>
+        /// Returns the initial amount of memory, in megabytes, to allocate to the Java heap.
+        /// </summary>
+        /// <remarks>Defaults to <code>1024</code> (1Gb).</remarks>
+        public static int JavaHeapInit
+        {
+            get { return mSettings.GetInt("JavaHeapInit", 1024); }
+        }
+
+        /// <summary>
+        /// Returns the maximum amount of memory, in megabytes, to allow the Java heap.
+        /// </summary>
+        /// <remarks>Defaults to <code>1024</code> (1Gb).</remarks>
+        public static int JavaHeapMax
+        {
+            get { return mSettings.GetInt("JavaHeapMax", 1024); }
         }
 
         #endregion
@@ -83,34 +227,6 @@ namespace EnigmaMM
         {
             get { return mSettings.GetInt("OptimisePng", 3); }
         }
-        #endregion
-
-        #region Minecraft Server Settings
-
-        public static string MinecraftRoot
-        {
-            get { return mSettings.GetRootedPath(ServerRoot, "MinecraftRoot", @".\Minecraft"); }
-        }
-
-        public static string JavaExec {
-            get { return mSettings.GetString("JavaExec", "java.exe"); }
-        }
-
-        public static string ServerJar
-        {
-            get { return mSettings.GetString("ServerJar", "minecraft_server.jar"); }
-        }
-
-        public static int JavaHeapInit
-        {
-            get { return mSettings.GetInt("JavaHeapInit", 1024); }
-        }
-
-        public static int JavaHeapMax
-        {
-            get { return mSettings.GetInt("JavaHeapMax", 1024); }
-        }
-
         #endregion
 
         #region AlphaVespucci Settings
