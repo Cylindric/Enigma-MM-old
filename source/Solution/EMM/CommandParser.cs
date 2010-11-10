@@ -2,6 +2,11 @@
 
 namespace EnigmaMM
 {
+    /// <summary>
+    /// The CommandParser is a simple tool for converting user input into Server Manager or
+    /// Minecraft commands.
+    /// </summary>
+    /// <remarks>Any unrecognised commands are passed up to Minecraft to process directly.</remarks>
     public class CommandParser
     {
         private MCServer mMinecraft;
@@ -16,16 +21,6 @@ namespace EnigmaMM
         /// Handle a command from the CLI.
         /// Commands for the server manager are prefixed with the command-character.
         /// </summary>
-        /// <remarks>
-        /// quit: shutdown the Minecraft server and then exit the Server Manager.
-        /// start: start the Minecraft server.
-        /// stop: stop the Minecraft server.
-        /// stop-graceful: Stop the Minecraft server as soon as no users are online.
-        /// restart: Restart the Minecraft server.
-        /// restart-graceful: Restart the Minecraft server as soon as no users are online.
-        /// abort-graceful: Abort a pending graceful stop or restart.
-        /// generate-maps: Regenerate maps.
-        /// </remarks>
         /// <param name="Command">The command to parse.</param>
         public void ParseCommand(String Command)
         {

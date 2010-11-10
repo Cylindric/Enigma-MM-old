@@ -13,6 +13,9 @@ namespace EnigmaMM
     {
         private bool mListening = false;
 
+        /// <summary>
+        /// Returns wether or not the server is currently listening for connections.
+        /// </summary>
         public bool Listening
         {
             get { return mListening; }
@@ -46,6 +49,9 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Stops the server from listening for new connections.
+        /// </summary>
         public void StopListener()
         {
             if (mListening)
