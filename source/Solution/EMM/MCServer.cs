@@ -25,8 +25,8 @@ namespace EnigmaMM
         private string mServerJar = "minecraft_server.jar";
         private int mJavaHeapInit = 1024;
         private int mJavaHeapMax = 1024;
-        private bool mServerRunningHey0 = false;
-        private int mHey0version = 0;
+        private bool mServerRunningHMod = false;
+        private int mHModversion = 0;
         private ArrayList mSavedUsers = new ArrayList();
         private ArrayList mOnlineUsers = new ArrayList();
 
@@ -568,10 +568,10 @@ namespace EnigmaMM
                         ForceShutdown();
                         break;
 
-                    case MCServerMessage.MessageType.Hey0Banner:
-                        ServerMessage("Hey0 mod detected");
-                        mServerRunningHey0 = true;
-                        int.TryParse(M.Data, out mHey0version);
+                    case MCServerMessage.MessageType.HModBanner:
+                        ServerMessage("Hey0 hMod detected");
+                        mServerRunningHMod = true;
+                        int.TryParse(M.Data, out mHModversion);
                         break;
 
                     case MCServerMessage.MessageType.SaveComplete:

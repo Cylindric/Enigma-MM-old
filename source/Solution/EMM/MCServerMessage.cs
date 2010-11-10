@@ -23,7 +23,7 @@ namespace EnigmaMM
             UserLoggedIn,
 
             // Hey0-specific types
-            Hey0Banner,
+            HModBanner,
 
             // Anything else is an 'other'
             Other
@@ -66,7 +66,7 @@ namespace EnigmaMM
             new MessagePattern(MessageType.MinecraftBanner, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ Starting\ minecraft\ server\ version\ (?<data>.*?)$"),
 
             // Hey0-specific messages
-            new MessagePattern(MessageType.Hey0Banner, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ Hey0\ Server\ Mod\ Build\ (?<data>.*?)$"),
+            new MessagePattern(MessageType.HModBanner, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ Hey0\ Server\ Mod\ Build\ (?<data>.*?)$"),
         };
 
 
