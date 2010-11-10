@@ -8,7 +8,7 @@ namespace EnigmaMM
 {
     class CLIServerProgram
     {
-        static EnigmaMM.Server mServer;
+        static EnigmaMM.CommsServer mServer;
         static MCServer mMinecraft;
         static CLIHelper mCLI;
         static CommandParser mParser;
@@ -21,7 +21,7 @@ namespace EnigmaMM
             mCLI = new CLIHelper();
 
             // Start the server up and begin listening for connections
-            mServer = new Server();
+            mServer = new CommsServer();
             mServer.MessageReceived += HandleClientCommand;
             mServer.RemoteConnection += HandleClientConnected;
             mServer.RemoteDisconnection += HandleClientConnected;

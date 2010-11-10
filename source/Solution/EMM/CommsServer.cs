@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Collections;
 
 namespace EnigmaMM
 {
-    public class Server : CommsManager
+    public class CommsServer : CommsManager
     {
         private bool mListening = false;
 
@@ -15,15 +13,20 @@ namespace EnigmaMM
             get { return mListening; }
         }
 
-        public Server()
+        /// <summary>
+        /// Constructor for Server.
+        /// </summary>
+        public CommsServer()
         {
-            this.ServerIP = Settings.ServerListenIp;
-            this.ServerPort = Settings.ServerListenPort;
-            this.Username = Settings.ServerUsername;
-            this.Password = Settings.ServerPassword;
+            ServerIP = Settings.ServerListenIp;
+            ServerPort = Settings.ServerListenPort;
+            Username = Settings.ServerUsername;
+            Password = Settings.ServerPassword;
         }
 
-
+        /// <summary>
+        /// Starts the Server Manager listening on the configured address and port.
+        /// </summary>
         public void StartListener()
         {
             VerifySecurity();
@@ -44,9 +47,9 @@ namespace EnigmaMM
             {
                 OnRemoteConnection("Client connected");
                 Socket WorkerSocket = mSocketListener.EndAccept(asyn);
-                mSocketList.Add(WorkerSocket);
+                SocketList.Add(WorkerSocket);
                 SendData(WorkerSocket, "Connected to server");
-                WaitForData(WorkerSocket, mConnectionCount);
+                WaitForData(WorkerSocket, Connections);
                 mSocketListener.BeginAccept(new AsyncCallback(HandleClientConnect), null);
             }
             catch (ObjectDisposedException e)

@@ -8,7 +8,8 @@ namespace EnigmaMM
     public partial class ServerForm : Form
     {
         private int mMaxLogItems = 100;
-        private MCServer mMCServer;
+        private CommsServer mServer;
+        private MCServer mMinecraft;
         private CommandParser mParser;
 
         delegate void HandleServerMessageDelegate(string message);
@@ -18,15 +19,16 @@ namespace EnigmaMM
             InitializeComponent();
         }
 
-        public ServerForm(MCServer server)
+        public ServerForm(CommsServer server)
         {
             InitializeComponent();
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-            mMCServer = server;
-            mMCServer.ServerMessage += HandleServerMessage;
-            mMCServer.StatusChanged += HandleServerStatus;
-            mParser = new CommandParser(mMCServer);
+            mServer = server;
+            mMinecraft = server.Minecraft;
+            mMinecraft.ServerMessage += HandleServerMessage;
+            mMinecraft.StatusChanged += HandleServerStatus;
+            mParser = new CommandParser(mMinecraft);
             UpdateServerMetrics();
         }
 
@@ -40,17 +42,17 @@ namespace EnigmaMM
         private void UpdateServerMetrics()
         {
             UpdateServerStatus();
-            uxStatusUsersOnlineLabel.Text = string.Format("Users: {0}", mMCServer.OnlineUserCount);
+            uxStatusUsersOnlineLabel.Text = string.Format("Users: {0}", mMinecraft.OnlineUserCount);
 
         }
 
         private void UpdateServerStatus()
         {
-            uxStatusServerStatusLabel.Text = mMCServer.CurrentStatus.ToString();
+            uxStatusServerStatusLabel.Text = mMinecraft.CurrentStatus.ToString();
             uxStartButton.Enabled = false;
             uxStopButton.Enabled = false;
             uxRestartButton.Enabled = false;
-            switch (mMCServer.CurrentStatus)
+            switch (mMinecraft.CurrentStatus)
             {
                 case MCServer.Status.Starting:
                     break;
@@ -135,18 +137,18 @@ namespace EnigmaMM
 
         private void uxStartButton_Click(object sender, EventArgs e)
         {
-            mMCServer.StartServer();
+            mMinecraft.StartServer();
         }
 
         private void uxStopButton_Click(object sender, EventArgs e)
         {
             if (uxGracefulCheck.Checked)
             {
-                mMCServer.GracefulStop();
+                mMinecraft.GracefulStop();
             }
             else
             {
-                mMCServer.StopServer();
+                mMinecraft.StopServer();
             }
         }
 
@@ -154,11 +156,11 @@ namespace EnigmaMM
         {
             if (uxGracefulCheck.Checked)
             {
-                mMCServer.GracefulRestart();
+                mMinecraft.GracefulRestart();
             }
             else
             {
-                mMCServer.RestartServer();
+                mMinecraft.RestartServer();
             }
         }
 
