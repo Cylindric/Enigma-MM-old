@@ -81,6 +81,11 @@ namespace EnigmaMM
             get { return mData; }
         }
 
+        public string Message
+        {
+            get { return mMessage; }
+        }
+
         public MCServerMessage(string msg)
         {
             mMessage = msg;

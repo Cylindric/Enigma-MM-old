@@ -11,7 +11,7 @@ namespace EnigmaMM
         [STAThread]
         static void Main(string[] args)
         {
-            CommsServer server = new CommsServer();
+            MCServer server = new MCServer();
 
             bool showGui = true;
             foreach(string arg in args)
@@ -29,7 +29,8 @@ namespace EnigmaMM
                 Application.Run(new ServerForm(server));
             }
 
-            while (server.ComStatus != CommsManager.Status.Finished)
+            // Idle for as long as the server is still listening for remote commands
+            while (server.Listening)
             {
                 System.Threading.Thread.Sleep(100);
             }

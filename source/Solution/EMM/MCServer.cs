@@ -15,6 +15,8 @@ namespace EnigmaMM
         private Status mServerStatus;
         private string mStatusMessage;
         private bool mOnlineUserListReady = false;
+        private CommsServer mCommsServer;
+        private CommandParser mParser;
 
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
@@ -125,6 +127,11 @@ namespace EnigmaMM
             get { return mOnlineUsers; }
         }
 
+        public bool Listening
+        {
+            get { return mCommsServer.Listening; }
+        }
+
         #endregion
 
         private Status ServerStatus
@@ -138,6 +145,7 @@ namespace EnigmaMM
             }
         }
 
+
         /// <summary>
         /// Server Constructor
         /// </summary>
@@ -145,11 +153,13 @@ namespace EnigmaMM
         {
             Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.conf"));
 
-            mServerProperties = new MCServerProperties(); 
-            
-            ServerStatus = Status.Stopped;
+            mServerProperties = new MCServerProperties();
+            mCommsServer = new CommsServer();
+            mParser = new CommandParser(this);
             mMapAlphaVespucci = new AlphaVespucci(this);
             mMapOverviewer = new Overviewer(this);
+
+            ServerStatus = Status.Stopped;
             mServerRoot = Settings.MinecraftRoot;
             mJavaExec = Settings.JavaExec;
             mServerJar = Settings.ServerJar;
@@ -160,10 +170,32 @@ namespace EnigmaMM
             AlphaVespucciInstalled = Settings.AlphaVespucciInstalled;
             OverviewerInstalled = Settings.OverviewerInstalled;
 
-            // See if we need to swap in a new config file, and load current config
+            // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
+
+            // Determine if the communications listener should be started.
+            StartCommsServer();
         }
 
+
+        public void StartCommsServer()
+        {
+            if (Settings.ServerListenIp.Equals("none", StringComparison.CurrentCultureIgnoreCase))
+            {
+                RaiseServerMessage("Bypassing RCON due to user preference");
+            }
+            else
+            {
+                mCommsServer.StartListener();
+                mCommsServer.MessageReceived += OnRemoteCommandReceived;
+            }
+        }
+
+
+        public void StopCommsServer()
+        {
+            mCommsServer.StopListener();
+        }
 
         /// <summary>
         /// Reloads the Minecraft server properties files.
@@ -545,69 +577,75 @@ namespace EnigmaMM
         /// <param name="OutLine"></param>
         private void ServerOutputHandler(object sender, DataReceivedEventArgs OutLine)
         {
-            string T = null;
-            if ((OutLine.Data != null))
+            if (OutLine.Data == null)
             {
-                T = OutLine.Data;
-                MCServerMessage M = new MCServerMessage(T);
+                return;
+            }
 
-                switch (M.Type)
-                {
-                    case MCServerMessage.MessageType.AutoSaveEnabled:
-                        mAutoSaveEnabled = true;
-                        break;
+            MCServerMessage M = new MCServerMessage(OutLine.Data);
 
-                    case MCServerMessage.MessageType.AutoSaveDisabled:
-                        mAutoSaveEnabled = false;
-                        break;
+            switch (M.Type)
+            {
+                case MCServerMessage.MessageType.AutoSaveEnabled:
+                    mAutoSaveEnabled = true;
+                    break;
 
-                    case MCServerMessage.MessageType.ErrorPortBusy:
-                        OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
-                        ServerStatus = Status.Failed;
-                        mStatusMessage = T;
-                        ForceShutdown();
-                        break;
+                case MCServerMessage.MessageType.AutoSaveDisabled:
+                    mAutoSaveEnabled = false;
+                    break;
 
-                    case MCServerMessage.MessageType.HModBanner:
-                        ServerMessage("Hey0 hMod detected");
-                        mServerRunningHMod = true;
-                        int.TryParse(M.Data, out mHModversion);
-                        break;
+                case MCServerMessage.MessageType.ErrorPortBusy:
+                    OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
+                    ServerStatus = Status.Failed;
+                    mStatusMessage = M.Message;
+                    ForceShutdown();
+                    break;
 
-                    case MCServerMessage.MessageType.SaveComplete:
-                        LoadSavedUserInfo();
-                        break;
+                case MCServerMessage.MessageType.HModBanner:
+                    ServerMessage("Hey0 hMod detected");
+                    mServerRunningHMod = true;
+                    int.TryParse(M.Data, out mHModversion);
+                    break;
 
-                    case MCServerMessage.MessageType.StartupComplete:
-                        mOnlineUsers = new ArrayList();
-                        OnServerStarted("Server started");
-                        break;
+                case MCServerMessage.MessageType.SaveComplete:
+                    LoadSavedUserInfo();
+                    break;
 
-                    case MCServerMessage.MessageType.UserCount:
-                        if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingRestart))
-                        {
-                            RestartServer();
-                        }
-                        if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingStop))
-                        {
-                            StopServer();
-                        }
-                        break;
+                case MCServerMessage.MessageType.StartupComplete:
+                    mOnlineUsers = new ArrayList();
+                    OnServerStarted("Server started");
+                    break;
 
-                    case MCServerMessage.MessageType.UserList:
-                        SetOnlineUserList(M.Data);
-                        break;
+                case MCServerMessage.MessageType.UserCount:
+                    if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingRestart))
+                    {
+                        RestartServer();
+                    }
+                    if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingStop))
+                    {
+                        StopServer();
+                    }
+                    break;
 
-                    case MCServerMessage.MessageType.UserLoggedIn:
+                case MCServerMessage.MessageType.UserList:
+                    SetOnlineUserList(M.Data);
+                    break;
 
-                        break;
-                }
+                case MCServerMessage.MessageType.UserLoggedIn:
 
-                // raise an InfoMessage Event too
-                if (ServerMessage != null)
-                {
-                    ServerMessage(OutLine.Data);
-                }
+                    break;
+            }
+
+            // send the output to the comms server
+            if (mCommsServer.Listening)
+            {
+                mCommsServer.SendData(M.Message);
+            }
+
+            // raise an InfoMessage Event too
+            if (ServerMessage != null)
+            {
+                ServerMessage(M.Message);
             }
         }
 
@@ -623,6 +661,12 @@ namespace EnigmaMM
         }
 
         #region Server Events
+
+
+        internal void OnRemoteCommandReceived(string command)
+        {
+            mParser.ParseCommand(command);
+        }
 
         /// <summary>
         /// Helper-method to raise ServerMessage Events from other places.
