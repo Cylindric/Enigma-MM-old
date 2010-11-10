@@ -9,10 +9,10 @@ namespace EnigmaMM
 
         public Client()
         {
-            this.ServerIP = Settings.ClientConnectIp;
-            this.ServerPort = Settings.ClientConnectPort;
-            this.Username = Settings.ServerUsername;
-            this.Password = Settings.ServerPassword;
+            ServerIP = Settings.ClientConnectIp;
+            ServerPort = Settings.ClientConnectPort;
+            Username = Settings.ServerUsername;
+            Password = Settings.ServerPassword;
         }
 
 
@@ -27,11 +27,11 @@ namespace EnigmaMM
 
             if (socket.Connected)
             {
-                mSocketList.Add(socket);
+                SocketList.Add(socket);
 
                 // first two commands must be the username and password
-                SendData(CreateHash(mUsername));
-                SendData(CreateHash(mPassword));
+                SendData(CreateHash(Username));
+                SendData(CreateHash(Password));
 
                 WaitForData(socket, 0);
             }

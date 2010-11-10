@@ -9,14 +9,24 @@ namespace EnigmaMM
 {
     public class CommsManager
     {
-        protected String mServerAddress = "any";
-        protected int mServerPort = 8221;
+        public enum Status
+        {
+            Starting,
+            Running,
+            Stopping,
+            Stopped,
+            Finished
+        }
+
+        public Status mStatus = Status.Stopped;
+        private String mServerAddress = "any";
+        private int mServerPort = 8221;
         protected Socket mSocketListener;
-        protected string mUsername = "";
-        protected string mPassword = "";
-        protected String mData;
-        protected int mConnectionCount = 0;
-        protected ArrayList mSocketList = new ArrayList();
+        private string mUsername = "";
+        private string mPassword = "";
+        private String mData;
+        private int mConnectionCount = 0;
+        private ArrayList mSocketList = new ArrayList();
 
         private AsyncCallback pfnWorkerCallBack;
         private const string TERMINATOR = "\n";
@@ -26,30 +36,64 @@ namespace EnigmaMM
         public event ServerMessageEventHandler RemoteConnection;
         public event ServerMessageEventHandler RemoteDisconnection;
 
+        /// <summary>
+        /// Gets the current status of this CommsManager.
+        /// </summary>
+        public Status ComStatus
+        {
+            get { return mStatus; }
+        }
+
+        /// <summary>
+        /// Gets the number of current active connections.
+        /// </summary>
         public int Connections
         {
             get { return mConnectionCount; }
         }
 
+        /// <summary>
+        /// Gets the current list of used sockets.
+        /// </summary>
+        /// <remarks>Note that the SocketList can contain null objects from closed sockets.</remarks>
+        protected ArrayList SocketList
+        {
+            get { return mSocketList; }
+        }
+
+        /// <summary>
+        /// Gets or sets the ip address to use for making or accepting connections.
+        /// </summary>
         public String ServerIP
         {
             get { return mServerAddress; }
             set { mServerAddress = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the port to use for making or accepting connections.
+        /// </summary>
         public int ServerPort
         {
             get { return mServerPort; }
             set { mServerPort = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the username to use to authenticate connections.
+        /// </summary>
         public string Username
         {
+            get { return mUsername; }
             set { mUsername = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the password to use to authenticate connections.
+        /// </summary>
         public string Password
         {
+            get { return mPassword; }
             set { mPassword = value; }
         }
 
@@ -223,7 +267,10 @@ namespace EnigmaMM
             }
         }
 
-
+        /// <summary>
+        /// Checks that current settings meet minimum security requirements.
+        /// </summary>
+        /// <exception cref="UnauthorizedAccessException">Username and/or password not supplied, or invalid.</exception>
         protected void VerifySecurity() {
             if ((mUsername == "") || (mUsername == "changeme"))
             {
@@ -277,7 +324,11 @@ namespace EnigmaMM
             return new IPEndPoint(address, mServerPort);
         }
 
-
+        /// <summary>
+        /// Creates a simple MD5 hash of the supplied string.
+        /// </summary>
+        /// <param name="message">The string to hash</param>
+        /// <returns>The hash of the supplied string</returns>
         protected string CreateHash(string message)
         {
             byte[] src;
@@ -294,6 +345,12 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Compares the two supplied hashes and returns true if they are the same, else returns false.
+        /// </summary>
+        /// <param name="h1">The first hash</param>
+        /// <param name="h2">The second hash</param>
+        /// <returns>True if h1 equals h2; else False</returns>
         protected bool CompareHashes(string h1, string h2)
         {
             bool areEqual = false;
