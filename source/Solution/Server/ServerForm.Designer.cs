@@ -39,6 +39,8 @@
             this.uxStatusUsersOnlineLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.uxLogListview = new System.Windows.Forms.ListView();
             this.Message = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.uxUserListview = new System.Windows.Forms.ListView();
+            this.Username = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.uxButtonsFlowLayout.SuspendLayout();
             this.uxStatusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -104,7 +106,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.uxCommandInput.Location = new System.Drawing.Point(88, 197);
             this.uxCommandInput.Name = "uxCommandInput";
-            this.uxCommandInput.Size = new System.Drawing.Size(396, 20);
+            this.uxCommandInput.Size = new System.Drawing.Size(327, 20);
             this.uxCommandInput.TabIndex = 1;
             this.uxCommandInput.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.uxCommandInput_PreviewKeyDown);
             // 
@@ -115,14 +117,14 @@
             this.uxStatusUsersOnlineLabel});
             this.uxStatusStrip.Location = new System.Drawing.Point(0, 220);
             this.uxStatusStrip.Name = "uxStatusStrip";
-            this.uxStatusStrip.Size = new System.Drawing.Size(603, 22);
+            this.uxStatusStrip.Size = new System.Drawing.Size(534, 22);
             this.uxStatusStrip.TabIndex = 1;
             this.uxStatusStrip.Text = "statusStrip1";
             // 
             // uxStatusServerStatusLabel
             // 
             this.uxStatusServerStatusLabel.Name = "uxStatusServerStatusLabel";
-            this.uxStatusServerStatusLabel.Size = new System.Drawing.Size(541, 17);
+            this.uxStatusServerStatusLabel.Size = new System.Drawing.Size(472, 17);
             this.uxStatusServerStatusLabel.Spring = true;
             this.uxStatusServerStatusLabel.Text = "Status";
             // 
@@ -141,7 +143,7 @@
             this.Message});
             this.uxLogListview.Location = new System.Drawing.Point(88, 3);
             this.uxLogListview.Name = "uxLogListview";
-            this.uxLogListview.Size = new System.Drawing.Size(396, 188);
+            this.uxLogListview.Size = new System.Drawing.Size(327, 188);
             this.uxLogListview.TabIndex = 2;
             this.uxLogListview.UseCompatibleStateImageBehavior = false;
             this.uxLogListview.View = System.Windows.Forms.View.Details;
@@ -151,11 +153,29 @@
             this.Message.Text = "Message";
             this.Message.Width = 323;
             // 
+            // uxUserListview
+            // 
+            this.uxUserListview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.uxUserListview.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Username});
+            this.uxUserListview.Location = new System.Drawing.Point(419, 3);
+            this.uxUserListview.Name = "uxUserListview";
+            this.uxUserListview.Size = new System.Drawing.Size(103, 188);
+            this.uxUserListview.TabIndex = 3;
+            this.uxUserListview.UseCompatibleStateImageBehavior = false;
+            this.uxUserListview.View = System.Windows.Forms.View.Details;
+            // 
+            // Username
+            // 
+            this.Username.Text = "Username";
+            // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(603, 242);
+            this.ClientSize = new System.Drawing.Size(534, 242);
+            this.Controls.Add(this.uxUserListview);
             this.Controls.Add(this.uxLogListview);
             this.Controls.Add(this.uxButtonsFlowLayout);
             this.Controls.Add(this.uxCommandInput);
@@ -163,6 +183,8 @@
             this.MinimumSize = new System.Drawing.Size(550, 280);
             this.Name = "ServerForm";
             this.Text = "EMM Server";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ServerForm_FormClosing);
+            this.Load += new System.EventHandler(this.ServerForm_Load);
             this.uxButtonsFlowLayout.ResumeLayout(false);
             this.uxButtonsFlowLayout.PerformLayout();
             this.uxStatusStrip.ResumeLayout(false);
@@ -185,6 +207,8 @@
         private System.Windows.Forms.CheckBox uxGracefulCheck;
         private System.Windows.Forms.ToolStripStatusLabel uxStatusUsersOnlineLabel;
         private System.Windows.Forms.ColumnHeader Message;
+        private System.Windows.Forms.ListView uxUserListview;
+        private System.Windows.Forms.ColumnHeader Username;
     }
 }
 
