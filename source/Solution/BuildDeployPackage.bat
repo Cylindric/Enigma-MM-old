@@ -43,11 +43,18 @@ IF NOT EXIST "%BACKUPROOT%" MKDIR "%BACKUPROOT%"
 
 ::Copy the files we need to the package
 ECHO Copying files...
+
+::The readme file
 XCOPY /Y ..\..\readme.txt %MCSROOT%
-XCOPY /Y Build\ServerManager\*.dll "%SMROOT%"
-XCOPY /Y Build\ServerManager\*.exe "%SMROOT%"
-XCOPY /Y Build\ServerManager\*.txt "%SMROOT%"
-ERASE /F /Q "%SMROOT%\*.vshost.exe"
+
+::The EMM core files
+XCOPY /Y EMM\bin\Release\emm.dll "%SMROOT%"
+XCOPY /Y Server\bin\Release\server.exe "%SMROOT%"
+
+::The 3rd party stuff
+XCOPY /Y EMM\libs\*.* "%SMROOT%"
+XCOPY /Y LibNbt\bin\Release\LibNbt.dll "%SMROOT%"
+XCOPY /Y LibNbt\bin\Release\LibNbt.txt "%SMROOT%"
 
 :: Copy the config from the source folder, not the build folder, to ensure
 :: we don't get any modified-for-test versions

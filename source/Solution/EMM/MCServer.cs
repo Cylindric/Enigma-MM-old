@@ -714,7 +714,10 @@ namespace EnigmaMM
         /// <param name="Message">The message to throw</param>
         internal void RaiseServerMessage(string Message)
         {
-            ServerMessage(Message);
+            if (ServerMessage != null)
+            {
+                ServerMessage(Message);
+            }
         }
 
         

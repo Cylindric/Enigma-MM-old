@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using EnigmaMM;
 using System.Drawing;
 using System.Collections;
+using System.Threading;
 
 namespace EnigmaMM
 {
@@ -41,21 +42,18 @@ namespace EnigmaMM
         private void UpdateServerMetrics()
         {
             UpdateServerStatus();
-            UpdateOnlineUsers();
             uxStatusUsersOnlineLabel.Text = string.Format("Users: {0}", mMinecraft.OnlineUserCount);
-
         }
 
-        private void UpdateOnlineUsers()
+        private void UpdateOnlineUsers(ArrayList onlineUsers)
         {
             ArrayList changeusers = new ArrayList();
-
-            uxUserListview ;//.DataBindings.Add(new Binding("Items", mMinecraft.OnlineUserList
+            bool resort = false;
 
             // remove old users
             foreach (ListViewItem olduser in uxUserListview.Items)
             {
-                if (!mMinecraft.OnlineUserList.Contains(olduser.Text))
+                if (!onlineUsers.Contains(olduser.Text))
                 {
                     changeusers.Add(olduser);
                 }
@@ -68,9 +66,9 @@ namespace EnigmaMM
 
 
             // add new users
-            for (int i = 0; i < mMinecraft.OnlineUserList.Count; i++)
+            for (int i = 0; i < onlineUsers.Count; i++)
             {
-                string mcuser = mMinecraft.OnlineUserList[i].ToString();
+                string mcuser = onlineUsers[i].ToString();
                 if (!uxUserListview.Items.ContainsKey(mcuser))
                 {
                     changeusers.Add(mcuser);
@@ -81,10 +79,18 @@ namespace EnigmaMM
             {
                 ListViewItem item = new ListViewItem();
                 item.Text = newuser;
+                item.Name = newuser;
                 uxUserListview.Items.Add(item);
+                resort = true;
             }
             changeusers.Clear();
+
+            if (resort)
+            {
+                uxUserListview.Sort();
+            }
         }
+
 
         private void UpdateServerStatus()
         {

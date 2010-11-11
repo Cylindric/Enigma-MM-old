@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLIClient", "CLIClient\CLIC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{76AD0F91-8551-457C-B447-6F9A5B57E7A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server2", "Server2\Server2.csproj", "{FA641914-FBA9-4109-A9A6-A7C9CC356739}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,16 @@ Global
 		{76AD0F91-8551-457C-B447-6F9A5B57E7A2}.Release|Mixed Platforms.Build.0 = Release|x86
 		{76AD0F91-8551-457C-B447-6F9A5B57E7A2}.Release|x86.ActiveCfg = Release|x86
 		{76AD0F91-8551-457C-B447-6F9A5B57E7A2}.Release|x86.Build.0 = Release|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|x86.ActiveCfg = Debug|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|x86.Build.0 = Debug|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|Any CPU.ActiveCfg = Release|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|Mixed Platforms.Build.0 = Release|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|x86.ActiveCfg = Release|x86
+		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
