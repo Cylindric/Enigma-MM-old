@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using EnigmaMM;
 using System.Drawing;
+using System.Collections;
 
 namespace EnigmaMM
 {
@@ -40,8 +41,49 @@ namespace EnigmaMM
         private void UpdateServerMetrics()
         {
             UpdateServerStatus();
+            UpdateOnlineUsers();
             uxStatusUsersOnlineLabel.Text = string.Format("Users: {0}", mMinecraft.OnlineUserCount);
 
+        }
+
+        private void UpdateOnlineUsers()
+        {
+            ArrayList changeusers = new ArrayList();
+
+            uxUserListview ;//.DataBindings.Add(new Binding("Items", mMinecraft.OnlineUserList
+
+            // remove old users
+            foreach (ListViewItem olduser in uxUserListview.Items)
+            {
+                if (!mMinecraft.OnlineUserList.Contains(olduser.Text))
+                {
+                    changeusers.Add(olduser);
+                }
+            }
+            foreach(ListViewItem olduser in changeusers)
+            {
+                uxUserListview.Items.Remove(olduser);
+            }
+            changeusers.Clear();
+
+
+            // add new users
+            for (int i = 0; i < mMinecraft.OnlineUserList.Count; i++)
+            {
+                string mcuser = mMinecraft.OnlineUserList[i].ToString();
+                if (!uxUserListview.Items.ContainsKey(mcuser))
+                {
+                    changeusers.Add(mcuser);
+                }
+            }
+
+            foreach(string newuser in changeusers)
+            {
+                ListViewItem item = new ListViewItem();
+                item.Text = newuser;
+                uxUserListview.Items.Add(item);
+            }
+            changeusers.Clear();
         }
 
         private void UpdateServerStatus()
@@ -168,6 +210,26 @@ namespace EnigmaMM
             {
                 SendServerCommand(uxCommandInput.Text);
                 uxCommandInput.Text = "";
+            }
+        }
+
+        private void ServerForm_Load(object sender, EventArgs e)
+        {
+            if(mMinecraft.Listening)
+            {
+                AddMessageToLog(MessageType.ServerMessage, "Server is listening for remote commands");
+            }
+        }
+
+        private void ServerForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (mMinecraft.CurrentStatus != MCServer.Status.Stopped)
+            {
+                // Form is closing, but server is still running!
+                // Attempt to stop the server, if after 30 seconds it has not stopped,
+                // force it.
+                mMinecraft.StopServer(30000, true);
+
             }
         }
 

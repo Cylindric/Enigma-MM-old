@@ -21,6 +21,8 @@ namespace EnigmaMM
         private bool mOnlineUserListReady = false;
         private CommsServer mCommsServer;
         private CommandParser mParser;
+        private bool mServerSaving = false;
+
 
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
@@ -302,12 +304,31 @@ namespace EnigmaMM
         /// <summary>
         /// Shuts down the running Server.
         /// </summary>
-        public void StopServer()
+        /// <param name="timeout">
+        /// Time in milliseconds to wait for the command to complete.
+        /// Set to zero to return immediately, thus essentially running the command asynchronously.
+        /// </param>
+        /// <param name="force">
+        /// If set to true, and a timeout is specified, if the server is still running after 
+        /// the timeout it will be forcefully terminated.
+        /// </param>
+        public void StopServer(int timeout = 0, bool force = false)
         {
+            bool forceable = (timeout > 0);
+
             if (mServerStatus == Status.Running)
             {
                 ServerStatus = Status.Stopping;
                 SendCommand("stop");
+                while ((timeout > 0) && (mServerStatus != Status.Stopped))
+                {
+                    timeout -= 100;
+                    Thread.Sleep(100);
+                }
+                if ((forceable) && (mServerStatus != Status.Stopped))
+                {
+                    ForceShutdown();
+                }
             }
         }
 
@@ -583,7 +604,6 @@ namespace EnigmaMM
             }
         }
 
-
         /// <summary>
         /// Called whenever the server issues a message.
         /// </summary>
@@ -621,7 +641,12 @@ namespace EnigmaMM
                     int.TryParse(M.Data, out mHModversion);
                     break;
 
+                case MCServerMessage.MessageType.SaveStarted:
+                    mServerSaving = true;
+                    break;
+
                 case MCServerMessage.MessageType.SaveComplete:
+                    mServerSaving = false;
                     LoadSavedUserInfo();
                     break;
 
@@ -664,13 +689,14 @@ namespace EnigmaMM
         }
 
 
-        private void SetOnlineUserList(string userlist = null)
+        private void SetOnlineUserList(string userlist = "")
         {
             mOnlineUsers.Clear();
             if (userlist.Length > 0)
             {
                 mOnlineUsers.AddRange(userlist.Split(','));
             }
+            mOnlineUsers.Sort();
             mOnlineUserListReady = true;
         }
 

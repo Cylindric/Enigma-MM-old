@@ -28,11 +28,13 @@ namespace EnigmaMM
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new ServerForm(server));
             }
-
-            // Idle for as long as the server is still listening for remote commands
-            while (server.Listening)
+            else
             {
-                System.Threading.Thread.Sleep(100);
+                // Idle for as long as the server is still listening for remote commands
+                while (server.Listening)
+                {
+                    System.Threading.Thread.Sleep(100);
+                }
             }
         }
     }
