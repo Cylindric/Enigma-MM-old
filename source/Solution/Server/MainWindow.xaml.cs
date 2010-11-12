@@ -28,14 +28,14 @@ namespace EnigmaMM
         private CommandParser mParser;
         private const int MAX_LOG_ENTRIES = 10;
 
-        private BeginInvokeOC<LogListItem> mLogItems;
+        private InvokeOC<LogListItem> mLogItems;
         private object mLogItemLock;
 
         public MainWindow()
         {
             InitializeComponent();
             mLogItemLock = new object();
-            mLogItems = new BeginInvokeOC<LogListItem>(uxLogListView.Dispatcher);
+            mLogItems = new InvokeOC<LogListItem>(uxLogListView.Dispatcher);
 
             mMinecraft = new MCServer();
             mMinecraft.ServerMessage += HandleServerMessage;
