@@ -301,6 +301,16 @@ namespace EnigmaMM
         }
 
 
+        public void StopServer()
+        {
+            StopServer(0, false);
+        }
+
+        public void StopServer(int timeout)
+        {
+            StopServer(timeout, false);
+        }
+
         /// <summary>
         /// Shuts down the running Server.
         /// </summary>
@@ -312,7 +322,7 @@ namespace EnigmaMM
         /// If set to true, and a timeout is specified, if the server is still running after 
         /// the timeout it will be forcefully terminated.
         /// </param>
-        public void StopServer(int timeout = 0, bool force = false)
+        public void StopServer(int timeout, bool force)
         {
             bool forceable = (timeout > 0);
 
@@ -689,7 +699,12 @@ namespace EnigmaMM
         }
 
 
-        private void SetOnlineUserList(string userlist = "")
+        private void SetOnlineUserList()
+        {
+            SetOnlineUserList("");
+        }
+
+        private void SetOnlineUserList(string userlist)
         {
             mOnlineUsers.Clear();
             if (userlist.Length > 0)

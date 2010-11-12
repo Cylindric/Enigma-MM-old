@@ -37,19 +37,19 @@ namespace EnigmaMM
         /// the other main folders usually exist.
         /// </summary>
         /// <remarks>Defaults to the parent folder of the one where EMM is running.</remarks>
-        public static string ServerRoot
+        public static string XSServerRoot
         {
-            get { return Path.GetFullPath(mSettings.GetString("ServerRoot", @"..\")); }
+            get { return Path.GetFullPath(mSettings.GetString("ServerRoot", @".\")); }
         }
 
 
         /// <summary>
         /// Returns the full path to the Server Manager.
         /// </summary>
-        /// <remarks>Defaults to <code>ServerManager</code>.</remarks>
+        /// <remarks>Is always the location of the executing assembly.</remarks>
         public static string ServerManagerRoot
         {
-            get { return Path.Combine(ServerRoot, "ServerManager"); }
+            get { return Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location); }
         }
 
 
@@ -120,14 +120,14 @@ namespace EnigmaMM
         /// Returns the full path to the directory to use for cache files.
         /// </summary>
         /// <remarks>
-        /// Can be specified relative to ServerRoot or as an absolute path.
+        /// Can be specified relative to ServerManagerRoot or as an absolute path.
         /// Defaults to <code>.\Cache</code>.
         /// </remarks>
         /// <example>.\Cache</example>
         /// <example>C:\MC\Cache</example>
         public static string CacheRoot
         {
-            get { return mSettings.GetRootedPath(ServerRoot, "CacheRoot", @".\Cache"); }
+            get { return mSettings.GetRootedPath(ServerManagerRoot, "CacheRoot", @".\Cache"); }
         }
 
 
@@ -135,7 +135,7 @@ namespace EnigmaMM
         /// Returns the full path to the folder to use for backups.
         /// </summary>
         /// <remarks>
-        /// Can be specified relative to ServerRoot or as an absolute path.
+        /// Can be specified relative to ServerManagerRoot or as an absolute path.
         /// Defaults to <code>.\Backups</code>.
         /// </remarks>
         /// <example>.\Backups</example>
@@ -143,7 +143,7 @@ namespace EnigmaMM
         /// <example>\\Servername\backups\Minecraft</example>
         public static string BackupRoot
         {
-            get { return mSettings.GetRootedPath(ServerRoot, "BackupRoot", @".\Backups"); }
+            get { return mSettings.GetRootedPath(ServerManagerRoot, "BackupRoot", @".\Backups"); }
         }
 
         #endregion
@@ -154,14 +154,14 @@ namespace EnigmaMM
         /// Returns the full path to the folder where Minecraft is installed.
         /// </summary>
         /// <remarks>
-        /// Can be specified relative to ServerRoot or as an absolute path.
+        /// Can be specified relative to ServerManagerRoot or as an absolute path.
         /// Defaults to <code>.\Minecraft</code>.
         /// </remarks>
         /// <example>.\Minecraft</example>
         /// <example>C:\MC\Minecraft</example>
         public static string MinecraftRoot
         {
-            get { return mSettings.GetRootedPath(ServerRoot, "MinecraftRoot", @".\Minecraft"); }
+            get { return mSettings.GetRootedPath(ServerManagerRoot, "MinecraftRoot", @".\Minecraft"); }
         }
 
 
@@ -220,7 +220,7 @@ namespace EnigmaMM
 
         public static string MapRoot
         {
-            get { return mSettings.GetRootedPath(ServerRoot, "MapRoot", @".\Maps"); }
+            get { return mSettings.GetRootedPath(ServerManagerRoot, "MapRoot", @".\Maps"); }
         }
 
         public static int OptimisePng
@@ -238,7 +238,7 @@ namespace EnigmaMM
 
         public static string AlphaVespucciRoot
         {
-            get { return mSettings.GetRootedPath(ServerRoot, "AlphaVespucciRoot", @".\AlphaVespucci"); }
+            get { return mSettings.GetRootedPath(ServerManagerRoot, "AlphaVespucciRoot", @".\AlphaVespucci"); }
         }
 
         #endregion
@@ -252,12 +252,12 @@ namespace EnigmaMM
 
         public static string OverviewerRoot
         {
-            get { return mSettings.GetRootedPath(ServerRoot, "MinecraftOverviewerRoot", @".\Overviewer"); }
+            get { return mSettings.GetRootedPath(ServerManagerRoot, "MinecraftOverviewerRoot", @".\Overviewer"); }
         }
 
         public static string PythonExe
         {
-            get { return mSettings.GetRootedPath(ServerRoot, "PythonExe", @"C:\Program Files\Python27\python.exe"); }
+            get { return mSettings.GetString("PythonExe", @"C:\Program Files\Python27\python.exe"); }
         }
 
         #endregion

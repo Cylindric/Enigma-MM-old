@@ -1,6 +1,7 @@
 Option Explicit
 Dim objFS, objShell
 Dim ScriptPath, DeployRoot, ServerRoot, EMMRoot
+Dim cmd
 Set objFS = CreateObject("Scripting.FileSystemObject")
 Set objShell = WScript.CreateObject("WScript.Shell")
 
@@ -16,31 +17,40 @@ Const WindowStyleShow = 1
 ' -----------------------------------------------------------------------------
 ScriptPath = objFS.GetParentFolderName(Wscript.ScriptFullName)
 DeployRoot = objFS.BuildPath(ScriptPath, "Deploy")
-ServerRoot = objFS.BuildPath(DeployRoot, "EMMServer")
-EMMRoot = objFS.BuildPath(ServerRoot, "ServerManager")
+EMMRoot = objFS.BuildPath(DeployRoot, "EMMServer")
+
+
+' -----------------------------------------------------------------------------
+' Build
+' -----------------------------------------------------------------------------
+Dim compiler
+compiler = """%WINDIR%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"""
+cmd = compiler & " "
+cmd = cmd & """" & objFS.BuildPath(ScriptPath, "Enigma Minecraft Manager.sln") & """"
+objShell.Run cmd, WindowStyleShow, True
 
 
 ' This should only need creating once
 CreateFolder DeployRoot
 
 ' Clean the deploy path
-If (objFS.FolderExists(ServerRoot)) Then
-	objFS.DeleteFolder(ServerRoot)
+If (objFS.FolderExists(EMMRoot)) Then
+	WScript.Sleep(500)
+	objFS.DeleteFolder(EMMRoot)
+	WScript.Sleep(500)
 End If
 
 ' Create the folders
-CreateFolder(ServerRoot)
 CreateFolder(EMMRoot)
-CreateFolder(objFS.BuildPath(ServerRoot, "AlphaVespucci"))
-CreateFolder(objFS.BuildPath(ServerRoot, "Backups"))
-CreateFolder(objFS.BuildPath(ServerRoot, "Cache"))
-CreateFolder(objFS.BuildPath(ServerRoot, "Minecraft"))
-CreateFolder(objFS.BuildPath(ServerRoot, "Overviewer"))
+CreateFolder(objFS.BuildPath(EMMRoot, "AlphaVespucci"))
+CreateFolder(objFS.BuildPath(EMMRoot, "Backups"))
+CreateFolder(objFS.BuildPath(EMMRoot, "Cache"))
+CreateFolder(objFS.BuildPath(EMMRoot, "Minecraft"))
+CreateFolder(objFS.BuildPath(EMMRoot, "Overviewer"))
 
-' Copy the built files
 
 ' The EMM core files
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "..\..\readme.txt")), ServerRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "..\..\readme.txt")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.dll")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\Libs\*.exe")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\Libs\*.txt")), EMMRoot & "\"
@@ -55,7 +65,7 @@ objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\*.conf")), EMMRoot
 
 
-Dim cmd, zipexe, zipname, buildversion
+Dim zipexe, zipname, buildversion
 buildversion = GetFileVersion(objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "emm.dll")))
 zipexe = objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Tools\7za.exe"))
 If buildversion = "" Then

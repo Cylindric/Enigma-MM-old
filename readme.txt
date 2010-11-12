@@ -51,19 +51,19 @@ Suggested installation is to have a master "server" folder somewhere on the serv
 Here's the bare minimum to get started.  A lot of other files will be created at the first run, not least the world itself...
 
 C:\EnigmaMM\
+C:\EnigmaMM\emm.dll
+C:\EnigmaMM\emmclient.exe
+C:\EnigmaMM\emmserver.exe
+C:\EnigmaMM\LibNbt.dll
+C:\EnigmaMM\LibNbt.txt
+C:\EnigmaMM\optipng.exe
+C:\EnigmaMM\optipng.txt
+C:\EnigmaMM\settings.conf
 
 C:\EnigmaMM\Minecraft\                      <-- The actual Minecraft server
 C:\EnigmaMM\Minecraft\minecraft_server.jar
 
 C:\EnigmaMM\ServerManager\                  <-- Put the EMM files here
-C:\EnigmaMM\ServerManager\emm.dll
-C:\EnigmaMM\ServerManager\emmclient.exe
-C:\EnigmaMM\ServerManager\emmserver.exe
-C:\EnigmaMM\ServerManager\LibNbt.dll
-C:\EnigmaMM\ServerManager\LibNbt.txt
-C:\EnigmaMM\ServerManager\optipng.exe
-C:\EnigmaMM\ServerManager\optipng.txt
-C:\EnigmaMM\ServerManager\settings.conf
 
 C:\EnigmaMM\Cache         <-- The cache files will end up in here as needed
 C:\EnigmaMM\Maps          <-- Maps will end up in here once generated
@@ -82,10 +82,10 @@ So the setup process would be something like:
   3) Create folders to put everything in:
     a) C:\EnigmaMM\
     b) C:\EnigmaMM\Minecraft\
-    c) C:\EnigmaMM\ServerManager\
+    c) C:\EnigmaMM\AlphaVespucci\
 
   4) Download the official Minecraft Server (Java version!) and put it in
      C:\EnigmaMM\Minecraft\
 
   5) Build or download the Server Manager and put it in
-     C:\EnigmaMM\ServerManager\
+     C:\EnigmaMM\
