@@ -7,7 +7,11 @@ using System.Windows.Threading;
 
 namespace EnigmaMM
 {
-    public class BeginInvokeOC<T> : ObservableCollection<T>
+    /// <summary>
+    /// http://bea.stollnitz.com/blog/?p=34
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class InvokeOC<T> : ObservableCollection<T>
     {
         private Dispatcher dispatcherUIThread;
 
@@ -17,7 +21,7 @@ namespace EnigmaMM
         private delegate void InsertItemCallback(int index, T item);
         private delegate void MoveItemCallback(int oldIndex, int newIndex);
 
-        public BeginInvokeOC(Dispatcher dispatcher)
+        public InvokeOC(Dispatcher dispatcher)
         {
             this.dispatcherUIThread = dispatcher;
         }
@@ -30,7 +34,7 @@ namespace EnigmaMM
             }
             else
             {
-                dispatcherUIThread.BeginInvoke(DispatcherPriority.Send,
+                dispatcherUIThread.Invoke(DispatcherPriority.Send,
                     new SetItemCallback(SetItem), index, new object[] { item });
             }
         }
@@ -43,7 +47,7 @@ namespace EnigmaMM
             }
             else
             {
-                dispatcherUIThread.BeginInvoke(DispatcherPriority.Send,
+                dispatcherUIThread.Invoke(DispatcherPriority.Send,
                     new RemoveItemCallback(RemoveItem), index);
             }
         }
@@ -56,7 +60,7 @@ namespace EnigmaMM
             }
             else
             {
-                dispatcherUIThread.BeginInvoke(DispatcherPriority.Send,
+                dispatcherUIThread.Invoke(DispatcherPriority.Send,
                     new ClearItemsCallback(ClearItems));
             }
         }
@@ -69,7 +73,7 @@ namespace EnigmaMM
             }
             else
             {
-                dispatcherUIThread.BeginInvoke(DispatcherPriority.Send,
+                dispatcherUIThread.Invoke(DispatcherPriority.Send,
                     new InsertItemCallback(InsertItem), index, new object[] { item });
             }
         }
@@ -82,7 +86,7 @@ namespace EnigmaMM
             }
             else
             {
-                dispatcherUIThread.BeginInvoke(DispatcherPriority.Send,
+                dispatcherUIThread.Invoke(DispatcherPriority.Send,
                     new MoveItemCallback(MoveItem), oldIndex, new object[] { newIndex });
             }
         }
