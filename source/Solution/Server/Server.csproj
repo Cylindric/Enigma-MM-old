@@ -39,8 +39,12 @@
     <StartupObject>EnigmaMM.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicDataDisplay">
+      <HintPath>.\DynamicDataDisplay.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -64,6 +68,7 @@
     </Compile>
     <Compile Include="InvokeOC.cs" />
     <Compile Include="LogListItem.cs" />
+    <Compile Include="LVColumnStretchProperty.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -86,6 +91,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
@@ -99,6 +105,27 @@
       <Project>{E6CD972B-28CF-4096-8E1A-368AD575A62C}</Project>
       <Name>EMM</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\status-failed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\status-running.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\status-starting.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\status-pendingrestart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\status-pendingstop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\status-stopped.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\status-stopping.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

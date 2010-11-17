@@ -32,16 +32,6 @@ namespace EnigmaMM
             get { return mSettings.Filename; }
         }
 
-        /// <summary>
-        /// Returns the main root path to the server installation.  This is the parent folder within which
-        /// the other main folders usually exist.
-        /// </summary>
-        /// <remarks>Defaults to the parent folder of the one where EMM is running.</remarks>
-        public static string XSServerRoot
-        {
-            get { return Path.GetFullPath(mSettings.GetString("ServerRoot", @".\")); }
-        }
-
 
         /// <summary>
         /// Returns the full path to the Server Manager.
@@ -77,12 +67,12 @@ namespace EnigmaMM
         /// Returns the IP address that the server should listen on when in server-mode.
         /// </summary>
         /// <remarks>
-        /// Defaults to <code>any</code>.
-        /// Set to <code>none</code> to disable.
+        /// Defaults to <code>none</code>.
+        /// Set to <c>any</c> to listen on all interface, <c>none</c> to disable.
         /// </remarks>
         public static string ServerListenIp
         {
-            get { return mSettings.GetString("ServerListenIp", "any"); }
+            get { return mSettings.GetString("ServerListenIp", "none"); }
         }
 
 

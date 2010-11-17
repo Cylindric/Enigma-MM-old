@@ -181,9 +181,6 @@ namespace EnigmaMM
 
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
-
-            // Determine if the communications listener should be started.
-            StartCommsServer();
         }
 
 
@@ -319,23 +316,22 @@ namespace EnigmaMM
         /// Set to zero to return immediately, thus essentially running the command asynchronously.
         /// </param>
         /// <param name="force">
-        /// If set to true, and a timeout is specified, if the server is still running after 
-        /// the timeout it will be forcefully terminated.
+        /// If set to true, if the server is still running after the timeout it will be forcefully terminated.
         /// </param>
         public void StopServer(int timeout, bool force)
         {
-            bool forceable = (timeout > 0);
+            bool neverTimeout = (timeout == 0);
 
             if (mServerStatus == Status.Running)
             {
                 ServerStatus = Status.Stopping;
                 SendCommand("stop");
-                while ((timeout > 0) && (mServerStatus != Status.Stopped))
+                while (((timeout > 0)||(neverTimeout)) && (mServerStatus != Status.Stopped))
                 {
                     timeout -= 100;
                     Thread.Sleep(100);
                 }
-                if ((forceable) && (mServerStatus != Status.Stopped))
+                if ((force) && (mServerStatus != Status.Stopped))
                 {
                     ForceShutdown();
                 }
@@ -351,7 +347,7 @@ namespace EnigmaMM
         /// </remarks>
         public void RestartServer()
         {
-            StopServer();
+            StopServer(0, false);
             StartServer();
         }
 
@@ -666,6 +662,7 @@ namespace EnigmaMM
                     break;
 
                 case MCServerMessage.MessageType.UserCount:
+                    
                     if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingRestart))
                     {
                         RestartServer();
@@ -747,6 +744,7 @@ namespace EnigmaMM
         {
             SetOnlineUserList();
             OnServerStopped("Server Stopped");
+            ServerMessage("Stopped");
         }
 
 
@@ -766,6 +764,7 @@ namespace EnigmaMM
             {
                 ServerStarted(Message);
             }
+            ServerMessage("Started");
         }
 
 
