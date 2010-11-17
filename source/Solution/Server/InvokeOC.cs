@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.Collections.Specialized;
 
 namespace EnigmaMM
 {
@@ -11,7 +12,7 @@ namespace EnigmaMM
     /// http://bea.stollnitz.com/blog/?p=34
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class InvokeOC<T> : ObservableCollection<T>
+    public class InvokeOC<T> : ObservableCollection<T> 
     {
         private Dispatcher dispatcherUIThread;
 
@@ -90,7 +91,5 @@ namespace EnigmaMM
                     new MoveItemCallback(MoveItem), oldIndex, new object[] { newIndex });
             }
         }
-
-                
     }
 }

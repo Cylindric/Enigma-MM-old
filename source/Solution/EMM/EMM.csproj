@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -79,14 +79,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libs\Ionic.Zip.Reduced.dll" />
-    <Content Include="libs\Ionic.Zip.Reduced.txt">
+    <Content Include="Ionic.Zip.Reduced.dll" />
+    <Content Include="Ionic.Zip.Reduced.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="libs\optipng.exe">
+    <Content Include="optipng.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="libs\optipng.txt">
+    <Content Include="optipng.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
