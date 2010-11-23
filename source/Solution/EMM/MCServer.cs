@@ -28,11 +28,11 @@ namespace EnigmaMM
         private System.IO.StreamWriter mCommandInjector;
         private MCServerProperties mServerProperties;
         private MCServerWarps mServerWarps;
-        private string mJavaExec = "java.exe";
-        private string mServerRoot = "";
-        private string mServerJar = "minecraft_server.jar";
-        private int mJavaHeapInit = 1024;
-        private int mJavaHeapMax = 1024;
+        //private string mJavaExec = "java.exe";
+        //private string mServerRoot = "";
+        //private string mServerJar = "minecraft_server.jar";
+        //private int mJavaHeapInit = 1024;
+        //private int mJavaHeapMax = 1024;
         private bool mServerRunningHMod = false;
         private int mHModversion = 0;
         private ArrayList mSavedUsers = new ArrayList();
@@ -43,10 +43,10 @@ namespace EnigmaMM
 
         // Map objects and settings
         private AlphaVespucci mMapAlphaVespucci;
-        private bool mAlphaVespucciInstalled = false;
+        //private bool mAlphaVespucciInstalled = false;
         private Overviewer mMapOverviewer;
-        private bool mOverviewerInstalled = false;
-        private string mMapRoot;
+        //private bool mOverviewerInstalled = false;
+        //private string mMapRoot;
 
         // Events raised at key server events
         public delegate void ServerMessageEventHandler(string Message);
@@ -93,38 +93,38 @@ namespace EnigmaMM
             get { return mStatusMessage; }
         }
 
-        public string JavaExec
-        {
-            set { mJavaExec = value; }
-        }
-        public string ServerRoot
-        {
-            set { mServerRoot = value; }
-        }
-        public string ServerJar
-        {
-            set { mServerJar = value; }
-        }
-        public int JavaHeapInit
-        {
-            set { mJavaHeapInit = value; }
-        }
-        public int JavaHeapMax
-        {
-            set { mJavaHeapMax = value; }
-        }
-        public string MapRoot
-        {
-            set { mMapRoot = value; }
-        }
-        public bool AlphaVespucciInstalled
-        {
-            set { mAlphaVespucciInstalled = value; }
-        }
-        public bool OverviewerInstalled
-        {
-            set { mOverviewerInstalled = value; }
-        }
+        //public string JavaExec
+        //{
+        //    set { mJavaExec = value; }
+        //}
+        //public string ServerRoot
+        //{
+        //    set { mServerRoot = value; }
+        //}
+        //public string ServerJar
+        //{
+        //    set { mServerJar = value; }
+        //}
+        //public int JavaHeapInit
+        //{
+        //    set { mJavaHeapInit = value; }
+        //}
+        //public int JavaHeapMax
+        //{
+        //    set { mJavaHeapMax = value; }
+        //}
+        //public string MapRoot
+        //{
+        //    set { mMapRoot = value; }
+        //}
+        //public bool AlphaVespucciInstalled
+        //{
+        //    set { mAlphaVespucciInstalled = value; }
+        //}
+        //public bool OverviewerInstalled
+        //{
+        //    set { mOverviewerInstalled = value; }
+        //}
 
         public int OnlineUserCount
         {
@@ -169,15 +169,15 @@ namespace EnigmaMM
             mMapOverviewer = new Overviewer(this);
 
             ServerStatus = Status.Stopped;
-            mServerRoot = Settings.MinecraftRoot;
-            mJavaExec = Settings.JavaExec;
-            mServerJar = Settings.ServerJar;
-            mJavaHeapInit = Settings.JavaHeapInit;
-            mJavaHeapMax = Settings.JavaHeapMax;
-            mMapRoot = Settings.MapRoot;
+            //mServerRoot = Settings.MinecraftRoot;
+            //mJavaExec = Settings.JavaExec;
+            //mServerJar = Settings.ServerJar;
+            //mJavaHeapInit = Settings.JavaHeapInit;
+            //mJavaHeapMax = Settings.JavaHeapMax;
+            //mMapRoot = Settings.MapRoot;
 
-            AlphaVespucciInstalled = Settings.AlphaVespucciInstalled;
-            OverviewerInstalled = Settings.OverviewerInstalled;
+            //AlphaVespucciInstalled = Settings.AlphaVespucciInstalled;
+            //OverviewerInstalled = Settings.OverviewerInstalled;
 
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
@@ -240,32 +240,51 @@ namespace EnigmaMM
                 return;
             }
 
+            ServerStatus = Status.Starting;
             ReloadConfig();
 
+            if (Directory.Exists(Settings.MinecraftRoot) == false)
+            {
+                ServerMessage("ERROR");
+                ServerMessage("Could not find Minecraft root directory");
+                ServerMessage("Check that configuration option 'MinecraftRoot' is correct");
+                ServerMessage("Looking for: " + Settings.MinecraftRoot);
+                ServerStatus = Status.Failed;
+                return;
+            }
+            if (File.Exists(Path.Combine(Settings.MinecraftRoot, Settings.ServerJar)) == false)
+            {
+                ServerMessage("ERROR");
+                ServerMessage("Could not find the Minecraft server file");
+                ServerMessage("Check that configuration option 'ServerJar' is correct");
+                ServerMessage("Looking for: " + Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
+                ServerStatus = Status.Failed;
+                return;
+            }
+
             string cmdArgs = "";
-            if (mJavaHeapInit > 0)
+            if (Settings.JavaHeapInit > 0)
             {
-                cmdArgs += "-Xms" + mJavaHeapInit + "M ";
+                cmdArgs += "-Xms" + Settings.JavaHeapInit + "M ";
             }
-            if (mJavaHeapMax > 0)
+            if (Settings.JavaHeapMax > 0)
             {
-                cmdArgs += "-Xmx" + mJavaHeapMax + "M ";
+                cmdArgs += "-Xmx" + Settings.JavaHeapMax + "M ";
             }
-            cmdArgs += "-jar \"" + mServerJar + "\" ";
+            cmdArgs += "-jar \"" + Settings.ServerJar + "\" ";
             cmdArgs += "nogui ";
 
             // Configure the main server process
-            if (Directory.Exists(mServerRoot) == false)
-            {
-                throw new FileNotFoundException("Could not fine Minecraft root: " + mServerRoot);
-            }
-            if (File.Exists(Path.Combine(mServerRoot, mServerJar)) == false)
-            {
-                throw new FileNotFoundException("Could not fine Minecraft server jar: " + Path.Combine(mServerRoot, mServerJar));
-            }
             mServerProcess = new Process();
-            mServerProcess.StartInfo.WorkingDirectory = mServerRoot;
-            mServerProcess.StartInfo.FileName = mJavaExec;
+            if (Settings.ServerJar.EndsWith(".exe"))
+            {
+                mServerProcess.StartInfo.FileName = Settings.ServerJar;
+            }
+            else
+            {
+                mServerProcess.StartInfo.FileName = Settings.JavaExec;
+            }
+            mServerProcess.StartInfo.WorkingDirectory = Settings.MinecraftRoot;
             mServerProcess.StartInfo.Arguments = cmdArgs;
             mServerProcess.StartInfo.UseShellExecute = false;
             mServerProcess.StartInfo.CreateNoWindow = true;
@@ -282,7 +301,6 @@ namespace EnigmaMM
             mServerProcess.Exited += new EventHandler(ServerExited);
 
             // Start the server process
-            ServerStatus = Status.Starting;
             SetOnlineUserList();
             mServerProcess.Start();
 
@@ -298,11 +316,22 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Shuts down the running Server.
+        /// </summary>
+        /// <remarks>Returns immediately, without waiting for the server to actually stop.</remarks>
         public void StopServer()
         {
-            StopServer(0, false);
+            StopServer(-1, false);
         }
 
+        /// <summary>
+        /// Shuts down the running Server.
+        /// </summary>
+        /// <param name="timeout">
+        /// Time in milliseconds to wait for the command to complete.
+        /// Set to zero to wait forever, or -1 to return immediately, thus essentially running the command asynchronously.
+        /// </param>
         public void StopServer(int timeout)
         {
             StopServer(timeout, false);
@@ -313,7 +342,7 @@ namespace EnigmaMM
         /// </summary>
         /// <param name="timeout">
         /// Time in milliseconds to wait for the command to complete.
-        /// Set to zero to return immediately, thus essentially running the command asynchronously.
+        /// Set to zero to wait forever, or -1 to return immediately, thus essentially running the command asynchronously.
         /// </param>
         /// <param name="force">
         /// If set to true, if the server is still running after the timeout it will be forcefully terminated.
@@ -324,9 +353,9 @@ namespace EnigmaMM
 
             if (mServerStatus == Status.Running)
             {
-                ServerStatus = Status.Stopping;
                 SendCommand("stop");
-                while (((timeout > 0)||(neverTimeout)) && (mServerStatus != Status.Stopped))
+                ServerStatus = Status.Stopping;
+                while (((timeout > 0) || (neverTimeout)) && (mServerStatus != Status.Stopped))
                 {
                     timeout -= 100;
                     Thread.Sleep(100);
@@ -337,7 +366,6 @@ namespace EnigmaMM
                 }
             }
         }
-
 
         /// <summary>
         /// Performs a simple restart of the server.
@@ -494,7 +522,7 @@ namespace EnigmaMM
 
         public void SendCommand(string Command)
         {
-            if (mServerStatus != Status.Stopped)
+            if ((mServerStatus == Status.Running) || (mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart))
             {
                 mCommandInjector.WriteLine(Command);
             }
@@ -503,7 +531,7 @@ namespace EnigmaMM
 
         public void GenerateMapAV()
         {
-            if (!mAlphaVespucciInstalled)
+            if (!Settings.AlphaVespucciInstalled)
             {
                 ServerMessage("Skipping AlphaVespucci Maps, not installed.");
             }
@@ -520,7 +548,7 @@ namespace EnigmaMM
 
         public void GenerateMapAVExtra()
         {
-            if (!mAlphaVespucciInstalled)
+            if (!Settings.AlphaVespucciInstalled)
             {
                 ServerMessage("Skipping more AlphaVespucci Maps, not installed.");
             }
@@ -543,7 +571,7 @@ namespace EnigmaMM
 
         public void GenerateMapOverviewer()
         {
-            if (!mOverviewerInstalled)
+            if (!Settings.OverviewerInstalled)
             {
                 ServerMessage("Skipping Overviewer Map, not installed.");
             }
@@ -602,11 +630,14 @@ namespace EnigmaMM
         public void LoadSavedUserInfo()
         {
             mSavedUsers.Clear();
-            foreach (string fileName in Directory.GetFiles(Path.Combine(mServerProperties.WorldPath, "players")))
+            if (Directory.Exists(Path.Combine(mServerProperties.WorldPath, "players")))
             {
-                SavedUser user = new SavedUser();
-                user.LoadData(fileName);
-                mSavedUsers.Add(user);
+                foreach (string fileName in Directory.GetFiles(Path.Combine(mServerProperties.WorldPath, "players")))
+                {
+                    SavedUser user = new SavedUser();
+                    user.LoadData(fileName);
+                    mSavedUsers.Add(user);
+                }
             }
         }
 
