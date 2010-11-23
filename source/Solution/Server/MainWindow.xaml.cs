@@ -47,17 +47,17 @@ namespace EnigmaMM
             uxLogListView.ItemsSource = mLogItems;
 
             // Setup the user chart
-            mUserPlot = new Timer(30000);
+            mUserPlot = new Timer(5000);
             mUserPlot.Elapsed += new ElapsedEventHandler(UpdateUserChart);
             mUserPlot.Enabled = true;
 
+            mUserPlotHorizAxis.AxisControl.ContentStringFormat = "hh:mm";
             uxUserChart.HorizontalAxis = mUserPlotHorizAxis;
             xs = new ObservableDataSource<double>();
             xs.SetYMapping(_y => _y);
 
             ys = new ObservableDataSource<DateTime>();
             ys.SetXMapping(mUserPlotHorizAxis.ConvertToDouble);
-            mUserPlotHorizAxis.AxisControl.ContentStringFormat = "hh:mm";
 
             CompositeDataSource ds = new CompositeDataSource(xs, ys);
             uxUserChart.AddLineGraph(ds);
