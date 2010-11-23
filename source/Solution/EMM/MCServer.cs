@@ -657,43 +657,42 @@ namespace EnigmaMM
 
             switch (M.Type)
             {
-                case MCServerMessage.MessageType.AutoSaveEnabled:
+                case MCServerMessage.MessageTypes.AutoSaveEnabled:
                     mAutoSaveEnabled = true;
                     break;
 
-                case MCServerMessage.MessageType.AutoSaveDisabled:
+                case MCServerMessage.MessageTypes.AutoSaveDisabled:
                     mAutoSaveEnabled = false;
                     break;
 
-                case MCServerMessage.MessageType.ErrorPortBusy:
+                case MCServerMessage.MessageTypes.ErrorPortBusy:
                     OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
                     ServerStatus = Status.Failed;
                     mStatusMessage = M.Message;
                     ForceShutdown();
                     break;
 
-                case MCServerMessage.MessageType.HModBanner:
+                case MCServerMessage.MessageTypes.HModBanner:
                     ServerMessage("Hey0 hMod detected");
                     mServerRunningHMod = true;
-                    int.TryParse(M.Data, out mHModversion);
+                    int.TryParse(M.Data["version"], out mHModversion);
                     break;
 
-                case MCServerMessage.MessageType.SaveStarted:
+                case MCServerMessage.MessageTypes.SaveStarted:
                     mServerSaving = true;
                     break;
 
-                case MCServerMessage.MessageType.SaveComplete:
+                case MCServerMessage.MessageTypes.SaveComplete:
                     mServerSaving = false;
                     LoadSavedUserInfo();
                     break;
 
-                case MCServerMessage.MessageType.StartupComplete:
+                case MCServerMessage.MessageTypes.StartupComplete:
                     mOnlineUsers = new ArrayList();
                     OnServerStarted("Server started");
                     break;
 
-                case MCServerMessage.MessageType.UserCount:
-                    
+                case MCServerMessage.MessageTypes.UserCount:
                     if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingRestart))
                     {
                         RestartServer();
@@ -704,13 +703,18 @@ namespace EnigmaMM
                     }
                     break;
 
-                case MCServerMessage.MessageType.UserList:
-                    SetOnlineUserList(M.Data);
+                case MCServerMessage.MessageTypes.UserList:
+                    SetOnlineUserList(M.Data["userlist"]);
                     break;
 
-                case MCServerMessage.MessageType.UserLoggedIn:
-
+                case MCServerMessage.MessageTypes.UserLoggedIn:
+                    mOnlineUsers.Add(M.Data["username"]);
                     break;
+
+                case MCServerMessage.MessageTypes.UserLoggedOut:
+                    mOnlineUsers.Remove(M.Data["username"]);
+                    break;
+
             }
 
             // send the output to the comms server

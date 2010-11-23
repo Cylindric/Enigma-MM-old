@@ -1,14 +1,26 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml;
+using System.IO;
+using System.Collections.Generic;
+using System;
 
 namespace EnigmaMM
 {
     class MCServerMessage
     {
-        private string mMessage;
-        private string mData;
-        private MessageType mType;
+        public string Message { private set; get; }
+        public MessageTypes Type { private set; get; }
+        public Dictionary<string, string> Data { private set; get; }
 
-        public enum MessageType
+        private static List<MessagePattern> sPatterns;
+
+        public enum MatchTypes
+        {
+            Regex,
+            EndsWith,
+        }
+
+        public enum MessageTypes
         {
             // Standard Minecraft types
             ErrorPortBusy,
@@ -21,6 +33,7 @@ namespace EnigmaMM
             UserCount,
             UserList,
             UserLoggedIn,
+            UserLoggedOut,
 
             // Hey0-specific types
             HModBanner,
@@ -29,67 +42,54 @@ namespace EnigmaMM
             Other
         }
 
-
         private class MessagePattern
         {
-            public const byte REGEX = 0;
-            public const byte ENDSWITH = 1;
+            public MessageTypes MessageType;
+            public MatchTypes MatchType;
+            public string Pattern;
 
-            public string MatchPattern;
-            public MessageType MessageType;
-            public byte MatchType;
-            public MessagePattern(MessageType type, byte matchType, string matchPattern)
+            public MessagePattern(string type, string matchType, string matchPattern)
+            {
+                MessageType = (MessageTypes)Enum.Parse(typeof(MessageTypes), type);
+                MatchType = (MatchTypes)Enum.Parse(typeof(MatchTypes), matchType);
+                Pattern = matchPattern;
+            }
+
+            public MessagePattern(MessageTypes type, MatchTypes matchType, string matchPattern)
             {
                 MessageType = type;
                 MatchType = matchType;
-                MatchPattern = matchPattern;
+                Pattern = matchPattern;
             }
         }
 
 
-        /// <summary>
-        /// The array of server messages should ideally be defined with regex last, and in order of message frequency, so that
-        /// more common messages are trapped first.
-        /// </summary>
-        private static MessagePattern[] sPatterns = 
-        {
-            // Standard Minecraft messages
-            new MessagePattern(MessageType.StartupComplete, MessagePattern.ENDSWITH, @"[INFO] Done! For help, type ""help"" or ""?"""),
-            new MessagePattern(MessageType.SaveComplete, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Save Complete"),
-            new MessagePattern(MessageType.ErrorPortBusy, MessagePattern.ENDSWITH, @"[WARNING] **** FAILED TO BIND TO PORT!"),
-            new MessagePattern(MessageType.SaveStarted, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Forcing save.."),
-            new MessagePattern(MessageType.UserLoggedIn, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ (?<data>\w+?)\ \[(?<data2>.+?)]\ logged\ in$"),
-            new MessagePattern(MessageType.AutoSaveEnabled, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Enabling level saving.."),
-            new MessagePattern(MessageType.AutoSaveDisabled, MessagePattern.ENDSWITH, @"[INFO] CONSOLE: Disabling level saving.."),
-            new MessagePattern(MessageType.UserList, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ Connected\ players:\ (?<data>.*?)$"),
-            new MessagePattern(MessageType.UserCount, MessagePattern.REGEX, @"^Player\ count:\ (?<data>\d+)$"),
-            new MessagePattern(MessageType.MinecraftBanner, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ Starting\ minecraft\ server\ version\ (?<data>.*?)$"),
-
-            // Hey0-specific messages
-            new MessagePattern(MessageType.HModBanner, MessagePattern.REGEX, @"^(?<timestamp>.+?)\[INFO]\ Hey0\ Server\ Mod\ Build\ (?<data>.*?)$"),
-        };
-
-
-
-        public MessageType Type
-        {
-            get { return mType; }
-        }
-
-        public string Data
-        {
-            get { return mData; }
-        }
-
-        public string Message
-        {
-            get { return mMessage; }
-        }
-
         public MCServerMessage(string msg)
         {
-            mMessage = msg;
+            if(sPatterns == null)
+            {
+                PopulateRules();
+            }
+            Message = msg;
             DetermineType();
+        }
+
+
+        private static void PopulateRules()
+        {
+            sPatterns = new List<MessagePattern>();
+
+            XmlDocument xml = new XmlDocument();
+            xml.Load(Path.Combine(Settings.ServerManagerRoot, "messages.xml"));
+            XmlNodeList nodeList = xml.DocumentElement.SelectNodes("/messages/message");
+            foreach (XmlNode message in nodeList)
+            {
+                XmlNode name = message.SelectSingleNode("name");
+                XmlNode type = message.SelectSingleNode("type");
+                XmlNode rule = message.SelectSingleNode("rule");
+                MessagePattern p = new MessagePattern(name.InnerText, type.InnerText, rule.InnerText);
+                sPatterns.Add(p);
+            }
         }
        
         /// <summary>
@@ -98,10 +98,10 @@ namespace EnigmaMM
         /// </summary>
         private void DetermineType()
         {
-            mType = MessageType.Other;
+            Type = MessageTypes.Other;
             foreach (MessagePattern pattern in sPatterns)
             {
-                if (ProcessMatch(pattern.MatchType, pattern.MatchPattern, pattern.MessageType)) { return; }
+                if (ProcessMatch(pattern.MatchType, pattern.Pattern, pattern.MessageType)) { return; }
             }
         }
         
@@ -110,38 +110,39 @@ namespace EnigmaMM
         /// If the message matches the pattern, and the pattern contains the ?&lt;data&gt; placeholder,
         /// any strings in that placeholder are stored into mData.
         /// </summary>
-        /// <param name="regex">The regex to look for</param>
+        /// <param name="rule">The regex to look for</param>
         /// <param name="matchType">The type of match to perform, i.e. Regex or EndsWith</param>
         /// <param name="type">The type to set this object to if a match is found</param>
         /// <returns>True if the message matches, else False.</returns>
-        private bool ProcessMatch(byte matchType, string regex, MessageType type)
+        private bool ProcessMatch(MatchTypes matchType, string rule, MessageTypes type)
         {
             bool retval = false;
+            Data = new Dictionary<string, string>();
 
             switch (matchType)
             {
-                case (MessagePattern.ENDSWITH):
-                    if (mMessage.EndsWith(regex))
+                case (MatchTypes.EndsWith):
+                    if (Message.EndsWith(rule))
                     {
-                        mType = type;
-                        mData = "";
+                        Type = type;
                         retval = true;
                     }
                     break;
 
-                case (MessagePattern.REGEX):
-                    if (Regex.IsMatch(mMessage, regex))
+                case (MatchTypes.Regex):
+                    Regex RE = new Regex(rule);
+                    if (RE.IsMatch(Message))
                     {
-                        mType = type;
-                        mData = "";
-                        if (regex.Contains("?<data>"))
+                        Type = type;
+                        MatchCollection matches = Regex.Matches(Message, rule);
+                        foreach (Match match in matches)
                         {
-                            MatchCollection matches = Regex.Matches(mMessage, regex);
-                            if (matches.Count > 0)
+                            for (int i = 1; i < match.Groups.Count; i++)
                             {
-                                mData = matches[0].Groups["data"].Value;
+                                Data.Add(RE.GroupNameFromNumber(i), match.Groups[i].Value);
                             }
                         }
+
                         retval = true;
                     }
                     break;
