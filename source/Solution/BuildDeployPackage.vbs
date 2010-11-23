@@ -27,7 +27,7 @@ Dim compiler
 compiler = """%WINDIR%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"""
 cmd = compiler & " "
 cmd = cmd & """" & objFS.BuildPath(ScriptPath, "Enigma Minecraft Manager.sln") & """"
-objShell.Run cmd, WindowStyleShow, True
+' objShell.Run cmd, WindowStyleShow, True
 
 
 ' This should only need creating once
@@ -52,8 +52,8 @@ CreateFolder(objFS.BuildPath(EMMRoot, "Overviewer"))
 ' The EMM core files
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "..\..\readme.txt")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.dll")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\Libs\*.exe")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\Libs\*.txt")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.exe")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.txt")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Server\bin\Release\server.exe")), EMMRoot & "\"
 
 'The 3rd party stuff

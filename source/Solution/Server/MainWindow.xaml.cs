@@ -1,13 +1,12 @@
-﻿using System.Windows;
-using System.Windows.Input;
-using System;
-using System.Windows.Threading;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Microsoft.Research.DynamicDataDisplay;
-using Microsoft.Research.DynamicDataDisplay.DataSources;
+﻿using System;
 using System.Timers;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.Charts;
+using Microsoft.Research.DynamicDataDisplay.DataSources;
 
 namespace EnigmaMM
 {
@@ -41,13 +40,14 @@ namespace EnigmaMM
 
             mMinecraft = new MCServer();
             mMinecraft.ServerMessage += HandleServerMessage;
+            mMinecraft.StatusChanged += HandleServerMessage;
             mMinecraft.StartCommsServer();
             mParser = new CommandParser(mMinecraft);
 
             uxLogListView.ItemsSource = mLogItems;
 
             // Setup the user chart
-            mUserPlot = new Timer(1000);
+            mUserPlot = new Timer(30000);
             mUserPlot.Elapsed += new ElapsedEventHandler(UpdateUserChart);
             mUserPlot.Enabled = true;
 
@@ -57,14 +57,10 @@ namespace EnigmaMM
 
             ys = new ObservableDataSource<DateTime>();
             ys.SetXMapping(mUserPlotHorizAxis.ConvertToDouble);
+            mUserPlotHorizAxis.AxisControl.ContentStringFormat = "hh:mm";
 
             CompositeDataSource ds = new CompositeDataSource(xs, ys);
-
             uxUserChart.AddLineGraph(ds);
-            //mOnlineUserData = new ObservableDataSource<Point>();
-            //mOnlineUserData.SetXYMapping(p => p);
-            //uxUserChart.AddLineGraph(mOnlineUserData, 2, "Data row 1");
-
         }
 
         private delegate void UpdateServerMetricsDelegate();
@@ -143,8 +139,11 @@ namespace EnigmaMM
         private delegate void HandleServerMessageDelegate(string message);
 
         private void HandleServerMessage(string message)
-        { 
-            AddMessageToLog(message);
+        {
+            if (message.Length > 0)
+            {
+                AddMessageToLog(message);
+            }
             UpdateServerMetrics();
         }
 
@@ -206,9 +205,6 @@ namespace EnigmaMM
         {
             uxLogListView.SelectedIndex = uxLogListView.Items.Count - 1;
         }
-
-
-
 
     }
 

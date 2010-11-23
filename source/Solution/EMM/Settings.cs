@@ -182,7 +182,7 @@ namespace EnigmaMM
         /// <example>Minecraft_Mod.jar</example>
         public static string ServerJar
         {
-            get { return mSettings.GetString("ServerJar", "minecraft_server.jar"); }
+            get { return mSettings.GetRootedPath(MinecraftRoot, "ServerJar", "minecraft_server.jar"); }
         }
 
 

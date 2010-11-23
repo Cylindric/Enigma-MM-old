@@ -10,7 +10,7 @@ namespace EnigmaMM
     {
         protected Dictionary<string, string> mSettings = new Dictionary<string, string>();
 
-        private TimeSpan RELOADINTERVAL = new TimeSpan(0, 0, 60);
+        private TimeSpan RELOADINTERVAL = new TimeSpan(0, 0, 5);
 
         private string mSettingsFile = "";
         private bool mSettingsNeedSaving = false;
