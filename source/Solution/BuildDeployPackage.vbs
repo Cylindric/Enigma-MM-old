@@ -55,6 +55,7 @@ objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "..\..\read
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.dll")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.exe")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.txt")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\messages.xml")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Server\bin\Release\server.exe")), EMMRoot & "\"
 
 'The 3rd party stuff
