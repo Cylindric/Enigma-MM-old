@@ -37,12 +37,35 @@ namespace EnigmaMM
         private AlphaVespucci mMapAlphaVespucci;
         private Overviewer mMapOverviewer;
 
-        // Events raised at key server events
+        /// <summary>
+        /// Standard event handler for server messages.
+        /// </summary>
+        /// <param name="Message">the message</param>
         public delegate void ServerMessageEventHandler(string Message);
+        
+        /// <summary>
+        /// Raised whenever the Minecraft server stops.
+        /// </summary>
         public event ServerMessageEventHandler ServerStopped;
+
+        /// <summary>
+        /// Raised whenever the Minecraft server starts.
+        /// </summary>
         public event ServerMessageEventHandler ServerStarted;
+
+        /// <summary>
+        /// Raised whenever the Minecraft server sends a message.
+        /// </summary>
         public event ServerMessageEventHandler ServerMessage;
+
+        /// <summary>
+        /// Raised whenever the Minecraft server throws an error.
+        /// </summary>
         public event ServerMessageEventHandler ServerError;
+
+        /// <summary>
+        /// Raised whenever the Minecraft server status changes.
+        /// </summary>
         public event ServerMessageEventHandler StatusChanged;
 
         /// <summary>
@@ -105,7 +128,6 @@ namespace EnigmaMM
             }
         }
 
-
         /// <summary>
         /// Server Constructor
         /// </summary>
@@ -125,7 +147,6 @@ namespace EnigmaMM
             ReloadConfig();
         }
 
-
         /// <summary>
         /// Starts the CommsServer listening for new connections.
         /// </summary>
@@ -142,7 +163,6 @@ namespace EnigmaMM
             }
         }
 
-
         /// <summary>
         /// Stops the CommsServer from listening for new connections.
         /// </summary>
@@ -150,7 +170,6 @@ namespace EnigmaMM
         {
             mCommsServer.StopListener();
         }
-
 
         /// <summary>
         /// Reloads the Minecraft server properties files.
@@ -164,7 +183,6 @@ namespace EnigmaMM
                 mServerWarps.LookForNewSettings();
             }
         }
-
 
         /// <summary>
         /// Starts the Minecraft server process.
@@ -257,7 +275,6 @@ namespace EnigmaMM
             ServerMessage("Server starting...");
         }
 
-
         /// <summary>
         /// Shuts down the running Server.
         /// </summary>
@@ -321,7 +338,6 @@ namespace EnigmaMM
             StartServer();
         }
 
-
         /// <summary>
         /// Performs a graceful shutdown of the server.  
         /// </summary>
@@ -341,7 +357,6 @@ namespace EnigmaMM
             }
         }
 
-
         /// <summary>
         /// Aborts a pending stop operation.
         /// </summary>
@@ -352,8 +367,6 @@ namespace EnigmaMM
                 ServerStatus = Status.Running;
             }
         }
-
-        
         
         /// <summary>
         /// Performs a graceful restart of the server.
@@ -374,7 +387,6 @@ namespace EnigmaMM
             }
         }
 
-
         /// <summary>
         /// Sends a broadcast message to all players on the server.
         /// </summary>
@@ -383,7 +395,6 @@ namespace EnigmaMM
         {
             SendCommand("say " + message);
         }
-
 
         /// <summary>
         /// Enables or disables server auto-save.
@@ -401,7 +412,6 @@ namespace EnigmaMM
             }
         }
 
-
         /// <summary>
         /// Aborts a pending restart.
         /// </summary>
@@ -413,7 +423,9 @@ namespace EnigmaMM
             }
         }
 
-
+        /// <summary>
+        /// Initiate a backup of the server.
+        /// </summary>
         public void Backup()
         {
             ServerMessage("Starting backup...");
@@ -426,12 +438,13 @@ namespace EnigmaMM
             ServerMessage("Backup complete.");
         }
 
-
+        /// <summary>
+        /// Forcibly shut down the server by terminating the process.
+        /// </summary>
         private void ForceShutdown()
         {
             mServerProcess.Kill();
         }
-
 
         /// <summary>
         /// Forces a reload of the online-user list by issuing a server 'list' command.
@@ -461,7 +474,10 @@ namespace EnigmaMM
             return result;
         }
 
-
+        /// <summary>
+        /// Sends an arbitrary command to the Minecraft server.
+        /// </summary>
+        /// <param name="Command">Command to send</param>
         public void SendCommand(string Command)
         {
             if ((mServerStatus == Status.Running) || (mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart))
@@ -470,7 +486,9 @@ namespace EnigmaMM
             }
         }
 
-
+        /// <summary>
+        /// Generates the main AlphaVespucci maps.
+        /// </summary>
         public void GenerateMapAV()
         {
             if (!Settings.AlphaVespucciInstalled)
@@ -488,6 +506,9 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Generates the additional AlphaVespucci maps.
+        /// </summary>
         public void GenerateMapAVExtra()
         {
             if (!Settings.AlphaVespucciInstalled)
@@ -511,6 +532,9 @@ namespace EnigmaMM
         }
 
 
+        /// <summary>
+        /// Generates the main Overviewer maps.
+        /// </summary>
         public void GenerateMapOverviewer()
         {
             if (!Settings.OverviewerInstalled)
@@ -527,7 +551,10 @@ namespace EnigmaMM
             }
         }
 
-        
+
+        /// <summary>
+        /// Generates all maps.
+        /// </summary>
         public void GenerateMaps()
         {
             BlockAutoSave();

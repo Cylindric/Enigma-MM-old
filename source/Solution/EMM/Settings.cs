@@ -245,6 +245,16 @@ namespace EnigmaMM
             get { return mSettings.GetRootedPath(ServerManagerRoot, "MinecraftOverviewerRoot", @".\Overviewer"); }
         }
 
+
+        /// <summary>
+        /// Returns the full path to the Python executable.
+        /// </summary>
+        /// <remarks>
+        /// Should be a full path, unless python.exe is in the PATH.
+        /// Defaults to <code>C:\Program Files\Python27\python.exe</code>.
+        /// </remarks>
+        /// <example>C:\Program Files\Python27\python.exe</example>
+        /// <example>python.exe</example>
         public static string PythonExe
         {
             get { return mSettings.GetString("PythonExe", @"C:\Program Files\Python27\python.exe"); }
