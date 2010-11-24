@@ -85,43 +85,46 @@ namespace EnigmaMM
             }
 
             mSettingsNeedSaving = false;
-            StreamReader Sr;
-            string S;
-            Sr = File.OpenText(mSettingsFile);
-            S = Sr.ReadLine();
-            string[] vars;
-            string key;
-            string value;
-            while (S != null)
-            {
-                S = S.Trim();
 
-                if (S.StartsWith("#"))
+            string S;
+            using (FileStream fileStream = new FileStream(mSettingsFile, FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader sr = new StreamReader(fileStream))
                 {
-                    // comment lines can be ignored
-                }
-                else
-                {
-                    // Split the config line into a key and a value, separated by a "="
-                    // If the value contains an "=" symbol, then we need to be sure to join
-                    // them all together again
-                    key = "";
-                    value = "";
-                    vars = S.Split(mSeparator);
-                    if (vars.Length > 0)
+                    while (!sr.EndOfStream)
                     {
-                        key = vars[0];
-                        if (vars.Length >= 1)
+                        S = sr.ReadLine();
+                        S = S.Trim();
+                        string[] vars;
+                        string key;
+                        string value;
+
+                        if (S.StartsWith("#"))
                         {
-                            value = string.Join(mSeparator.ToString(), vars, 1, vars.Length - 1);
+                            // comment lines can be ignored
                         }
-                        value = value.Trim();
-                        SetValue(key, value);
+                        else
+                        {
+                            // Split the config line into a key and a value, separated by a "="
+                            // If the value contains an "=" symbol, then we need to be sure to join
+                            // them all together again
+                            key = "";
+                            value = "";
+                            vars = S.Split(mSeparator);
+                            if (vars.Length > 0)
+                            {
+                                key = vars[0];
+                                if (vars.Length >= 1)
+                                {
+                                    value = string.Join(mSeparator.ToString(), vars, 1, vars.Length - 1);
+                                }
+                                value = value.Trim();
+                                SetValue(key, value);
+                            }
+                        }
                     }
                 }
-                S = Sr.ReadLine();
             }
-            Sr.Close();
             mLastReload = DateTime.Now;
             return true;
         }
