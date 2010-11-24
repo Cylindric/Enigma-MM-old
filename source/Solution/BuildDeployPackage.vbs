@@ -47,6 +47,7 @@ CreateFolder(objFS.BuildPath(EMMRoot, "Backups"))
 CreateFolder(objFS.BuildPath(EMMRoot, "Cache"))
 CreateFolder(objFS.BuildPath(EMMRoot, "Minecraft"))
 CreateFolder(objFS.BuildPath(EMMRoot, "Overviewer"))
+CreateFolder(objFS.BuildPath(EMMRoot, "Maps"))
 
 
 ' The EMM core files
