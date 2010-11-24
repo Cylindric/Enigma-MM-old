@@ -4,10 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMM", "EMM\EMM.csproj", "{E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibNbt", "LibNbt\LibNbt.csproj", "{4488498D-976D-4DA3-BF72-109531AF0488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLIServer", "CLIServer\CLIServer.csproj", "{A7D733AC-A044-415F-AF83-7F01CA9C9DA8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLIClient", "CLIClient\CLIClient.csproj", "{5EBEB150-905F-4D2B-A938-605AEF2E763D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{FA641914-FBA9-4109-A9A6-A7C9CC356739}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftSimulator", "MinecraftSimulator\MinecraftSimulator.csproj", "{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}"
@@ -46,18 +42,6 @@ Global
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Release|x86.ActiveCfg = Release|Any CPU
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Release|x86.Build.0 = Release|Any CPU
-		{A7D733AC-A044-415F-AF83-7F01CA9C9DA8}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{A7D733AC-A044-415F-AF83-7F01CA9C9DA8}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A7D733AC-A044-415F-AF83-7F01CA9C9DA8}.Debug|x86.ActiveCfg = Release|Any CPU
-		{A7D733AC-A044-415F-AF83-7F01CA9C9DA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7D733AC-A044-415F-AF83-7F01CA9C9DA8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A7D733AC-A044-415F-AF83-7F01CA9C9DA8}.Release|x86.ActiveCfg = Release|Any CPU
-		{5EBEB150-905F-4D2B-A938-605AEF2E763D}.Debug|Any CPU.ActiveCfg = Release|x86
-		{5EBEB150-905F-4D2B-A938-605AEF2E763D}.Debug|Mixed Platforms.ActiveCfg = Release|x86
-		{5EBEB150-905F-4D2B-A938-605AEF2E763D}.Debug|x86.ActiveCfg = Release|x86
-		{5EBEB150-905F-4D2B-A938-605AEF2E763D}.Release|Any CPU.ActiveCfg = Release|x86
-		{5EBEB150-905F-4D2B-A938-605AEF2E763D}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{5EBEB150-905F-4D2B-A938-605AEF2E763D}.Release|x86.ActiveCfg = Release|x86
 		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|Any CPU.ActiveCfg = Release|x86
 		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|Any CPU.Build.0 = Release|x86
 		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Debug|Mixed Platforms.ActiveCfg = Release|x86
