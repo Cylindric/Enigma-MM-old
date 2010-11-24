@@ -21,22 +21,26 @@ namespace EnigmaMM
         public void PerformBackup()
         {
             mMinecraft.ServerProperties.Load();
+            if (!Directory.Exists(Settings.BackupRoot))
+            {
+                mMinecraft.RaiseServerMessage(string.Format("ERROR: Specified backup location doesn't exist! {0}", Settings.BackupRoot));
+                return;
+            }
+
             string backupFile = Path.Combine(Settings.BackupRoot, string.Format("backup-{0:yyyyMMdd-HHmmss}.zip", DateTime.Now));
 
             RotateFiles();
             using (ZipFile zip = new ZipFile())
             {
                 zip.AddDirectory(Settings.MinecraftRoot, "Minecraft");
-                zip.AddDirectory(Settings.ServerManagerRoot, "ServerManager");
-                if (Directory.Exists(Settings.AlphaVespucciRoot))
+                try
                 {
-                    zip.AddDirectory(Settings.AlphaVespucciRoot, "AlphaVespucci");
+                    zip.Save(backupFile);
                 }
-                if (Directory.Exists(Settings.OverviewerRoot))
+                catch (Exception e)
                 {
-                    zip.AddDirectory(Settings.OverviewerRoot, "Overviewer");
+                    mMinecraft.RaiseServerMessage(string.Format("ERROR: Unable to save backup! {0}", e.Message));
                 }
-                zip.Save(backupFile);
             }
         }
 
