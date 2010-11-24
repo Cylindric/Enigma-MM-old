@@ -25,8 +25,8 @@ namespace MinecraftSimulator
         private DateTime mLastAutoSave;
 
         private const double RATE_LAG = 0.001;
-        private const double RATE_PLAYER_JOINS = 0.01;
-        private const double RATE_PLAYER_QUITS = 0.0098;
+        private const double RATE_PLAYER_JOINS = 0.05;
+        private const double RATE_PLAYER_QUITS = 0.05;
         private const double RATE_PLAYER_DC = 0.0002;
         private TimeSpan AUTO_SAVE_DELAY = new TimeSpan(0, 30, 0);
 

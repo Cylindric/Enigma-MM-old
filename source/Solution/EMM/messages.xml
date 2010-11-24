@@ -23,12 +23,12 @@
   <message>
 		<name>UserLoggedIn</name>
 		<type>Regex</type>
-		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ \[(?&lt;address&gt;.+?)]\ logged\ in with entity id (?&lt;entityid&gt;.*?)$></rule>
+		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ \[(?&lt;address&gt;.+?)]\ logged\ in with entity id (?&lt;entityid&gt;.*?)$</rule>
 	</message>
   <message>
 		<name>UserLoggedOut</name>
 		<type>Regex</type>
-		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ lost\ connection:\ (?&lt;reason&gt;.+?)$></rule>
+		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ lost\ connection:\ (?&lt;reason&gt;.+?)$</rule>
 	</message>
   <message>
 		<name>AutoSaveEnabled</name>

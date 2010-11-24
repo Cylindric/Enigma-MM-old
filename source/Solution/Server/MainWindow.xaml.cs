@@ -23,7 +23,7 @@ namespace EnigmaMM
         private InvokeOC<LogListItem> mLogItems;
         private object mLogItemLock;
 
-        private static Timer mUserPlot;
+        private static Timer mUserPlotTimer;
         private ObservableDataSource<double> xs = null;
         private ObservableDataSource<DateTime> ys = null;
         private HorizontalDateTimeAxis mUserPlotHorizAxis = new HorizontalDateTimeAxis();
@@ -35,36 +35,34 @@ namespace EnigmaMM
 
         private void Initialise()
         {
+            // Setup the log viewer
             mLogItemLock = new object();
             mLogItems = new InvokeOC<LogListItem>(uxLogListView.Dispatcher);
+            uxLogListView.ItemsSource = mLogItems;
 
+            // Setup the server manager
             mMinecraft = new MCServer();
             mMinecraft.ServerMessage += HandleServerMessage;
             mMinecraft.StatusChanged += HandleServerMessage;
             mMinecraft.StartCommsServer();
             mParser = new CommandParser(mMinecraft);
-
-            uxLogListView.ItemsSource = mLogItems;
+            uxUserListView.ItemsSource = mMinecraft.Users;
 
             // Setup the user chart
-            mUserPlot = new Timer(5000);
-            mUserPlot.Elapsed += new ElapsedEventHandler(UpdateUserChart);
-            mUserPlot.Enabled = true;
-
-            mUserPlotHorizAxis.AxisControl.ContentStringFormat = "hh:mm";
-            uxUserChart.HorizontalAxis = mUserPlotHorizAxis;
+            mUserPlotTimer = new Timer(5000);
+            mUserPlotTimer.Elapsed += new ElapsedEventHandler(UpdateUserChart);
+            mUserPlotTimer.Enabled = true;
+            mUserPlotHorizAxis.ContentStringFormat = "hh:mm";
+            //uxUserChart.HorizontalAxis = mUserPlotHorizAxis;
             xs = new ObservableDataSource<double>();
             xs.SetYMapping(_y => _y);
-
             ys = new ObservableDataSource<DateTime>();
             ys.SetXMapping(mUserPlotHorizAxis.ConvertToDouble);
-
             CompositeDataSource ds = new CompositeDataSource(xs, ys);
-            uxUserChart.AddLineGraph(ds);
+            //uxUserChart.AddLineGraph(ds);
         }
 
         private delegate void UpdateServerMetricsDelegate();
-
         private void UpdateServerMetrics()
         {
             if (this.Dispatcher.CheckAccess())
@@ -111,6 +109,8 @@ namespace EnigmaMM
                         uxStartButton.IsEnabled = true;
                         break;
                 }
+
+                uxStatusBarUsers.Text = string.Format("Online users: {0}", mMinecraft.Users.Count);
             }
             else
             {
@@ -137,7 +137,6 @@ namespace EnigmaMM
         }
 
         private delegate void HandleServerMessageDelegate(string message);
-
         private void HandleServerMessage(string message)
         {
             if (message.Length > 0)
@@ -149,7 +148,7 @@ namespace EnigmaMM
 
         private void UpdateUserChart(object source, ElapsedEventArgs e)
         {
-            xs.AppendAsync(Dispatcher, mMinecraft.OnlineUserCount);
+            xs.AppendAsync(Dispatcher, mMinecraft.Users.Count);
             ys.AppendAsync(Dispatcher, DateTime.Now);
         }
 

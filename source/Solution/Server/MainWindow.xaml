@@ -19,7 +19,7 @@
             <Button Name="uxStartButton" Content="Start" Margin="5" Click="uxStartButton_Click" />
             <Button Name="uxStopButton" Content="Stop" Margin="5" Click="uxStopButton_Click" />
             <Button Name="uxRestartButton" Content="Restart" Margin="5" Click="uxRestartButton_Click" />
-            <CheckBox Name="uxGracefulCheckbox" Content="Graceful?" />
+            <CheckBox Name="uxGracefulCheckbox" Content="Graceful?" IsChecked="True" />
         </StackPanel>
 
         <Grid Grid.Column="1" Grid.Row="0" >
@@ -47,6 +47,9 @@
             <StatusBarItem>
                 <TextBlock Name="uxStatusBarStatus">Ready</TextBlock>
             </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="uxStatusBarUsers"></TextBlock>
+            </StatusBarItem>
         </StatusBar>
         
         <Grid Grid.Column="2">
@@ -67,8 +70,7 @@
                 </ListView.View>
             </ListView>
 
-            <d3:ChartPlotter Name="uxUserChart" Grid.Row="1" Height="150">
-            </d3:ChartPlotter>
+            <!-- d3:ChartPlotter Name="uxUserChart" Grid.Row="1" Height="150"/ -->
         </Grid>
     </Grid>
 </Window>

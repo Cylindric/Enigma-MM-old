@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.IO;
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
 
 namespace EnigmaMM
 {
@@ -23,30 +22,20 @@ namespace EnigmaMM
         private CommandParser mParser;
         private bool mServerSaving = false;
 
-
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
         private MCServerProperties mServerProperties;
         private MCServerWarps mServerWarps;
-        //private string mJavaExec = "java.exe";
-        //private string mServerRoot = "";
-        //private string mServerJar = "minecraft_server.jar";
-        //private int mJavaHeapInit = 1024;
-        //private int mJavaHeapMax = 1024;
         private bool mServerRunningHMod = false;
         private int mHModversion = 0;
         private ArrayList mSavedUsers = new ArrayList();
         private ArrayList mOnlineUsers = new ArrayList();
-
         private int mAutoSaveBlocks = 0;
         private bool mAutoSaveEnabled = false;
 
         // Map objects and settings
         private AlphaVespucci mMapAlphaVespucci;
-        //private bool mAlphaVespucciInstalled = false;
         private Overviewer mMapOverviewer;
-        //private bool mOverviewerInstalled = false;
-        //private string mMapRoot;
 
         // Events raised at key server events
         public delegate void ServerMessageEventHandler(string Message);
@@ -93,45 +82,7 @@ namespace EnigmaMM
             get { return mStatusMessage; }
         }
 
-        //public string JavaExec
-        //{
-        //    set { mJavaExec = value; }
-        //}
-        //public string ServerRoot
-        //{
-        //    set { mServerRoot = value; }
-        //}
-        //public string ServerJar
-        //{
-        //    set { mServerJar = value; }
-        //}
-        //public int JavaHeapInit
-        //{
-        //    set { mJavaHeapInit = value; }
-        //}
-        //public int JavaHeapMax
-        //{
-        //    set { mJavaHeapMax = value; }
-        //}
-        //public string MapRoot
-        //{
-        //    set { mMapRoot = value; }
-        //}
-        //public bool AlphaVespucciInstalled
-        //{
-        //    set { mAlphaVespucciInstalled = value; }
-        //}
-        //public bool OverviewerInstalled
-        //{
-        //    set { mOverviewerInstalled = value; }
-        //}
-
-        public int OnlineUserCount
-        {
-            get { return mOnlineUsers.Count; }
-        }
-
-        public ArrayList OnlineUserList
+        public ArrayList Users
         {
             get { return mOnlineUsers; }
         }
@@ -169,15 +120,6 @@ namespace EnigmaMM
             mMapOverviewer = new Overviewer(this);
 
             ServerStatus = Status.Stopped;
-            //mServerRoot = Settings.MinecraftRoot;
-            //mJavaExec = Settings.JavaExec;
-            //mServerJar = Settings.ServerJar;
-            //mJavaHeapInit = Settings.JavaHeapInit;
-            //mJavaHeapMax = Settings.JavaHeapMax;
-            //mMapRoot = Settings.MapRoot;
-
-            //AlphaVespucciInstalled = Settings.AlphaVespucciInstalled;
-            //OverviewerInstalled = Settings.OverviewerInstalled;
 
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
@@ -351,7 +293,7 @@ namespace EnigmaMM
         {
             bool neverTimeout = (timeout == 0);
 
-            if (mServerStatus == Status.Running)
+            if ((mServerStatus == Status.Running) || (mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart))
             {
                 SendCommand("stop");
                 ServerStatus = Status.Stopping;
@@ -595,7 +537,6 @@ namespace EnigmaMM
             UnblockAutoSave();
         }
 
-
         /// <summary>
         /// Disables server auto-save by incrementing a 'block' counter. Autosaves are not
         /// resumed until all blocks have been released.  <see cref="UnblockAutoSave"/>
@@ -609,7 +550,6 @@ namespace EnigmaMM
             }
         }
 
-
         /// <summary>
         /// Re-enables server auto-save by decrementing a 'block' counter. Autosaves are not
         /// resumed until all blocks have been released.  <see cref="BlockAutoSave"/>
@@ -622,7 +562,6 @@ namespace EnigmaMM
                 AutoSave(true);
             }
         }
-
 
         /// <summary>
         /// Populates mSavedUsers with details taken from the World's 'players' directory.
@@ -692,27 +631,16 @@ namespace EnigmaMM
                     OnServerStarted("Server started");
                     break;
 
-                case MCServerMessage.MessageTypes.UserCount:
-                    if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingRestart))
-                    {
-                        RestartServer();
-                    }
-                    if ((mOnlineUsers.Count == 0) && (mServerStatus == Status.PendingStop))
-                    {
-                        StopServer();
-                    }
-                    break;
-
-                case MCServerMessage.MessageTypes.UserList:
-                    SetOnlineUserList(M.Data["userlist"]);
-                    break;
-
                 case MCServerMessage.MessageTypes.UserLoggedIn:
                     mOnlineUsers.Add(M.Data["username"]);
                     break;
 
                 case MCServerMessage.MessageTypes.UserLoggedOut:
                     mOnlineUsers.Remove(M.Data["username"]);
+                    if (mOnlineUsers.Count == 0)
+                    {
+                        OnServerReachZeroUsers();
+                    }
                     break;
 
             }
@@ -749,7 +677,6 @@ namespace EnigmaMM
 
         #region Server Events
 
-
         internal void OnRemoteCommandReceived(string command)
         {
             mParser.ParseCommand(command);
@@ -766,7 +693,6 @@ namespace EnigmaMM
                 ServerMessage(Message);
             }
         }
-
         
         /// <summary>
         /// Called when the Minecraft server process terminates.
@@ -802,7 +728,6 @@ namespace EnigmaMM
             ServerMessage("Started");
         }
 
-
         /// <summary>
         /// Called when the Minecraft server has stopped.
         /// </summary>
@@ -818,6 +743,20 @@ namespace EnigmaMM
             }
         }
 
+        /// <summary>
+        /// Called when the last user logs out.
+        /// </summary>
+        private void OnServerReachZeroUsers()
+        {
+            if (mServerStatus == Status.PendingRestart)
+            {
+                RestartServer();
+            }
+            if (mServerStatus == Status.PendingStop)
+            {
+                StopServer();
+            }
+        }
 
         /// <summary>
         /// Called when the minecraft server reports an error.
