@@ -25,9 +25,9 @@ EMMRoot = objFS.BuildPath(DeployRoot, "EMMServer")
 ' -----------------------------------------------------------------------------
 Dim compiler
 compiler = """%WINDIR%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"""
-cmd = compiler & " "
+cmd = compiler & " /nologo /verbosity:q "
 cmd = cmd & """" & objFS.BuildPath(ScriptPath, "Enigma Minecraft Manager.sln") & """"
-' objShell.Run cmd, WindowStyleShow, True
+objShell.Run cmd, WindowStyleShow, True
 
 
 ' This should only need creating once

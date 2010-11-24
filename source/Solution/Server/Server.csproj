@@ -101,12 +101,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EMM\EMM.csproj">
-      <Project>{E6CD972B-28CF-4096-8E1A-368AD575A62C}</Project>
-      <Name>EMM</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\status-failed.png" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +120,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\status-stopping.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EMM\EMM.csproj">
+      <Project>{E6CD972B-28CF-4096-8E1A-368AD575A62C}</Project>
+      <Name>EMM</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
