@@ -4,9 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Microsoft.Research.DynamicDataDisplay;
-using Microsoft.Research.DynamicDataDisplay.Charts;
-using Microsoft.Research.DynamicDataDisplay.DataSources;
 
 namespace EnigmaMM
 {
@@ -22,11 +19,6 @@ namespace EnigmaMM
 
         private InvokeOC<LogListItem> mLogItems;
         private object mLogItemLock;
-
-        private static Timer mUserPlotTimer;
-        private ObservableDataSource<double> xs = null;
-        private ObservableDataSource<DateTime> ys = null;
-        private HorizontalDateTimeAxis mUserPlotHorizAxis = new HorizontalDateTimeAxis();
 
         public MainWindow()
         {
@@ -47,19 +39,6 @@ namespace EnigmaMM
             mMinecraft.StartCommsServer();
             mParser = new CommandParser(mMinecraft);
             uxUserListView.ItemsSource = mMinecraft.Users;
-
-            // Setup the user chart
-            mUserPlotTimer = new Timer(5000);
-            mUserPlotTimer.Elapsed += new ElapsedEventHandler(UpdateUserChart);
-            mUserPlotTimer.Enabled = true;
-            mUserPlotHorizAxis.ContentStringFormat = "hh:mm";
-            //uxUserChart.HorizontalAxis = mUserPlotHorizAxis;
-            xs = new ObservableDataSource<double>();
-            xs.SetYMapping(_y => _y);
-            ys = new ObservableDataSource<DateTime>();
-            ys.SetXMapping(mUserPlotHorizAxis.ConvertToDouble);
-            CompositeDataSource ds = new CompositeDataSource(xs, ys);
-            //uxUserChart.AddLineGraph(ds);
         }
 
         private delegate void UpdateServerMetricsDelegate();
@@ -144,12 +123,6 @@ namespace EnigmaMM
                 AddMessageToLog(message);
             }
             UpdateServerMetrics();
-        }
-
-        private void UpdateUserChart(object source, ElapsedEventArgs e)
-        {
-            xs.AppendAsync(Dispatcher, mMinecraft.Users.Count);
-            ys.AppendAsync(Dispatcher, DateTime.Now);
         }
 
         private void uxStartButton_Click(object sender, RoutedEventArgs e)
