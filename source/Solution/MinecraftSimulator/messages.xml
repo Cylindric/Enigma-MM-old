@@ -2,7 +2,7 @@
 <messages>
 	<message source="core">
   	<name>Startup</name>
-		<text>{timestamp} [INFO] Starting minecraft server version 0.2.5</text>
+		<text>{timestamp} [INFO] Starting minecraft server version 0.2.5 (simulator)</text>
 	</message>
 	<message source="core">
   	<name>NotEnoughMemory</name>

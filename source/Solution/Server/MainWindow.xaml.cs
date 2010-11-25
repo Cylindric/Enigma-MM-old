@@ -105,14 +105,11 @@ namespace EnigmaMM
 
         private void AddMessageToLog(string message)
         {
-            //lock (mLogItemLock)
-            //{
-                mLogItems.Add(new LogListItem(message));
-                if (mLogItems.Count > MAX_LOG_ENTRIES)
-                {
-                    mLogItems.RemoveAt(0);
-                }
-            //}
+            mLogItems.Add(new LogListItem(message));
+            if (mLogItems.Count > MAX_LOG_ENTRIES)
+            {
+                mLogItems.RemoveAt(0);
+            }
         }
 
         private delegate void HandleServerMessageDelegate(string message);

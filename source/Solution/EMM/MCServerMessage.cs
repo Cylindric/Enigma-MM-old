@@ -50,8 +50,24 @@ namespace EnigmaMM
 
             public MessagePattern(string type, string matchType, string matchPattern)
             {
-                MessageType = (MessageTypes)Enum.Parse(typeof(MessageTypes), type);
-                MatchType = (MatchTypes)Enum.Parse(typeof(MatchTypes), matchType);
+                if (Enum.IsDefined(typeof(MessageTypes), type))
+                {
+                    MessageType = (MessageTypes)Enum.Parse(typeof(MessageTypes), type);
+                }
+                else
+                {
+                    MessageType = MessageTypes.Other;
+                }
+
+                if (Enum.IsDefined(typeof(MatchTypes), matchType))
+                {
+                    MatchType = (MatchTypes)Enum.Parse(typeof(MatchTypes), matchType);
+                }
+                else
+                {
+                    MatchType = MatchTypes.EndsWith;
+                }
+
                 Pattern = matchPattern;
             }
 
