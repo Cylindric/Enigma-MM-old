@@ -32,7 +32,11 @@ namespace EnigmaMM
             RotateFiles();
             using (ZipFile zip = new ZipFile())
             {
-                zip.AddDirectory(Settings.MinecraftRoot, "Minecraft");
+                //zip.AddDirectory(Settings.MinecraftRoot, "Minecraft");
+                zip.AddSelectedFiles("*.txt", Settings.MinecraftRoot, @"minecraft");
+                zip.AddSelectedFiles("*.jar", Settings.MinecraftRoot, @"minecraft");
+                zip.AddSelectedFiles("*.properties", Settings.MinecraftRoot, @"minecraft");
+                zip.AddDirectory(mMinecraft.ServerProperties.WorldPath, @"minecraft\" + Path.GetFileName(mMinecraft.ServerProperties.WorldPath));
                 try
                 {
                     zip.Save(backupFile);
