@@ -8,17 +8,34 @@ namespace EnigmaMM
 {
     class AlphaVespucci : Mapper
     {
-        public AlphaVespucci(MCServer server) : base(server, "alphavespucci")
+        public AlphaVespucci(MCServer server) : base(server, "av")
         {
             mExePath = Path.Combine(Settings.AlphaVespucciRoot, "AlphaVespucci.exe");
+            mOutputPath = Path.Combine(Settings.MapRoot, "Overviewer");
         }
 
+        public override void Render(string type)
+        {
+            if (type == "main")
+            {
+                RenderMap("obleft", "day", "mainmap", true);
+            }
+            if (type == "extra")
+            {
+                RenderMap("obleft", "night", "nightmap");
+                RenderMap("obleft", "cave", "caves");
+                RenderMap("obleft", "cavelimit 15", "surfacecaves");
+                RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
+                RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
+                RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch");
+                RenderMap("flat", "day", "flatmap");
+            }
+        }
 
         public void RenderMap(string display, string features, string Filename)
         {
             RenderMap(display, features, Filename, false);
         }
-
 
         public void RenderMap(string display, string features, string Filename, bool createHistory)
         {

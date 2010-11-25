@@ -51,6 +51,7 @@
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
     <Compile Include="CommsManager.cs" />
+    <Compile Include="Mappers\MapManager.cs" />
     <Compile Include="MCServerMessage.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="CommsServer.cs" />

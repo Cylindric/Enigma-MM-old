@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace EnigmaMM
 {
@@ -9,18 +10,17 @@ namespace EnigmaMM
         protected string mExePath;
         protected string mCachePath;
         protected string mOutputPath;
-        private string mTag = "mapper";
 
+        private string mTag = "mapper";
+        
         public Mapper(MCServer server, string tag)
         {
             mTag = tag;
-
             mMinecraft = server;
-            mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.py");
-            mCachePath = Path.Combine(Settings.CacheRoot, "Overviewer");
-            mOutputPath = Path.Combine(Settings.MapRoot, mTag);
+            mCachePath = Path.Combine(Settings.CacheRoot, mTag);
         }
 
+        public virtual void Render(string type) { }
 
         public virtual void RenderMap()
         {
