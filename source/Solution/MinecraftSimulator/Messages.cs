@@ -79,7 +79,7 @@ namespace MinecraftSimulator
 
         internal void ConnectedPlayers()
         {
-            SendMessage("INFO", string.Format("Connected players:{0}", string.Join(", ", mSim.Players)));
+            SendMessage("INFO", string.Format("Connected players:{0}", String.Join(", ", mSim.Players.ToArray())));
         }
         internal void Stop()
         {
