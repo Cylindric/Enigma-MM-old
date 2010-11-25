@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<messages>
+	<message source="core">
+  	<name>Startup</name>
+		<text>{timestamp} [INFO] Starting minecraft server version 0.2.5</text>
+	</message>
+	<message source="core">
+  	<name>NotEnoughMemory</name>
+		<text>{timestamp} [WARNING] **** NOT ENOUGH RAM!</text>
+	</message>
+	<message source="core">
+  	<name>MemorySettingHelp</name>
+		<text>{timestamp} [WARNING] To start the server with more ram, launch it as java -Xmx1024M -Xms1024M -jar minecraft_server.jar</text>
+	</message>
+	<message source="core">
+  	<name>LoadingProps</name>
+		<text>{timestamp} [INFO Loading properties</text>
+	</message>
+	<message source="core">
+  	<name>StartingServerPort</name>
+		<text>{timestamp} [INFO Starting Minecraft server on *:25565</text>
+	</message>
+	<message source="core">
+  	<name>PreparingWorld</name>
+		<text>{timestamp} [INFO] Preparing level "{world}"</text>
+	</message>
+	<message source="core">
+  	<name>PreparingRegion</name>
+		<text>{timestamp} [INFO] Preparing start region</text>
+	</message>
+	<message source="core">
+  	<name>PreparingSpawn</name>
+		<text>Preparing spawn area: {percent}%</text>
+	</message>
+	<message source="core">
+  	<name>StartupComplete</name>
+		<text>{timestamp} [INFO] Done! For help, type "help" or "?"</text>
+	</message>
+  <message source="core">
+		<name>SaveComplete</name>
+		<text>{timestamp} [INFO] CONSOLE: Save Complete</text>
+	</message>
+  <message source="core">
+		<name>ErrorPortBusy</name>
+		<text>{timestamp} [WARNING] **** FAILED TO BIND TO PORT!</text>
+	</message>
+  <message source="core">
+		<name>SaveStarted</name>
+		<text>{timestamp} [INFO] CONSOLE: Forcing save..</text>
+	</message>
+  <message source="core">
+		<name>UserLoggedIn</name>
+		<text>{timestamp} [INFO] {username} [{address}] logged in with entity id {entityid}</text>
+	</message>
+  <message source="core">
+		<name>UserLoggedOut</name>
+		<text>{timestamp} [INFO] {username} lost connection: {reason}</text>
+	</message>
+  <message source="core">
+		<name>AutoSaveEnabled</name>
+		<text>{timestamp} [INFO] CONSOLE: Enabling level saving..</text>
+	</message>
+  <message source="core">
+		<name>AutoSaveDisabled</name>
+		<text>{timestamp} [INFO] CONSOLE: Disabling level saving..</text>
+	</message>
+  <message source="core">
+		<name>UserList</name>
+		<text>{timestamp} [INFO] Connected players: {userlist}</text>
+	</message>
+  <message source="core">
+		<name>UserCount</name>
+		<text>Player count: {count}</text>
+	</message>
+  <message source="core">
+		<name>MinecraftBanner</name>
+		<text>{timestamp} [INFO] Starting minecraft server version {version}</text>
+	</message>
+  <message source="core">
+		<name>ErrorInvalidMove</name>
+		<text>{timestamp} [WARNING] {username} moved wrongly!</text>
+	</message>
+  <message source="core">
+		<name>Overloaded</name>
+		<text>{timestamp} [WARNING] Can't keep up! Did the system time change, or is the server overloaded?</text>
+	</message>
+  <message source="core">
+		<name>UnknownCommand</name>
+		<text>{timestamp} [INFO] Unknown console command. Type "help" for help.</text>
+	</message>
+  <message source="hmod">
+		<name>GiveUserItem</name>
+		<text>{timestamp} [INFO] Giving {username} some {itemid}</text>
+	</message>
+  <message source="hmod">
+		<name>hModBanner</name>
+		<text>{timestamp} [INFO] Hey0 Server Mod Build 126</text>
+	</message>
+</messages>

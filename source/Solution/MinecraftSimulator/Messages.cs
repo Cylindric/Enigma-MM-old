@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Xml;
+using System.IO;
 
 namespace MinecraftSimulator
 {
@@ -10,47 +12,64 @@ namespace MinecraftSimulator
     {
         private Simulator mSim;
         private Random mRand = new Random();
+        public Dictionary<string, string> mMessages { private set; get; }
 
         internal Messages(Simulator sim)
         {
             mSim = sim;
+            PopulateRules();
+        }
+
+        private void PopulateRules()
+        {
+            mMessages = new Dictionary<string, string>();
+
+            XmlDocument xml = new XmlDocument();
+            xml.Load(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "messages.xml"));
+            XmlNodeList nodeList = xml.DocumentElement.SelectNodes("/messages/message");
+            foreach (XmlNode message in nodeList)
+            {
+                XmlNode name = message.SelectSingleNode("name");
+                XmlNode rule = message.SelectSingleNode("text");
+                mMessages.Add(name.InnerText, rule.InnerText);
+            }
         }
 
         internal void StartupMessages()
         {
-            SendMessage("INFO", "Starting minecraft server version 0.2.2_01");
+            SendMessage(mMessages["Startup"]);
             if (mSim.LowMem)
             {
-                SendMessage("WARNING", "**** NOT ENOUGH RAM!");
-                SendMessage("WARNING", "To start the server with more ram, launch it as java -Xmx1024M -Xms1024M -jar minecraft_server.jar");
+                SendMessage(mMessages["NotEnoughMemory"]);
+                SendMessage(mMessages["MemorySettingHelp"]);
             }
-            SendMessage("INFO", "Loading properties");
-            SendMessage("INFO", "Starting Minecraft server on *:25565");
-            SendMessage("INFO", "Preparing level \"world\"");
-            SendMessage("INFO", "Preparing start region");
+            SendMessage(mMessages["LoadingProps"]);
+            SendMessage(mMessages["StartingServerPort"]);
+            SendMessage(mMessages["PreparingWorld"].Replace("{world}", "world"));
+            SendMessage(mMessages["PreparingRegion"]);
         }
 
         internal void PrepareSpawnArea()
         {
             for (int i = 0; i < 100; i += 5)
             {
-                SendMessage(string.Format("Preparing spawn area: {0}%", i));
+                SendMessage(mMessages["PreparingSpawn"].Replace("{percent}", i.ToString()));
                 if (!mSim.Fast)
                 {
                     Thread.Sleep(mRand.Next(100, 1000));
                 }
             }
-            SendMessage("INFO", "Done! For help, type \"help\" or \"?\"");
+            SendMessage(mMessages["StartupComplete"]);
         }
 
         internal void Lagging()
         {
-            SendMessage("WARNING", "Can't keep up! Did the system time change, or is the server overloaded?");
+            SendMessage(mMessages["Overloaded"]);
         }
 
         internal void UnknownCommand()
         {
-            SendMessage("INFO", "Unknown console command. Type \"help\" for help.");
+            SendMessage(mMessages["UnknownCommand"]);
         }
 
         internal void Save()
@@ -59,27 +78,27 @@ namespace MinecraftSimulator
             {
                 Thread.Sleep(200);
             }
-            SendMessage("INFO", "CONSOLE: Forcing save..");
+            SendMessage(mMessages["SaveStart"]);
             if (!mSim.Fast)
             {
                 Thread.Sleep(2000);
             }
-            SendMessage("INFO", "CONSOLE: Save complete.");
+            SendMessage(mMessages["SaveComplete"]);
         }
 
         internal void SaveOn()
         {
-            SendMessage("INFO", "CONSOLE: Enabling level saving..");
+            SendMessage(mMessages["AutoSaveEnabled"]);
         }
 
         internal void SaveOff()
         {
-            SendMessage("INFO", "CONSOLE: Disabling level saving..");
+            SendMessage(mMessages["AutoSaveDisabled"]);
         }
 
         internal void ConnectedPlayers()
         {
-            SendMessage("INFO", string.Format("Connected players:{0}", String.Join(", ", mSim.Players.ToArray())));
+            SendMessage(mMessages["UserList"].Replace("{userlist}", String.Join(", ", mSim.Players.ToArray())));
         }
         internal void Stop()
         {
@@ -91,14 +110,22 @@ namespace MinecraftSimulator
         internal void PlayerJoined(string username)
         {
             string ipaddress = string.Format("{0}.{1}.{2}.{3}:{4}", mRand.Next(1, 254), mRand.Next(1, 254), mRand.Next(1, 254), mRand.Next(1, 254), mRand.Next(1, 63000));
-            SendMessage("INFO", string.Format("{0} [/{1}] logged in with entity id {2}", username, ipaddress, mRand.Next(1,5000)));
-            SendMessage("INFO", string.Format("Player count: {0}", mSim.Players.Count));
+
+            SendMessage(mMessages["UserLoggedIn"]
+                .Replace("{username}", username)
+                .Replace("{address}", ipaddress)
+                .Replace("{entityid}", mRand.Next(1, 5000).ToString()));
+
+            SendMessage(mMessages["UserCount"].Replace("{count}", mSim.Players.Count.ToString()));
         }
 
         internal void PlayerQuit(string username)
         {
-            SendMessage("INFO", string.Format("{0} lost connection: Quitting", username));
-            SendMessage("INFO", string.Format("Player count: {0}", mSim.Players.Count));
+            SendMessage(mMessages["UserLoggedOut"]
+                .Replace("{username}", username)
+                .Replace("{reason}", "Quitting"));
+
+            SendMessage(mMessages["UserCount"].Replace("{count}", mSim.Players.Count.ToString()));
         }
 
         internal void PlayerDisconnected(string username)
@@ -111,8 +138,12 @@ namespace MinecraftSimulator
             SendMessage("   at bh.f(SourceFile:147)");
             SendMessage("   at bh.c(SourceFile:9)");
             SendMessage("   at im.run(SourceFile:57)");
-            SendMessage("INFO", string.Format("{0} lost connection: Internal exception: java.net.SocketException", username));
-            SendMessage("INFO", string.Format("Player count: {0}", mSim.Players.Count));
+
+            SendMessage(mMessages["UserLoggedOut"]
+                .Replace("{username}", username)
+                .Replace("{reason}", "Internal exception: java.net.SocketException"));
+
+            SendMessage(mMessages["UserCount"].Replace("{count}", mSim.Players.Count.ToString()));
         }
 
         //[WARNING] **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
@@ -150,7 +181,7 @@ namespace MinecraftSimulator
 
         private void SendMessage(string message)
         {
-            mSim.SendMessage(message);
+            mSim.SendMessage(message.Replace("{timestamp}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
         }
     }
 }
