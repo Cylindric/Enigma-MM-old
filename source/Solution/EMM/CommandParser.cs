@@ -24,7 +24,8 @@ namespace EnigmaMM
         /// <param name="Command">The command to parse.</param>
         public void ParseCommand(String Command)
         {
-            switch (Command)
+            string[] args = Command.Split(' ');
+            switch (args[0])
             {
                 case ("quit"):
                     ParseCommand("stop");
@@ -57,20 +58,8 @@ namespace EnigmaMM
                     mMinecraft.AbortPendingStop();
                     break;
 
-                case ("maps-all"):
-                    mMinecraft.GenerateMaps();
-                    break;
-
-                case ("maps-av"):
-                    mMinecraft.GenerateMapAV();
-                    break;
-
-                case ("maps-avextra"):
-                    mMinecraft.GenerateMapAVExtra();
-                    break;
-
-                case ("maps-overviewer"):
-                    mMinecraft.GenerateMapOverviewer();
+                case ("maps"):
+                    mMinecraft.GenerateMaps(args);
                     break;
 
                 case ("backup"):

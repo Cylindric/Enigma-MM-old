@@ -9,11 +9,14 @@ namespace EnigmaMM
     {
         public Overviewer(MCServer server) : base(server, "overviewer")
         {
-            mExePath = Settings.OverviewerRoot;
-            mExePath = Path.Combine(mExePath, "gmap.py");
-            mCachePath = Path.Combine(Settings.CacheRoot, "Overviewer");
+            mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.py");
+            mOutputPath = Path.Combine(Settings.MapRoot, "Overviewer");
         }
 
+        public override void Render(string type)
+        {
+            RenderMap();
+        }
 
         public override void RenderMap()
         {

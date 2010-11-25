@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace EnigmaMM
 {
@@ -31,11 +32,7 @@ namespace EnigmaMM
         private ArrayList mSavedUsers = new ArrayList();
         private ArrayList mOnlineUsers = new ArrayList();
         private int mAutoSaveBlocks = 0;
-        private bool mAutoSaveEnabled = false;
-
-        // Map objects and settings
-        private AlphaVespucci mMapAlphaVespucci;
-        private Overviewer mMapOverviewer;
+        private bool mAutoSaveEnabled = true;
 
         /// <summary>
         /// Standard event handler for server messages.
@@ -138,8 +135,15 @@ namespace EnigmaMM
             mServerProperties = new MCServerProperties();
             mCommsServer = new CommsServer();
             mParser = new CommandParser(this);
-            mMapAlphaVespucci = new AlphaVespucci(this);
-            mMapOverviewer = new Overviewer(this);
+            
+            if (Settings.AlphaVespucciInstalled)
+            {
+                MapManager.Register("av", new AlphaVespucci(this));
+            }
+            if (Settings.OverviewerInstalled)
+            {
+                MapManager.Register("overviewer", new Overviewer(this));
+            }
 
             ServerStatus = Status.Stopped;
 
@@ -400,15 +404,17 @@ namespace EnigmaMM
         /// Enables or disables server auto-save.
         /// </summary>
         /// <param name="enabled">True turns on auto-save, false turns it off</param>
-        private void AutoSave(bool enabled)
+        private void SetAutoSave(bool enabled)
         {
             if (enabled)
             {
                 SendCommand("save-on");
+                Thread.Sleep(1000); // bit of a hack to give the server a chance to respond
             }
             else
             {
                 SendCommand("save-off");
+                Thread.Sleep(1000); // bit of a hack to give the server a chance to respond
             }
         }
 
@@ -487,80 +493,12 @@ namespace EnigmaMM
         }
 
         /// <summary>
-        /// Generates the main AlphaVespucci maps.
-        /// </summary>
-        public void GenerateMapAV()
-        {
-            if (!Settings.AlphaVespucciInstalled)
-            {
-                ServerMessage("Skipping AlphaVespucci Maps, not installed.");
-            }
-            else
-            {
-                ServerMessage("Generating AlphaVespucci Maps...");
-                BlockAutoSave();
-                mMapAlphaVespucci.RenderMap("obleft", "day", "mainmap", true);
-                UnblockAutoSave();
-                ServerMessage("Done.");
-            }
-        }
-
-
-        /// <summary>
-        /// Generates the additional AlphaVespucci maps.
-        /// </summary>
-        public void GenerateMapAVExtra()
-        {
-            if (!Settings.AlphaVespucciInstalled)
-            {
-                ServerMessage("Skipping more AlphaVespucci Maps, not installed.");
-            }
-            else
-            {
-                ServerMessage("Generating more AlphaVespucci Maps...");
-                BlockAutoSave();
-                mMapAlphaVespucci.RenderMap("obleft", "night", "nightmap");
-                mMapAlphaVespucci.RenderMap("obleft", "cave", "caves");
-                mMapAlphaVespucci.RenderMap("obleft", "cavelimit 15", "surfacecaves");
-                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
-                mMapAlphaVespucci.RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
-                mMapAlphaVespucci.RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch");
-                mMapAlphaVespucci.RenderMap("flat", "day", "flatmap");
-                UnblockAutoSave();
-                ServerMessage("Done.");
-            }
-        }
-
-
-        /// <summary>
-        /// Generates the main Overviewer maps.
-        /// </summary>
-        public void GenerateMapOverviewer()
-        {
-            if (!Settings.OverviewerInstalled)
-            {
-                ServerMessage("Skipping Overviewer Map, not installed.");
-            }
-            else
-            {
-                ServerMessage("Generating Overviewer Map...");
-                BlockAutoSave();
-                mMapOverviewer.RenderMap();
-                UnblockAutoSave();
-                ServerMessage("Done.");
-            }
-        }
-
-
-        /// <summary>
         /// Generates all maps.
         /// </summary>
-        public void GenerateMaps()
+        public void GenerateMaps(string[] args)
         {
             BlockAutoSave();
-            GenerateMapOverviewer();
-            GenerateMapAV();
-            GenerateMapAVExtra();
+            MapManager.RenderMaps(args);
             UnblockAutoSave();
         }
 
@@ -573,7 +511,7 @@ namespace EnigmaMM
             mAutoSaveBlocks += 1;
             if ((mAutoSaveEnabled) && (mAutoSaveBlocks > 0))
             {
-                AutoSave(false);
+                SetAutoSave(false);
             }
         }
 
@@ -586,7 +524,7 @@ namespace EnigmaMM
             mAutoSaveBlocks -= 1;
             if ((!mAutoSaveEnabled) && (mAutoSaveBlocks == 0))
             {
-                AutoSave(true);
+                SetAutoSave(true);
             }
         }
 
