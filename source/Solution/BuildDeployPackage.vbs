@@ -62,9 +62,10 @@ objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Server\bin
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\Release\LibNbt.dll")), EMMRoot & "\"
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\Release\LibNbt.txt")), EMMRoot & "\"
 
-' Copy the config from the source folder, not the build folder, to ensure
+' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\*.conf")), EMMRoot
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\Settings\*.conf")), EMMRoot
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\Scheduler\*.xml")), EMMRoot
 
 
 Dim zipexe, zipname, buildversion
