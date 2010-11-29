@@ -22,6 +22,7 @@ namespace EnigmaMM
         private CommsServer mCommsServer;
         private CommandParser mParser;
         private bool mServerSaving = false;
+        private Scheduler.Scheduler mScheduler;
 
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
@@ -149,6 +150,9 @@ namespace EnigmaMM
 
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
+
+            mScheduler = new Scheduler.Scheduler(this);
+            mScheduler.LoadSchedule();
         }
 
         /// <summary>

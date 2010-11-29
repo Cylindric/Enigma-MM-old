@@ -55,6 +55,8 @@
     <Compile Include="MCServerMessage.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="Comms\CommsServer.cs" />
+    <Compile Include="Scheduler\Scheduler.cs" />
+    <Compile Include="Scheduler\ScheduleTask.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Comms\SocketPacket.cs" />
     <Compile Include="Mappers\AlphaVespucci.cs" />
@@ -70,9 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="sample.settings.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Settings\sample.settings.conf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibNbt\LibNbt.csproj">
@@ -94,6 +94,7 @@
     <Content Include="optipng.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scheduler\sample.scheduler.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -3,8 +3,8 @@
 	<task>
 		<name>Backup</name>
 		<days>*</days>
-		<hours>*</minutes>
-		<seconds>*</seconds>
+		<hours>*</hours>
+		<minutes>*</minutes>
 		<command>backup</command>
 	</task>
 </schedule>
