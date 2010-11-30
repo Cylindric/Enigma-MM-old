@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftSimulator", "MinecraftSimulator\MinecraftSimulator.csproj", "{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{483C8D87-5418-4226-9F54-08475EE633A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,16 @@ Global
 		{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}.Release|Mixed Platforms.Build.0 = Release|x86
 		{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}.Release|x86.ActiveCfg = Release|x86
 		{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}.Release|x86.Build.0 = Release|x86
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
