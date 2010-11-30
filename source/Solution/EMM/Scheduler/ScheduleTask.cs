@@ -5,7 +5,7 @@ using System.Text;
 
 namespace EnigmaMM.Scheduler
 {
-    class ScheduleTask
+    public class ScheduleTask
     {
         public string Name { get; set; }
         public string Command { get; set; }
@@ -15,7 +15,37 @@ namespace EnigmaMM.Scheduler
         public string RunHours { get; set; }
         public string RunMinutes { get; set; }
 
+        public ScheduleTask()
+        {
+        }
+
+        public ScheduleTask(string days, string hours, string minutes)
+        {
+            RunDays = days;
+            RunHours = hours;
+            RunMinutes = minutes;
+        }
+
+        public ScheduleTask(string days, int hours, int minutes)
+        {
+            RunDays = days;
+            RunHours = hours.ToString();
+            RunMinutes = minutes.ToString();
+        }
+
+        public ScheduleTask(string days, string hours, int minutes)
+        {
+            RunDays = days;
+            RunHours = hours;
+            RunMinutes = minutes.ToString();
+        }
+
         public void CalculateNextRunTime()
+        {
+            CalculateNextRunTime(DateTime.Now);
+        }
+
+        public void CalculateNextRunTime(DateTime start)
         {
             int m = 0;
             int h = 0;
@@ -28,7 +58,7 @@ namespace EnigmaMM.Scheduler
                 d = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), RunDays);
             }
 
-            DateTime next = DateTime.Now;
+            DateTime next = start;
             next = next.AddSeconds(0 - next.Second);
             next = next.AddMinutes(1);
 
