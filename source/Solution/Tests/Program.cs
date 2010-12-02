@@ -10,12 +10,18 @@ namespace EnigmaMM.Tests
     {
         static void Main(string[] args)
         {
-            Scheduler.ScheduleTaskTests t = new Scheduler.ScheduleTaskTests();
-            t.TestAllDays();
-            t.TestAlternateDays();
-            t.TestEveryHour();
-            t.TestNextDay();
-            t.TestNextRun();
+            ServerTests serverTests = new ServerTests();
+            serverTests.FixtureSetup();
+            serverTests.TestInitialise();
+            serverTests.TestServerRecognisesNewUser();
+            serverTests.FixtureTeardown();
+
+            Scheduler.ScheduleTaskTests taskTests = new Scheduler.ScheduleTaskTests();
+            taskTests.TestAllDays();
+            taskTests.TestAlternateDays();
+            taskTests.TestEveryHour();
+            taskTests.TestNextDay();
+            taskTests.TestNextRun();
         }
     }
 }
