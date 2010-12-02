@@ -14,6 +14,7 @@ namespace MinecraftSimulator
         public bool Turbo { get; set; }
         public bool Lagging { get; set; }
         public bool LowMem { get; set; }
+        public bool Automate { get; set; }
         public List<string> Players { get; set; }
 
         public delegate void ServerMessageEventHandler(string Message);
@@ -40,6 +41,7 @@ namespace MinecraftSimulator
             Running = false;
             Lagging = true;
             LowMem = true;
+            Automate = false;
         }
 
         public void Start()
@@ -81,6 +83,11 @@ namespace MinecraftSimulator
                     UserLogOut();
                     break;
 
+                case "!auto":
+                    Automate = !Automate;
+                    mMsg.SendMessage(string.Format("Automation: {0}", Automate));
+                    break;
+
                 case "list":
                     mMsg.ConnectedPlayers();
                     break;
@@ -111,6 +118,11 @@ namespace MinecraftSimulator
 
         private void PerformIdleActions(object source, ElapsedEventArgs e)
         {
+            if (!Automate)
+            {
+                return;
+            }
+
             // always auto-save if the delay has expired
             if (mLastAutoSave.Add(AUTO_SAVE_DELAY) < DateTime.Now)
             {

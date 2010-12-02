@@ -25,7 +25,7 @@ namespace MinecraftSimulator
             mMessages = new Dictionary<string, string>();
 
             XmlDocument xml = new XmlDocument();
-            xml.Load(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "messages.xml"));
+            xml.Load(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "messages.simulator.xml"));
             XmlNodeList nodeList = xml.DocumentElement.SelectNodes("/messages/message");
             foreach (XmlNode message in nodeList)
             {
@@ -174,14 +174,14 @@ namespace MinecraftSimulator
         //[INFO]    list                      lists all currently connected players
         //[INFO]    say <message>             broadcasts a message to all players
 
-    private void SendMessage(string category, string message)
-        {
-            mSim.SendMessage(string.Format("{0} [{1}] {2}", DateTime.Now, category, message));
-        }
-
-        private void SendMessage(string message)
+        public void SendMessage(string message)
         {
             mSim.SendMessage(message.Replace("{timestamp}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
+        }
+
+        private void SendMessage(string category, string message)
+        {
+            mSim.SendMessage(string.Format("{0} [{1}] {2}", DateTime.Now, category, message));
         }
     }
 }
