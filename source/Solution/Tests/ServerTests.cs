@@ -16,10 +16,17 @@ namespace EnigmaMM
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
+            string settingsPath = "";
+            Assert.That(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf"), Is.EqualTo("jam"), Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf"));
+            Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf"));
+
+            Assert.That(Settings.Loaded, Is.False);
             mPersistentServer = new MCServer();
+            Assert.That(Settings.Loaded, Is.True);
+
             mPersistentServer.StartServer();
             Thread.Sleep(1000);
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running), "Expected server to be Running but it wasn't. {0}", mPersistentServer.LastStatusMessage);
         }
 
         [TestFixtureTearDown]
