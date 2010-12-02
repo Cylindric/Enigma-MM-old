@@ -11,7 +11,7 @@ namespace EnigmaMM
     /// The main Server Manager class.
     /// Keeps track of the server listener, and manages the Minecraft process.
     /// </summary>
-    public class MCServer
+    public class MCServer: IDisposable
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
@@ -204,7 +204,7 @@ namespace EnigmaMM
 
             if (mServerStatus == Status.Running)
             {
-                ServerMessage("Server already running, cannot start!");
+                RaiseServerMessage("Server already running, cannot start!");
                 return;
             }
 
@@ -213,19 +213,19 @@ namespace EnigmaMM
 
             if (Directory.Exists(Settings.MinecraftRoot) == false)
             {
-                ServerMessage("ERROR");
-                ServerMessage("Could not find Minecraft root directory");
-                ServerMessage("Check that configuration option 'MinecraftRoot' is correct");
-                ServerMessage("Looking for: " + Settings.MinecraftRoot);
+                RaiseServerMessage("ERROR");
+                RaiseServerMessage("Could not find Minecraft root directory");
+                RaiseServerMessage("Check that configuration option 'MinecraftRoot' is correct");
+                RaiseServerMessage("Looking for: " + Settings.MinecraftRoot);
                 ServerStatus = Status.Failed;
                 return;
             }
             if (File.Exists(Path.Combine(Settings.MinecraftRoot, Settings.ServerJar)) == false)
             {
-                ServerMessage("ERROR");
-                ServerMessage("Could not find the Minecraft server file");
-                ServerMessage("Check that configuration option 'ServerJar' is correct");
-                ServerMessage("Looking for: " + Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
+                RaiseServerMessage("ERROR");
+                RaiseServerMessage("Could not find the Minecraft server file");
+                RaiseServerMessage("Check that configuration option 'ServerJar' is correct");
+                RaiseServerMessage("Looking for: " + Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
                 ServerStatus = Status.Failed;
                 return;
             }
@@ -280,7 +280,7 @@ namespace EnigmaMM
             mServerProcess.BeginOutputReadLine();
             mServerProcess.BeginErrorReadLine();
 
-            ServerMessage("Server starting...");
+            RaiseServerMessage("Server starting...");
         }
 
         /// <summary>
@@ -327,10 +327,10 @@ namespace EnigmaMM
                     timeout -= 100;
                     Thread.Sleep(100);
                 }
-                if ((force) && (mServerStatus != Status.Stopped))
-                {
-                    ForceShutdown();
-                }
+            }
+            if (force)
+            {
+                ForceShutdown();
             }
         }
 
@@ -438,14 +438,14 @@ namespace EnigmaMM
         /// </summary>
         public void Backup()
         {
-            ServerMessage("Starting backup...");
+            RaiseServerMessage("Starting backup...");
             BlockAutoSave();
             using (Backup backup = new Backup(this))
             {
                 backup.PerformBackup();
             }
             UnblockAutoSave();
-            ServerMessage("Backup complete.");
+            RaiseServerMessage("Backup complete.");
         }
 
         /// <summary>
@@ -453,7 +453,25 @@ namespace EnigmaMM
         /// </summary>
         private void ForceShutdown()
         {
-            mServerProcess.Kill();
+            try
+            {
+                if (mServerProcess != null)
+                {
+                    mServerProcess.Kill();
+                }
+            }
+            catch (InvalidOperationException e)
+            {
+                // Task is probably already killed
+            }
+            finally
+            {
+                if (mServerProcess != null)
+                {
+                    mServerProcess.Dispose();
+                }
+                OnServerStopped("Server Killed");
+            }
         }
 
         /// <summary>
@@ -581,7 +599,7 @@ namespace EnigmaMM
                     break;
 
                 case MCServerMessage.MessageTypes.HModBanner:
-                    ServerMessage("Hey0 hMod detected");
+                    RaiseServerMessage("Hey0 hMod detected");
                     mServerRunningHMod = true;
                     int.TryParse(M.Data["version"], out mHModversion);
                     break;
@@ -621,12 +639,8 @@ namespace EnigmaMM
             }
 
             // raise an InfoMessage Event too
-            if (ServerMessage != null)
-            {
-                ServerMessage(M.Message);
-            }
+            RaiseServerMessage(M.Message);
         }
-
 
         private void SetOnlineUserList()
         {
@@ -674,7 +688,7 @@ namespace EnigmaMM
         {
             SetOnlineUserList();
             OnServerStopped("Server Stopped");
-            ServerMessage("Stopped");
+            RaiseServerMessage("Stopped");
         }
 
 
@@ -694,7 +708,7 @@ namespace EnigmaMM
             {
                 ServerStarted(Message);
             }
-            ServerMessage("Started");
+            RaiseServerMessage("Started");
         }
 
         /// <summary>
@@ -710,6 +724,7 @@ namespace EnigmaMM
             {
                 ServerStopped(Message);
             }
+            mServerProcess = null;
         }
 
         /// <summary>
@@ -744,5 +759,16 @@ namespace EnigmaMM
 
         #endregion
 
+        /// <summary>
+        /// Releases all the resources used by the MCServer.
+        /// </summary>
+        public void Dispose()
+        {
+            StopServer(1, true);
+            if (mServerProcess != null)
+            {
+                mServerProcess.Dispose();
+            }
+        }
     }
 }
