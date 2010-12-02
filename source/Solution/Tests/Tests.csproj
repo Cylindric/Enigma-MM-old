@@ -40,7 +40,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -48,11 +47,16 @@
     <Compile Include="Program.cs" />
     <Compile Include="ScheduleTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EMM\EMM.csproj">
       <Project>{E6CD972B-28CF-4096-8E1A-368AD575A62C}</Project>
       <Name>EMM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MinecraftSimulator\MinecraftSimulator.csproj">
+      <Project>{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}</Project>
+      <Name>MinecraftSimulator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
