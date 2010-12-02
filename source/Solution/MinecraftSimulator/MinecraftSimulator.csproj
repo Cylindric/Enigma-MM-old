@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="controller.ico" />
-    <Content Include="messages.xml">
+    <Content Include="messages.simulator.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="warps.txt">
