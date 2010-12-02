@@ -78,6 +78,7 @@ Global
 		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|x86.ActiveCfg = Release|Any CPU
+		{483C8D87-5418-4226-9F54-08475EE633A1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,6 +21,11 @@ namespace EnigmaMM
             mSettings.Load();
         }
 
+        public static bool Loaded
+        {
+            get { return mSettings != null;}
+        }
+
         #region Server Settings
 
 

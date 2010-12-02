@@ -131,8 +131,6 @@ namespace EnigmaMM
         /// </summary>
         public MCServer()
         {
-            Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "settings.conf"));
-
             mServerProperties = new MCServerProperties();
             mCommsServer = new CommsServer();
             mParser = new CommandParser(this);
@@ -201,7 +199,6 @@ namespace EnigmaMM
         /// </remarks>
         public void StartServer()
         {
-
             if (mServerStatus == Status.Running)
             {
                 RaiseServerMessage("Server already running, cannot start!");
@@ -218,6 +215,7 @@ namespace EnigmaMM
                 RaiseServerMessage("Check that configuration option 'MinecraftRoot' is correct");
                 RaiseServerMessage("Looking for: " + Settings.MinecraftRoot);
                 ServerStatus = Status.Failed;
+                mStatusMessage = string.Format("Couldn't find Minecraft directory in {0}", Settings.MinecraftRoot);
                 return;
             }
             if (File.Exists(Path.Combine(Settings.MinecraftRoot, Settings.ServerJar)) == false)
@@ -227,6 +225,7 @@ namespace EnigmaMM
                 RaiseServerMessage("Check that configuration option 'ServerJar' is correct");
                 RaiseServerMessage("Looking for: " + Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
                 ServerStatus = Status.Failed;
+                mStatusMessage = string.Format("Couldn't find Minecraft server at {0}", Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
                 return;
             }
 
