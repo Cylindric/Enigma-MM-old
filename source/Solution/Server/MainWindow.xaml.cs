@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Collections;
 
 namespace EnigmaMM
 {
@@ -38,7 +39,6 @@ namespace EnigmaMM
             mMinecraft.StatusChanged += HandleServerMessage;
             mMinecraft.StartCommsServer();
             mParser = new CommandParser(mMinecraft);
-            uxUserListView.ItemsSource = mMinecraft.Users;
         }
 
         private delegate void UpdateServerMetricsDelegate();
@@ -46,10 +46,13 @@ namespace EnigmaMM
         {
             if (this.Dispatcher.CheckAccess())
             {
-                uxStartButton.IsEnabled = false;
-                uxStopButton.IsEnabled = false;
+                SetStartButtonState(false);
+                SetStopButtonState(false);
+                SetRestartButtonState(false);
+
                 uxRestartButton.IsEnabled = false;
                 uxStatusBarStatus.Text = mMinecraft.CurrentStatus.ToString();
+
 
                 switch (mMinecraft.CurrentStatus)
                 {
@@ -63,37 +66,112 @@ namespace EnigmaMM
 
                     case MCServer.Status.Running:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-running.png", UriKind.Relative));
-                        uxStopButton.IsEnabled = true;
-                        uxRestartButton.IsEnabled = true;
+                        SetStopButtonState(true);
+                        SetRestartButtonState(true);
                         break;
 
                     case MCServer.Status.PendingRestart:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-pendingrestart.png", UriKind.Relative));
-                        uxStopButton.IsEnabled = true;
+                        SetStopButtonState(true);
                         break;
 
                     case MCServer.Status.PendingStop:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-pendingstop.png", UriKind.Relative));
-                        uxStopButton.IsEnabled = true;
-                        uxRestartButton.IsEnabled = true;
+                        SetStopButtonState(true);
+                        SetRestartButtonState(true);
                         break;
 
                     case MCServer.Status.Stopped:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-stopped.png", UriKind.Relative));
-                        uxStartButton.IsEnabled = true;
+                        SetStartButtonState(true);
                         break;
 
                     case MCServer.Status.Failed:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-failed.png", UriKind.Relative));
-                        uxStartButton.IsEnabled = true;
-                        break;
+                        SetStartButtonState(true);
+                       break;
                 }
 
                 uxStatusBarUsers.Text = string.Format("Online users: {0}", mMinecraft.Users.Count);
+
+                // Update the user-list
+                SynchUserList();
+
+                // Scroll the log
+                if (uxLogListView.Items.Count > 0)
+                {
+                    uxLogListView.SelectedItem = uxLogListView.Items.GetItemAt(uxLogListView.Items.Count - 1);
+                    uxLogListView.ScrollIntoView(uxLogListView.SelectedItem);
+                }
             }
             else
             {
                 this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new UpdateServerMetricsDelegate(UpdateServerMetrics));
+            }
+        }
+
+        private void SetStartButtonState(bool enabled)
+        {
+            uxStartButton.IsEnabled = enabled;
+            if (enabled)
+            {
+                uxStartButtonImage.Source = new BitmapImage(new Uri("/Resources/toolbar-start-active.png", UriKind.Relative));
+            }
+            else
+            {
+                uxStartButtonImage.Source = new BitmapImage(new Uri("/Resources/toolbar-start-inactive.png", UriKind.Relative));
+            }
+        }
+
+        private void SetRestartButtonState(bool enabled)
+        {
+            uxRestartButton.IsEnabled = enabled;
+            if (enabled)
+            {
+                uxRestartButtonImage.Source = new BitmapImage(new Uri("/Resources/toolbar-restart-active.png", UriKind.Relative));
+            }
+            else
+            {
+                uxRestartButtonImage.Source = new BitmapImage(new Uri("/Resources/toolbar-restart-inactive.png", UriKind.Relative));
+            }
+        }
+
+        private void SetStopButtonState(bool enabled)
+        {
+            uxStopButton.IsEnabled = enabled;
+            if (enabled)
+            {
+                uxStopButtonImage.Source = new BitmapImage(new Uri("/Resources/toolbar-stop-active.png", UriKind.Relative));
+            }
+            else
+            {
+                uxStopButtonImage.Source = new BitmapImage(new Uri("/Resources/toolbar-stop-inactive.png", UriKind.Relative));
+            }
+        }
+
+        private void SynchUserList()
+        {
+            // Remove old people
+            ArrayList oldItems = new ArrayList();
+            for (int localID = 0; localID < uxUserListView.Items.Count; localID++)
+            {
+                if (!mMinecraft.Users.Contains(uxUserListView.Items[localID]))
+                {
+                    oldItems.Add(uxUserListView.Items[localID]);
+                }
+            }
+            for (int oldID = 0; oldID < oldItems.Count; oldID++)
+            {
+                uxUserListView.Items.Remove(oldItems[oldID]);
+            }
+
+            // Add missing people
+            for (int serverID = 0; serverID < mMinecraft.Users.Count; serverID++)
+            {
+                if (!uxUserListView.Items.Contains(mMinecraft.Users[serverID]))
+                {
+                    uxUserListView.Items.Add(mMinecraft.Users[serverID]);
+                }
             }
         }
 
