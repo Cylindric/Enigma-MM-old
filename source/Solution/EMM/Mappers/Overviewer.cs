@@ -33,7 +33,7 @@ namespace EnigmaMM
             }
 
             string cmd = string.Format(
-                "-p 1 --cachedir \"{1}\" \"{2}\" \"{3}\"",
+                "-p 1 --cachedir \"{0}\" \"{1}\" \"{2}\"",
                 mCachePath, mMinecraft.ServerProperties.WorldPath, mOutputPath
             );
 
@@ -54,40 +54,44 @@ namespace EnigmaMM
 
         private void CreateMarkersFromWarpLocations()
         {
-            StringBuilder markers = new StringBuilder();
-            markers.Append("var markerData=[\n");
-            foreach (KeyValuePair<string, string> kvp in mMinecraft.ServerWarps.Values)
+            if (mMinecraft.ServerWarps != null)
             {
-                string[] warp = kvp.Value.Split(':');
+                StringBuilder markers = new StringBuilder();
+                markers.Append("var markerData=[\n");
 
-                string name = kvp.Key;
-                float x = 0f;
-                float y = 0f;
-                float z = 0f;
-                string a = "";
-                string b = "";
-                string group = "";
-
-                float.TryParse(warp[0], out x);
-                float.TryParse(warp[1], out y);
-                float.TryParse(warp[2], out z);
-                a = warp[3];
-                b = warp[4];
-                group = warp[5];
-
-                if ((group == "") || (group == "users"))
+                foreach (KeyValuePair<string, string> kvp in mMinecraft.ServerWarps.Values)
                 {
-                    markers.Append("    {");
-                    markers.AppendFormat("\"msg\": \"{0}\", ", name);
-                    markers.AppendFormat("\"y\": {0:f0}, \"z\": {1:f0}, \"x\": {2:f0}", y, z, x);
-                    markers.Append("}, \n");
-                }
-            }
-            markers.Append("];\n");
+                    string[] warp = kvp.Value.Split(':');
 
-            StreamWriter sw = File.CreateText(Path.Combine(mOutputPath, "markers.js"));
-            sw.Write(markers.ToString());
-            sw.Close();
+                    string name = kvp.Key;
+                    float x = 0f;
+                    float y = 0f;
+                    float z = 0f;
+                    string a = "";
+                    string b = "";
+                    string group = "";
+
+                    float.TryParse(warp[0], out x);
+                    float.TryParse(warp[1], out y);
+                    float.TryParse(warp[2], out z);
+                    a = warp[3];
+                    b = warp[4];
+                    group = warp[5];
+
+                    if ((group == "") || (group == "users"))
+                    {
+                        markers.Append("    {");
+                        markers.AppendFormat("\"msg\": \"{0}\", ", name);
+                        markers.AppendFormat("\"y\": {0:f0}, \"z\": {1:f0}, \"x\": {2:f0}", y, z, x);
+                        markers.Append("}, \n");
+                    }
+                }
+                markers.Append("];\n");
+
+                StreamWriter sw = File.CreateText(Path.Combine(mOutputPath, "markers.js"));
+                sw.Write(markers.ToString());
+                sw.Close();
+            }
         }
 
     }
