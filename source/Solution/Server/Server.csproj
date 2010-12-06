@@ -131,6 +131,18 @@
   <ItemGroup>
     <Resource Include="server.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\toolbar-start-active.png" />
+    <Resource Include="Resources\toolbar-start-inactive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\toolbar-stop-active.png" />
+    <Resource Include="Resources\toolbar-stop-inactive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\toolbar-restart-active.png" />
+    <Resource Include="Resources\toolbar-restart-inactive.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

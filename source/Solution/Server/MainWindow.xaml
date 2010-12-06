@@ -4,70 +4,93 @@
         xmlns:Extensions="clr-namespace:EnigmaMM"
         Title="Enigma Minecraft Manager" Height="350" Width="525" Loaded="Window_Loaded" Closing="Window_Closing" Icon="/Server;component/server.ico">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="75" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="100"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="23" />
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Column="0" Grid.Row="0"  Name="uxButtonStackPanel">
-            <Button Name="uxStartButton" Content="Start" Margin="5" Click="uxStartButton_Click" />
-            <Button Name="uxStopButton" Content="Stop" Margin="5" Click="uxStopButton_Click" />
-            <Button Name="uxRestartButton" Content="Restart" Margin="5" Click="uxRestartButton_Click" />
-            <CheckBox Name="uxGracefulCheckbox" Content="Graceful?" IsChecked="True" />
-        </StackPanel>
+        <ToolBarPanel Grid.Row="0" VerticalAlignment="Top" Orientation="Horizontal">
+            <Button Name="uxStartButton" Click="uxStartButton_Click" Margin="0 0 4 0">
+                <Image Name="uxStartButtonImage" Source="Resources/toolbar-start-active.png"></Image>
+            </Button>
+            <Button Name="uxStopButton" Click="uxStopButton_Click" Margin="0 0 4 0">
+                <Image Name="uxStopButtonImage" Source="Resources/toolbar-stop-active.png"></Image>
+            </Button>
+            <Button Name="uxRestartButton" Click="uxRestartButton_Click" Margin="0 0 4 0">
+                <Image Name="uxRestartButtonImage" Source="Resources/toolbar-restart-active.png"></Image>
+            </Button>
+        </ToolBarPanel>
+        <Grid Grid.Row="1" Margin="0 2 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="75" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="23" />
+                </Grid.RowDefinitions>
 
-        <Grid Grid.Column="1" Grid.Row="0" >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ListView 
+                <StackPanel Grid.Column="0" Grid.Row="0" Name="uxButtonStackPanel">
+                <CheckBox Name="uxGracefulCheckbox" Content="Graceful?" IsChecked="True" />
+                </StackPanel>
+
+                <Grid Grid.Column="1" Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <ListView 
                 Name="uxLogListView" 
                 Grid.Column="1" Grid.Row="0" 
                 Extensions:LVColumnStretchProperty.Stretch="true" SourceUpdated="uxLogListView_SourceUpdated">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Message}">
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-            <TextBox Grid.Column="1" Grid.Row="1" Name="uxCommandInput" PreviewKeyDown="uxCommandInput_PreviewKeyDown" />
-        </Grid>
-        <StatusBar Name="uxStatusBar" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
-            <StatusBarItem>
-                <Image Name="uxStatusBarStatusIcon" Width="16" Height="16"></Image>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Name="uxStatusBarStatus">Ready</TextBlock>
-            </StatusBarItem>
-            <StatusBarItem>
-                <TextBlock Name="uxStatusBarUsers"></TextBlock>
-            </StatusBarItem>
-        </StatusBar>
-        
-        <Grid Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            
-            <ListView Name="uxUserListView" Grid.Row="0">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding Path=Name}" Width="90">
-                            <GridViewColumn.Header>
-                                <GridViewColumnHeader Content="User" HorizontalAlignment="Left" Width="90" Padding="0" />
-                            </GridViewColumn.Header>
-                        </GridViewColumn>
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </Grid>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn DisplayMemberBinding="{Binding Path=Message}">
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    
+                    
+                <Grid Grid.Column="1" Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="Command:"/>
+                    <TextBox Grid.Column="1" Name="uxCommandInput" PreviewKeyDown="uxCommandInput_PreviewKeyDown" Margin="2 2 2 2" />
+                </Grid>
+                </Grid>
+                <StatusBar Name="uxStatusBar" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                    <StatusBarItem>
+                        <Image Name="uxStatusBarStatusIcon" Width="16" Height="16"></Image>
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <TextBlock Name="uxStatusBarStatus">Ready</TextBlock>
+                    </StatusBarItem>
+                    <StatusBarItem>
+                        <TextBlock Name="uxStatusBarUsers"></TextBlock>
+                    </StatusBarItem>
+                </StatusBar>
+
+                <Grid Grid.Column="2" Margin="2 0 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <ListView Name="uxUserListView" Grid.Row="0">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Width="90">
+                                    <GridViewColumn.Header>
+                                        <GridViewColumnHeader Content="Users" HorizontalAlignment="Left" Width="90" Padding="0" />
+                                    </GridViewColumn.Header>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </Grid>
     </Grid>
 </Window>
