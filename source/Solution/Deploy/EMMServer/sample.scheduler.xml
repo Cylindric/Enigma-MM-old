@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<schedule>
+	<task>
+		<name>Backup</name>
+		<days>*</days>
+		<hours>*</hours>
+		<minutes>*</minutes>
+		<command>backup</command>
+	</task>
+</schedule>
