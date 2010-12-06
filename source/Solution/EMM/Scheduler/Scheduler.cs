@@ -11,10 +11,12 @@ namespace EnigmaMM.Scheduler
     {
         private MCServer mServer;
         private string mFile;
-        private List<ScheduleTask> mTasks = new List<ScheduleTask>();
+        private List<ScheduleTask> mTasks;
 
         public Scheduler(MCServer server)
         {
+            mServer = server;
+            mTasks = new List<ScheduleTask>();
         }
 
         public void LoadSchedule()

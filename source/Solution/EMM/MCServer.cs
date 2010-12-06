@@ -18,22 +18,24 @@ namespace EnigmaMM
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
-        private bool mOnlineUserListReady = false;
+        private bool mOnlineUserListReady;
         private CommsServer mCommsServer;
         private CommandParser mParser;
-        private bool mServerSaving = false;
+        private bool mServerSaving;
         private Scheduler.Scheduler mScheduler;
 
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
         private MCServerProperties mServerProperties;
         private MCServerWarps mServerWarps;
-        private bool mServerRunningHMod = false;
-        private int mHModversion = 0;
-        private ArrayList mSavedUsers = new ArrayList();
-        private ArrayList mOnlineUsers = new ArrayList();
-        private int mAutoSaveBlocks = 0;
-        private bool mAutoSaveEnabled = true;
+        private bool mServerRunningHMod;
+        private int mHModversion;
+        private ArrayList mSavedUsers;
+        private ArrayList mOnlineUsers;
+        private int mAutoSaveBlocks;
+        private bool mAutoSaveEnabled;
+
+        #region Server Events
 
         /// <summary>
         /// Standard event handler for server messages.
@@ -65,6 +67,8 @@ namespace EnigmaMM
         /// Raised whenever the Minecraft server status changes.
         /// </summary>
         public event ServerMessageEventHandler StatusChanged;
+
+        #endregion
 
         /// <summary>
         /// Valid status-states for the server manager's Minecraft instance.
@@ -129,11 +133,31 @@ namespace EnigmaMM
         /// <summary>
         /// Server Constructor
         /// </summary>
-        public MCServer()
+        /// <remarks>Defaults to using a config file in the same location as the executing assembly.</remarks>
+        public MCServer():
+            this(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf")){}
+
+        /// <summary>
+        /// Server Constructor
+        /// </summary>
+        public MCServer(string mainSettingsFile)
         {
+            Settings.Initialise(mainSettingsFile);
+
             mServerProperties = new MCServerProperties();
             mCommsServer = new CommsServer();
             mParser = new CommandParser(this);
+            mScheduler = new Scheduler.Scheduler(this);
+
+            ServerStatus = Status.Stopped;
+            mOnlineUserListReady = false;
+            mServerSaving = false;
+            mServerRunningHMod = false;
+            mHModversion = 0;
+            mSavedUsers = new ArrayList();
+            mOnlineUsers = new ArrayList();
+            mAutoSaveBlocks = 0;
+            mAutoSaveEnabled = true;
             
             if (Settings.AlphaVespucciInstalled)
             {
@@ -144,12 +168,9 @@ namespace EnigmaMM
                 MapManager.Register("overviewer", new Overviewer(this));
             }
 
-            ServerStatus = Status.Stopped;
-
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
 
-            mScheduler = new Scheduler.Scheduler(this);
             mScheduler.LoadSchedule();
         }
 
@@ -246,15 +267,16 @@ namespace EnigmaMM
             if (Settings.ServerJar.EndsWith(".exe"))
             {
                 mServerProcess.StartInfo.FileName = Settings.ServerJar;
+                mServerProcess.StartInfo.CreateNoWindow = false;
             }
             else
             {
                 mServerProcess.StartInfo.FileName = Settings.JavaExec;
+                mServerProcess.StartInfo.CreateNoWindow = true;
             }
             mServerProcess.StartInfo.WorkingDirectory = Settings.MinecraftRoot;
             mServerProcess.StartInfo.Arguments = cmdArgs;
             mServerProcess.StartInfo.UseShellExecute = false;
-            mServerProcess.StartInfo.CreateNoWindow = true;
             mServerProcess.StartInfo.RedirectStandardError = true;
             mServerProcess.StartInfo.RedirectStandardInput = true;
             mServerProcess.StartInfo.RedirectStandardOutput = true;

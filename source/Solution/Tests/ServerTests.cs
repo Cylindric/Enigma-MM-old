@@ -16,43 +16,63 @@ namespace EnigmaMM
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
-            string settingsPath = "";
-            Assert.That(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf"), Is.EqualTo("jam"), Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf"));
-            Settings.Initialise(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf"));
+            // Reflection within the server will yield the incorrect directory for settings, so we need to set it here.
+            string testRoot = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8));
+            string settingsFile = Path.Combine(testRoot, "settings.conf");
 
-            Assert.That(Settings.Loaded, Is.False);
-            mPersistentServer = new MCServer();
-            Assert.That(Settings.Loaded, Is.True);
+            using (TextWriter tw = new StreamWriter(settingsFile))
+            {
+                tw.WriteLine(string.Format("MinecraftRoot={0}", testRoot));
+                tw.WriteLine(@"ServerJar=.\MinecraftSimulator.exe");
+                tw.Close();
+            }
+            Console.WriteLine("Settings File is: " + settingsFile);
+
+            mPersistentServer = new MCServer(settingsFile);
+            Assert.That(Settings.Filename, Is.EqualTo(settingsFile));
+
+            mPersistentServer.ServerMessage += HandleServerMessage;
 
             mPersistentServer.StartServer();
-            Thread.Sleep(1000);
+            int maxWait = 10000;
+            while ((mPersistentServer.CurrentStatus != MCServer.Status.Running) && (maxWait > 0))
+            {
+                Thread.Sleep(500);
+                Console.WriteLine("Waiting for running... " + maxWait.ToString());
+                maxWait -= 500;
+            }
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running), "Expected server to be Running but it wasn't. {0}", mPersistentServer.LastStatusMessage);
         }
 
         [TestFixtureTearDown]
         public void FixtureTeardown()
         {
-            mPersistentServer.StopServer(1, true);
+            mPersistentServer.StopServer(0, true);
             mPersistentServer = null;
-        }
-
-        [Test]
-        public void TestInitialise()
-        {
-            using (MCServer server = new MCServer())
-            {
-                server.StartServer();
-            }
         }
 
         [Test]
         public void TestServerRecognisesNewUser()
         {
-            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(0));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running));
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(0), "User count should be zero at start of test, was {0}", mPersistentServer.Users.Count);
 
             mPersistentServer.SendCommand("!useradd");
-            Thread.Sleep(100);
+            int maxWait = 1000;
+            while ((mPersistentServer.Users.Count != 1) && (maxWait > 0))
+            {
+                Thread.Sleep(100);
+                Console.WriteLine("Waiting for user... " + maxWait.ToString());
+                maxWait -= 100;
+            }
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(1));
         }
+
+
+        private void HandleServerMessage(string message)
+        {
+            Console.Error.WriteLine(message);
+        }
+
     }
 }
