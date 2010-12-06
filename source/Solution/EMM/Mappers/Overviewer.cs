@@ -9,7 +9,7 @@ namespace EnigmaMM
     {
         public Overviewer(MCServer server) : base(server, "overviewer")
         {
-            mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.py");
+            mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.exe");
             mOutputPath = Path.Combine(Settings.MapRoot, "Overviewer");
         }
 
@@ -33,12 +33,12 @@ namespace EnigmaMM
             }
 
             string cmd = string.Format(
-                "\"{0}\" -p 0 --cachedir \"{1}\" \"{2}\" \"{3}\"",
-                mExePath, mCachePath, mMinecraft.ServerProperties.WorldPath, mOutputPath
+                "-p 1 --cachedir \"{1}\" \"{2}\" \"{3}\"",
+                mCachePath, mMinecraft.ServerProperties.WorldPath, mOutputPath
             );
 
             Process p = new Process();
-            p.StartInfo.FileName = Settings.PythonExe;
+            p.StartInfo.FileName = mExePath;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.Arguments = cmd;

@@ -11,7 +11,7 @@ namespace EnigmaMM
         public AlphaVespucci(MCServer server) : base(server, "av")
         {
             mExePath = Path.Combine(Settings.AlphaVespucciRoot, "AlphaVespucci.exe");
-            mOutputPath = Path.Combine(Settings.MapRoot, "Overviewer");
+            mOutputPath = Settings.MapRoot;
         }
 
         public override void Render(string type)
