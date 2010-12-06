@@ -9,9 +9,11 @@ using System.Threading;
 namespace EnigmaMM
 {
     [TestFixture]
+    [Category("Server")]
     public class ServerTests
     {
         private MCServer mPersistentServer;
+        private const int SLEEP_STEP = 100;
 
         [TestFixtureSetUp]
         public void FixtureSetup()
@@ -34,12 +36,12 @@ namespace EnigmaMM
             mPersistentServer.ServerMessage += HandleServerMessage;
 
             mPersistentServer.StartServer();
-            int maxWait = 10000;
+            int maxWait = 3000;
             while ((mPersistentServer.CurrentStatus != MCServer.Status.Running) && (maxWait > 0))
             {
-                Thread.Sleep(500);
+                Thread.Sleep(SLEEP_STEP);
                 Console.WriteLine("Waiting for running... " + maxWait.ToString());
-                maxWait -= 500;
+                maxWait -= SLEEP_STEP;
             }
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running), "Expected server to be Running but it wasn't. {0}", mPersistentServer.LastStatusMessage);
         }
@@ -54,18 +56,39 @@ namespace EnigmaMM
         [Test]
         public void TestServerRecognisesNewUser()
         {
+            int startingUsers = mPersistentServer.Users.Count;
+
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running));
-            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(0), "User count should be zero at start of test, was {0}", mPersistentServer.Users.Count);
 
             mPersistentServer.SendCommand("!useradd");
-            int maxWait = 1000;
-            while ((mPersistentServer.Users.Count != 1) && (maxWait > 0))
-            {
-                Thread.Sleep(100);
-                Console.WriteLine("Waiting for user... " + maxWait.ToString());
-                maxWait -= 100;
-            }
-            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(1));
+            WaitForUserCount(startingUsers + 1);
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 1));
+
+            mPersistentServer.SendCommand("!useradd");
+            WaitForUserCount(startingUsers + 2);
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 2));
+        }
+
+
+        [Test]
+        public void TestServerRecognisesRemoveUser()
+        {
+            int startingUsers = mPersistentServer.Users.Count;
+
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running));
+
+            mPersistentServer.SendCommand("!useradd");
+            mPersistentServer.SendCommand("!useradd");
+            WaitForUserCount(startingUsers + 2);
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 2), "Failed to add two users");
+
+            mPersistentServer.SendCommand("!userdel");
+            WaitForUserCount(startingUsers + 1);
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 1));
+
+            mPersistentServer.SendCommand("!userdel");
+            WaitForUserCount(startingUsers);
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers));
         }
 
 
@@ -74,5 +97,16 @@ namespace EnigmaMM
             Console.Error.WriteLine(message);
         }
 
+        private void WaitForUserCount(int targetCount)
+        {
+            int maxWait = 1000;
+            while ((mPersistentServer.Users.Count != targetCount) && (maxWait > 0))
+            {
+                Thread.Sleep(SLEEP_STEP);
+                Console.WriteLine("Waiting for user " + maxWait.ToString());
+                maxWait -= SLEEP_STEP;
+            }
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(targetCount));
+        }
     }
 }

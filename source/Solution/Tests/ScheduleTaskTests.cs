@@ -8,6 +8,7 @@ using EnigmaMM.Scheduler;
 namespace EnigmaMM.Scheduler
 {
     [TestFixture]
+    [Category("Utilities")]
     public class ScheduleTaskTests
     {
         /// <summary>
