@@ -266,14 +266,13 @@ namespace EnigmaMM
             mServerProcess = new Process();
             if (Settings.ServerJar.EndsWith(".exe"))
             {
-                mServerProcess.StartInfo.FileName = Settings.ServerJar;
-                mServerProcess.StartInfo.CreateNoWindow = false;
+                mServerProcess.StartInfo.FileName = Path.Combine(Settings.MinecraftRoot, Settings.ServerJar);
             }
             else
             {
                 mServerProcess.StartInfo.FileName = Settings.JavaExec;
-                mServerProcess.StartInfo.CreateNoWindow = true;
             }
+            mServerProcess.StartInfo.CreateNoWindow = true;
             mServerProcess.StartInfo.WorkingDirectory = Settings.MinecraftRoot;
             mServerProcess.StartInfo.Arguments = cmdArgs;
             mServerProcess.StartInfo.UseShellExecute = false;
