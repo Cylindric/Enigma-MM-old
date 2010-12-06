@@ -1,5 +1,7 @@
-*/obj/*
-*/bin/*
-Build/*
 *.csproj.user
 *.suo
+*.VisualState.xml
+*/bin/*
+*/obj/*
+Build/*
+TestResults.xml

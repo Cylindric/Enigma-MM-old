@@ -41,10 +41,10 @@ namespace EnigmaMM
         /// <summary>
         /// Returns the full path to the Server Manager.
         /// </summary>
-        /// <remarks>Is always the location of the executing assembly.</remarks>
+        /// <remarks>Is always the location of the main settings file.</remarks>
         public static string ServerManagerRoot
         {
-            get { return Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location); }
+            get { return Path.GetDirectoryName(mSettings.Filename); }
         }
 
 
