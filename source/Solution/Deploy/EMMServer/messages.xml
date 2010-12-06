@@ -1,58 +1,68 @@
 <?xml version="1.0"?>
 <messages>
-	<message>
+	<message source="core">
   	<name>StartupComplete</name>
 		<type>EndsWith</type>
 		<rule>[INFO] Done! For help, type "help" or "?"</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>SaveComplete</name>
 		<type>EndsWith</type>
 		<rule>[INFO] CONSOLE: Save Complete</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>ErrorPortBusy</name>
 		<type>EndsWith</type>
 		<rule>[WARNING] **** FAILED TO BIND TO PORT!</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>SaveStarted</name>
 		<type>EndsWith</type>
 		<rule>[INFO] CONSOLE: Forcing save..</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>UserLoggedIn</name>
 		<type>Regex</type>
 		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ \[(?&lt;address&gt;.+?)]\ logged\ in with entity id (?&lt;entityid&gt;.*?)$</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>UserLoggedOut</name>
 		<type>Regex</type>
 		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ lost\ connection:\ (?&lt;reason&gt;.+?)$</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>AutoSaveEnabled</name>
 		<type>EndsWith</type>
 		<rule>[INFO] CONSOLE: Enabling level saving..</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>AutoSaveDisabled</name>
 		<type>EndsWith</type>
 		<rule>[INFO] CONSOLE: Disabling level saving..</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>UserList</name>
 		<type>Regex</type>
 		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ Connected\ players:\ (?&lt;userlist&gt;.*?)$</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>UserCount</name>
 		<type>Regex</type>
 		<rule>^Player\ count:\ (?&lt;count&gt;\d+)$</rule>
 	</message>
-  <message>
+  <message source="core">
 		<name>MinecraftBanner</name>
 		<type>Regex</type>
 		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ Starting\ minecraft\ server\ version\ (?&lt;version&gt;.*?)$</rule>
+	</message>
+  <message source="core">
+		<name>ErrorInvalidMove</name>
+		<type>Regex</type>
+		<rule>^(?&lt;timestamp&gt;.+?)\[WARNING]\ (?&lt;username&gt;\w+?)\ moved\ wrongly!$</rule>
+	</message>
+  <message source="hmod">
+		<name>GiveUserItem</name>
+		<type>Regex</type>
+		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ Giving\ (?&lt;username&gt;\w+?)\ some\ (?&lt;itemid&gt;.*?)$</rule>
 	</message>
 </messages>

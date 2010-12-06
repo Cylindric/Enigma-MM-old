@@ -1,6 +1,6 @@
 Option Explicit
 Dim objFS, objShell
-Dim ScriptPath, DeployRoot, ServerRoot, EMMRoot
+Dim ScriptPath, DeployRoot, ServerRoot, EMMRoot, Config, ReBuild
 Dim cmd
 Set objFS = CreateObject("Scripting.FileSystemObject")
 Set objShell = WScript.CreateObject("WScript.Shell")
@@ -18,16 +18,19 @@ Const WindowStyleShow = 1
 ScriptPath = objFS.GetParentFolderName(Wscript.ScriptFullName)
 DeployRoot = objFS.BuildPath(ScriptPath, "Deploy")
 EMMRoot = objFS.BuildPath(DeployRoot, "EMMServer")
-
+Rebuild = False
+Config = "Debug"
 
 ' -----------------------------------------------------------------------------
 ' Build
 ' -----------------------------------------------------------------------------
-Dim compiler
-compiler = """%WINDIR%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"""
-cmd = compiler & " /nologo /verbosity:q "
-cmd = cmd & """" & objFS.BuildPath(ScriptPath, "Enigma Minecraft Manager.sln") & """"
-objShell.Run cmd, WindowStyleShow, True
+If (Rebuild = True) Then
+	Dim compiler
+	compiler = """%WINDIR%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"""
+	cmd = compiler & " /nologo /verbosity:q "
+	cmd = cmd & """" & objFS.BuildPath(ScriptPath, "Enigma Minecraft Manager.sln") & """"
+	objShell.Run cmd, WindowStyleShow, True
+End If
 
 
 ' This should only need creating once
@@ -52,15 +55,15 @@ CreateFolder(objFS.BuildPath(EMMRoot, "Maps"))
 
 ' The EMM core files
 objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "..\..\readme.txt")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.dll")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.exe")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\*.txt")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\Release\messages.xml")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Server\bin\Release\server.exe")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\*.dll")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\*.exe")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\*.txt")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\messages.xml")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Server\bin\" & Config & "\server.exe")), EMMRoot & "\"
 
 'The 3rd party stuff
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\Release\LibNbt.dll")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\Release\LibNbt.txt")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.dll")), EMMRoot & "\"
+objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.txt")), EMMRoot & "\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
