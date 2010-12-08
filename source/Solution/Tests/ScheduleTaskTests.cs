@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using EnigmaMM.Scheduler;
 
 namespace EnigmaMM.Scheduler
 {
@@ -17,6 +13,60 @@ namespace EnigmaMM.Scheduler
         /// It is set to early monday morning, on 4th January 2010 at 4:30am
         /// </summary>
         DateTime mondayMorning = new DateTime(2010, 1, 4, 4, 30, 0);
+
+        [Test]
+        public void TestUnwantedComponentsAreZero(
+            [Range(0, 23, 7)] int h,
+            [Range(0, 59, 23)] int m
+            )
+        {
+            ScheduleTask task = new ScheduleTask("*", h, m);
+            Assert.That(task.NextRun.Second, Is.EqualTo(0));
+            Assert.That(task.NextRun.Millisecond, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TestLegalSingleDaysAccepted(
+            [Values("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")] string day
+            )
+        {
+            ScheduleTask task = new ScheduleTask(day, 0, 0);
+            Assert.That(task.RunDays, Is.EqualTo(day));
+        }
+
+        [Test]
+        public void TestLegalMultipleDaysAccepted(
+            [Values("Sunday", "Tuesday,Wednesday", "Thursday,Friday,Saturday", "Wednesday,Monday,Thursday,Friday")] string days
+            )
+        {
+            ScheduleTask task = new ScheduleTask(days, 0, 0);
+            Assert.That(task.RunDays, Is.EqualTo(days));
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
+        public void TestIllegalValuesAreRejected()
+        {
+            ScheduleTask task;
+            task = new ScheduleTask("a", 0, 0);
+            task = new ScheduleTask("*", -1, 0);
+            task = new ScheduleTask("*", 0, -1);
+            task = new ScheduleTask("*", 24, 0);
+            task = new ScheduleTask("*", 0, 60);
+        }
+
+        [Test]
+        public void TestNewTaskSetsNextRun(
+            [Values(0, 13, 23)] int h,
+            [Values(0, 37, 59)] int m
+            )
+        {
+            ScheduleTask task = new ScheduleTask("Monday", h, m);
+            Assert.That(task.NextRun.DayOfWeek, Is.EqualTo(DayOfWeek.Monday));
+            Assert.That(task.NextRun.Hour, Is.EqualTo(h));
+            Assert.That(task.NextRun.Minute, Is.EqualTo(m));
+            Assert.That(task.NextRun.Second, Is.EqualTo(0));
+        }
 
         [Test]
         public void TestNextRun()

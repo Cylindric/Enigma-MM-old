@@ -22,7 +22,7 @@ namespace EnigmaMM
         private CommsServer mCommsServer;
         private CommandParser mParser;
         private bool mServerSaving;
-        private Scheduler.Scheduler mScheduler;
+        private Scheduler.SchedulerManager mScheduler;
 
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
@@ -147,7 +147,7 @@ namespace EnigmaMM
             mServerProperties = new MCServerProperties();
             mCommsServer = new CommsServer();
             mParser = new CommandParser(this);
-            mScheduler = new Scheduler.Scheduler(this);
+            mScheduler = new Scheduler.SchedulerManager(this);
 
             ServerStatus = Status.Stopped;
             mOnlineUserListReady = false;
