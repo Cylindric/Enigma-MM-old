@@ -5,46 +5,160 @@ using System.Text;
 
 namespace EnigmaMM.Scheduler
 {
+    /// <summary>
+    /// The ScheduleTask class provides the functionality for specifying scheduled tasks
+    /// with recurring times they should execute.
+    /// </summary>
     public class ScheduleTask
     {
-        public string Name { get; set; }
-        public string Command { get; set; }
-        public DateTime NextRun { get; private set; }
+        private string mRunDays;
+        private string mRunHours;
+        private string mRunMinutes;
 
-        public string RunDays { get; set; }
-        public string RunHours { get; set; }
-        public string RunMinutes { get; set; }
-
-        public ScheduleTask()
+        /// <summary>
+        /// The set of valid parameter types.
+        /// </summary>
+        public enum ParameterType
         {
+            Days,
+            Hours,
+            Minutes
         }
 
+        #region Public Getters and Setters
+
+        /// <summary>
+        /// Gets or sets the name of this task, for logging and management.
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command to send to the server when the schedule is met.
+        /// </summary>
+        public string Command { get; set; }
+
+        /// <summary>
+        /// Gets the next scheduled run time.
+        /// </summary>
+        public DateTime NextRun { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the Days schedule.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">Invalid parameter</exception>
+        public string RunDays
+        {
+            get { return mRunDays; }
+            set
+            {
+                if (!ValidateParameter(ParameterType.Days, value))
+                {
+                    throw new ArgumentOutOfRangeException("Days must be * or a valid set of DayOfWeek");
+                }
+                mRunDays = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Hours schedule.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">Invalid parameter</exception>
+        public string RunHours
+        {
+            get { return mRunHours; }
+            set
+            {
+                if (!ValidateParameter(ParameterType.Hours, value))
+                {
+                    throw new ArgumentOutOfRangeException("Hours must be * or a set of numbers between 0 and 23");
+                }
+                mRunHours = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Minutes schedule.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">Invalid parameter</exception>
+        public string RunMinutes
+        {
+            get { return mRunMinutes; }
+            set {
+                if (!ValidateParameter(ParameterType.Minutes, value))
+                {
+                    throw new ArgumentOutOfRangeException("Minutes must be * or a set of numbers between 0 and 59");
+                }
+                mRunMinutes = value; 
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Initialise a new ScheduleTask with an empty schedule.
+        /// </summary>
+        public ScheduleTask()
+        {
+            mRunDays = "";
+            mRunHours = "";
+            mRunMinutes = "";
+            NextRun = DateTime.MaxValue;
+        }
+
+        /// <summary>
+        /// Initialise a new ScheduleTask with the specified schedule.
+        /// </summary>
+        /// <param name="days">The days schedule</param>
+        /// <param name="hours">The hours schedule</param>
+        /// <param name="minutes">The minutes schedule</param>
         public ScheduleTask(string days, string hours, string minutes)
+            : this()
         {
             RunDays = days;
             RunHours = hours;
             RunMinutes = minutes;
+            CalculateNextRunTime();
         }
 
+        /// <summary>
+        /// Initialise a new ScheduleTask with the specified schedule.
+        /// </summary>
+        /// <param name="days">The days schedule</param>
+        /// <param name="hours">The hours schedule</param>
+        /// <param name="minutes">The minutes schedule</param>
         public ScheduleTask(string days, int hours, int minutes)
-        {
-            RunDays = days;
-            RunHours = hours.ToString();
-            RunMinutes = minutes.ToString();
-        }
+            : this(days, hours.ToString(), minutes.ToString())
+        { }
 
+        /// <summary>
+        /// Initialise a new ScheduleTask with the specified schedule.
+        /// </summary>
+        /// <param name="days">The days schedule</param>
+        /// <param name="hours">The hours schedule</param>
+        /// <param name="minutes">The minutes schedule</param>
         public ScheduleTask(string days, string hours, int minutes)
-        {
-            RunDays = days;
-            RunHours = hours;
-            RunMinutes = minutes.ToString();
-        }
+            : this(days, hours, minutes.ToString())
+        { }
 
+        /// <summary>
+        /// Calculates the next time this task is due to run, after the current time.
+        /// </summary>
+        /// <remarks>The calculated run time will be at least one minute in the future.</remarks>
         public void CalculateNextRunTime()
         {
             CalculateNextRunTime(DateTime.Now);
         }
 
+        /// <summary>
+        /// Calculates the next time this task is due to run, after the specified time.
+        /// </summary>
+        /// <remarks>
+        /// The calculated run time will be at least one minute later than start.
+        /// This method is not optimised.  The loops can be made to finish much
+        /// sooner, at the expense of complexity.  As this only runs once each 
+        /// time the task is run, it's probably not important.
+        /// </remarks>
+        /// <param name="start">The start time to use from which to find the next run time.</param>
         public void CalculateNextRunTime(DateTime start)
         {
             int m = 0;
@@ -59,7 +173,8 @@ namespace EnigmaMM.Scheduler
             }
 
             DateTime next = start;
-            next = next.AddSeconds(0 - next.Second);
+            next = next.AddSeconds(-next.Second); // zero out the unwanted components
+            next = next.AddMilliseconds(-next.Millisecond); // zero out the unwanted components
             next = next.AddMinutes(1);
 
             bool done = false;
@@ -141,6 +256,61 @@ namespace EnigmaMM.Scheduler
             }
 
             return false;
+        }
+
+        public bool ValidateParameter(ParameterType type, string param)
+        {
+            bool result = true;
+            
+            // A '*' in any position is the same as 'always'
+            if (param.Contains('*'))
+            {
+                return true;
+            }
+
+            // Check each part in a multi-part parameter.  All parts must pass.
+            if (param.Contains(','))
+            {
+                string[] parts = param.Split(',');
+                foreach (string part in parts)
+                {
+                    result = (result && ValidateParameter(type, part));
+                }
+            }
+            else
+            {
+                // Check this param
+                int intpart;
+                switch (type)
+                {
+                    case ParameterType.Days:
+                        result = result && (Enum.IsDefined(typeof(DayOfWeek), param));
+                        break;
+
+                    case ParameterType.Hours:
+                        if (int.TryParse(param, out intpart))
+                        {
+                            result = result && (intpart >= 0 && intpart < 24);
+                        }
+                        else
+                        {
+                            result = false;
+                        }
+                        break;
+
+                    case ParameterType.Minutes:
+                        if (int.TryParse(param, out intpart))
+                        {
+                            result = result && (intpart >= 0 && intpart < 60);
+                        }
+                        else
+                        {
+                            result = false;
+                        }
+                        break;
+                }
+            }
+            return result;
         }
     }
 

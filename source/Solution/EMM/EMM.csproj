@@ -55,7 +55,7 @@
     <Compile Include="MCServerMessage.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="Comms\CommsServer.cs" />
-    <Compile Include="Scheduler\Scheduler.cs" />
+    <Compile Include="Scheduler\SchedulerManager.cs" />
     <Compile Include="Scheduler\ScheduleTask.cs" />
     <Compile Include="Settings\Settings.cs" />
     <Compile Include="Comms\SocketPacket.cs" />
