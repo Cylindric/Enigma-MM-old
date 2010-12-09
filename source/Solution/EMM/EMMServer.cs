@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
@@ -11,7 +12,7 @@ namespace EnigmaMM
     /// The main Server Manager class.
     /// Keeps track of the server listener, and manages the Minecraft process.
     /// </summary>
-    public class EMMServer: IDisposable
+    public class EMMServer: IServer
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
@@ -41,32 +42,32 @@ namespace EnigmaMM
         /// Standard event handler for server messages.
         /// </summary>
         /// <param name="Message">the message</param>
-        public delegate void ServerMessageEventHandler(string Message);
+        //public delegate void ServerMessageEventHandler(string Message);
         
         /// <summary>
         /// Raised whenever the Minecraft server stops.
         /// </summary>
-        public event ServerMessageEventHandler ServerStopped;
+        public event EventHandler<ServerMessageEventArgs> ServerStopped;
 
         /// <summary>
         /// Raised whenever the Minecraft server starts.
         /// </summary>
-        public event ServerMessageEventHandler ServerStarted;
+        public event EventHandler<ServerMessageEventArgs> ServerStarted;
 
         /// <summary>
         /// Raised whenever the Minecraft server sends a message.
         /// </summary>
-        public event ServerMessageEventHandler ServerMessage;
+        public event EventHandler<ServerMessageEventArgs> ServerMessage;
 
         /// <summary>
         /// Raised whenever the Minecraft server throws an error.
         /// </summary>
-        public event ServerMessageEventHandler ServerError;
+        public event EventHandler<ServerMessageEventArgs> ServerError;
 
         /// <summary>
         /// Raised whenever the Minecraft server status changes.
         /// </summary>
-        public event ServerMessageEventHandler StatusChanged;
+        public event EventHandler<ServerMessageEventArgs> StatusChanged;
 
         #endregion
 
@@ -125,7 +126,7 @@ namespace EnigmaMM
                 mServerStatus = value;
                 if (StatusChanged != null)
                 {
-                    StatusChanged("");
+                    StatusChanged(this, new ServerMessageEventArgs(mServerStatus.ToString()));
                 }
             }
         }
@@ -310,18 +311,6 @@ namespace EnigmaMM
         public void StopServer()
         {
             StopServer(-1, false);
-        }
-
-        /// <summary>
-        /// Shuts down the running Server.
-        /// </summary>
-        /// <param name="timeout">
-        /// Time in milliseconds to wait for the command to complete.
-        /// Set to zero to wait forever, or -1 to return immediately, thus essentially running the command asynchronously.
-        /// </param>
-        public void StopServer(int timeout)
-        {
-            StopServer(timeout, false);
         }
 
         /// <summary>
@@ -689,11 +678,11 @@ namespace EnigmaMM
         /// Helper-method to raise ServerMessage Events from other places.
         /// </summary>
         /// <param name="Message">The message to throw</param>
-        internal void RaiseServerMessage(string Message)
+        public void RaiseServerMessage(string Message)
         {
             if (ServerMessage != null)
             {
-                ServerMessage(Message);
+                ServerMessage(this, new ServerMessageEventArgs(Message));
             }
         }
         
@@ -726,7 +715,7 @@ namespace EnigmaMM
             LoadSavedUserInfo();
             if (ServerStarted != null)
             {
-                ServerStarted(Message);
+                ServerStarted(this, new ServerMessageEventArgs(Message));
             }
             RaiseServerMessage("Started");
         }
@@ -742,7 +731,7 @@ namespace EnigmaMM
             SetOnlineUserList();
             if (ServerStopped != null)
             {
-                ServerStopped(Message);
+                ServerStopped(this, new ServerMessageEventArgs(Message));
             }
             mServerProcess = null;
         }
@@ -773,7 +762,7 @@ namespace EnigmaMM
         {
             if (ServerError != null)
             {
-                ServerError(Message);
+                ServerError(this, new ServerMessageEventArgs(Message));
             }
         }
 

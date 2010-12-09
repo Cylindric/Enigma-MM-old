@@ -3,12 +3,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
     class AlphaVespucci : Mapper
     {
-        public AlphaVespucci(EMMServer server) : base(server, "av")
+        public AlphaVespucci(IServer server) : base(server, "av")
         {
             mExePath = Path.Combine(Settings.AlphaVespucciRoot, "AlphaVespucci.exe");
             mOutputPath = Settings.MapRoot;

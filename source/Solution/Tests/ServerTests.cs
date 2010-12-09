@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 using System.Threading;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
@@ -32,8 +33,6 @@ namespace EnigmaMM
 
             mPersistentServer = new EMMServer(settingsFile);
             Assert.That(Settings.Filename, Is.EqualTo(settingsFile));
-
-            mPersistentServer.ServerMessage += HandleServerMessage;
 
             mPersistentServer.StartServer();
             int maxWait = 3000;
@@ -69,7 +68,6 @@ namespace EnigmaMM
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 2));
         }
 
-
         [Test]
         public void TestServerRecognisesRemoveUser()
         {
@@ -89,12 +87,6 @@ namespace EnigmaMM
             mPersistentServer.SendCommand("!userdel");
             WaitForUserCount(startingUsers);
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers));
-        }
-
-
-        private void HandleServerMessage(string message)
-        {
-            Console.Error.WriteLine(message);
         }
 
         private void WaitForUserCount(int targetCount)

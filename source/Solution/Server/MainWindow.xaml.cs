@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Collections;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
@@ -190,12 +191,11 @@ namespace EnigmaMM
             }
         }
 
-        private delegate void HandleServerMessageDelegate(string message);
-        private void HandleServerMessage(string message)
+        private void HandleServerMessage(object sender, ServerMessageEventArgs e)
         {
-            if (message.Length > 0)
+            if (e.Message.Length > 0)
             {
-                AddMessageToLog(message);
+                AddMessageToLog(e.Message);
             }
             UpdateServerMetrics();
         }

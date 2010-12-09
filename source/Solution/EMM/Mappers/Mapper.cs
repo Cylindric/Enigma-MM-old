@@ -7,14 +7,14 @@ namespace EnigmaMM
 {
     class Mapper : IMapper
     {
-        protected EMMServer mMinecraft;
+        protected IServer mMinecraft;
         protected string mExePath;
         protected string mCachePath;
         protected string mOutputPath;
 
         private string mTag = "mapper";
         
-        public Mapper(EMMServer server, string tag)
+        public Mapper(IServer server, string tag)
         {
             mTag = tag;
             mMinecraft = server;

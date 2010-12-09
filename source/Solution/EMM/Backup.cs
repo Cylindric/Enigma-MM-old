@@ -1,15 +1,16 @@
 ﻿using System.IO;
 using Ionic.Zip;
 using System;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
     class Backup : IDisposable
     {
-        private EMMServer mMinecraft;
+        private IServer mMinecraft;
         private int BackupsToKeep = 5;
 
-        public Backup(EMMServer server)
+        public Backup(IServer server)
         {
             mMinecraft = server;
         }

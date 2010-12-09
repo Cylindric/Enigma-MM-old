@@ -8,5 +8,6 @@ namespace EnigmaMM.Interfaces
     interface IMapper
     {
         void Render();
+        void Render(string type);
     }
 }

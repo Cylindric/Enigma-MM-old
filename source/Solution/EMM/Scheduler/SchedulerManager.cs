@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Timers;
 using System.Xml;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM.Scheduler
 {
     public class SchedulerManager
     {
         private const int TIMER_INTERVAL = 60000;
-        private EMMServer mServer;
+        private IServer mServer;
         private string mFile;
         private List<ScheduleTask> mTasks;
         private Timer mTimer;
@@ -28,7 +29,7 @@ namespace EnigmaMM.Scheduler
             mFile = file;
         }
 
-        public SchedulerManager(EMMServer server) 
+        public SchedulerManager(IServer server) 
             : this()
         {
             mServer = server;
