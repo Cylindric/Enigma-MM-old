@@ -8,10 +8,15 @@ namespace EnigmaMM
 {
     class AlphaVespucci : Mapper
     {
-        public AlphaVespucci(MCServer server) : base(server, "av")
+        public AlphaVespucci(EMMServer server) : base(server, "av")
         {
             mExePath = Path.Combine(Settings.AlphaVespucciRoot, "AlphaVespucci.exe");
             mOutputPath = Settings.MapRoot;
+        }
+
+        public override void Render()
+        {
+            Render("main");
         }
 
         public override void Render(string type)
@@ -32,12 +37,12 @@ namespace EnigmaMM
             }
         }
 
-        public void RenderMap(string display, string features, string Filename)
+        private void RenderMap(string display, string features, string Filename)
         {
             RenderMap(display, features, Filename, false);
         }
 
-        public void RenderMap(string display, string features, string Filename, bool createHistory)
+        private void RenderMap(string display, string features, string Filename, bool createHistory)
         {
             base.RenderMap();
             mMinecraft.RaiseServerMessage(string.Format("AV: Creating map {0} {1}...", display, features));

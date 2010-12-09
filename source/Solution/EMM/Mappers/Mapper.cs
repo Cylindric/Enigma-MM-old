@@ -1,28 +1,30 @@
 ﻿using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
-    class Mapper
+    class Mapper : IMapper
     {
-        protected MCServer mMinecraft;
+        protected EMMServer mMinecraft;
         protected string mExePath;
         protected string mCachePath;
         protected string mOutputPath;
 
         private string mTag = "mapper";
         
-        public Mapper(MCServer server, string tag)
+        public Mapper(EMMServer server, string tag)
         {
             mTag = tag;
             mMinecraft = server;
             mCachePath = Path.Combine(Settings.CacheRoot, mTag);
         }
 
+        public virtual void Render() { }
         public virtual void Render(string type) { }
 
-        public virtual void RenderMap()
+        protected virtual void RenderMap()
         {
             if (!Directory.Exists(mMinecraft.ServerProperties.WorldPath))
             {

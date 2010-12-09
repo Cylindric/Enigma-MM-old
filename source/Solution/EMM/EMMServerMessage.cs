@@ -6,7 +6,7 @@ using System;
 
 namespace EnigmaMM
 {
-    class MCServerMessage
+    class EMMServerMessage
     {
         public string Message { private set; get; }
         public MessageTypes Type { private set; get; }
@@ -80,7 +80,7 @@ namespace EnigmaMM
         }
 
 
-        public MCServerMessage(string msg)
+        public EMMServerMessage(string msg)
         {
             if(sPatterns == null)
             {

@@ -7,10 +7,15 @@ namespace EnigmaMM
 {
     class Overviewer : Mapper
     {
-        public Overviewer(MCServer server) : base(server, "overviewer")
+        public Overviewer(EMMServer server) : base(server, "overviewer")
         {
             mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.exe");
             mOutputPath = Path.Combine(Settings.MapRoot, "Overviewer");
+        }
+
+        public override void Render()
+        {
+            RenderMap();
         }
 
         public override void Render(string type)
@@ -18,7 +23,7 @@ namespace EnigmaMM
             RenderMap();
         }
 
-        public override void RenderMap()
+        protected override void RenderMap()
         {
             base.RenderMap();
             mMinecraft.RaiseServerMessage("OVERVIEWER: Creating map");
@@ -46,7 +51,7 @@ namespace EnigmaMM
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
 
-            CreateMarkersFromWarpLocations();
+            //CreateMarkersFromWarpLocations();
 
             mMinecraft.RaiseServerMessage("OVERVIEWER: Done.");
         }

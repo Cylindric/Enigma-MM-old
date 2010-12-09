@@ -9,9 +9,9 @@ namespace EnigmaMM
     /// <remarks>Any unrecognised commands are passed up to Minecraft to process directly.</remarks>
     public class CommandParser
     {
-        private MCServer mMinecraft;
+        private EMMServer mMinecraft;
 
-        public CommandParser(MCServer minecraft)
+        public CommandParser(EMMServer minecraft)
         {
             mMinecraft = minecraft;
         }
