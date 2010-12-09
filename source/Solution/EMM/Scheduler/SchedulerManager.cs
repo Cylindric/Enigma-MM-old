@@ -9,7 +9,7 @@ namespace EnigmaMM.Scheduler
     public class SchedulerManager
     {
         private const int TIMER_INTERVAL = 60000;
-        private MCServer mServer;
+        private EMMServer mServer;
         private string mFile;
         private List<ScheduleTask> mTasks;
         private Timer mTimer;
@@ -28,7 +28,7 @@ namespace EnigmaMM.Scheduler
             mFile = file;
         }
 
-        public SchedulerManager(MCServer server) 
+        public SchedulerManager(EMMServer server) 
             : this()
         {
             mServer = server;

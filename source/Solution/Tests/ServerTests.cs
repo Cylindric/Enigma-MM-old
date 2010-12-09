@@ -12,7 +12,7 @@ namespace EnigmaMM
     [Category("Server")]
     public class ServerTests
     {
-        private MCServer mPersistentServer;
+        private EMMServer mPersistentServer;
         private const int SLEEP_STEP = 100;
 
         [TestFixtureSetUp]
@@ -30,20 +30,20 @@ namespace EnigmaMM
             }
             Console.WriteLine("Settings File is: " + settingsFile);
 
-            mPersistentServer = new MCServer(settingsFile);
+            mPersistentServer = new EMMServer(settingsFile);
             Assert.That(Settings.Filename, Is.EqualTo(settingsFile));
 
             mPersistentServer.ServerMessage += HandleServerMessage;
 
             mPersistentServer.StartServer();
             int maxWait = 3000;
-            while ((mPersistentServer.CurrentStatus != MCServer.Status.Running) && (maxWait > 0))
+            while ((mPersistentServer.CurrentStatus != EMMServer.Status.Running) && (maxWait > 0))
             {
                 Thread.Sleep(SLEEP_STEP);
                 Console.WriteLine("Waiting for running... " + maxWait.ToString());
                 maxWait -= SLEEP_STEP;
             }
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running), "Expected server to be Running but it wasn't. {0}", mPersistentServer.LastStatusMessage);
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running), "Expected server to be Running but it wasn't. {0}", mPersistentServer.LastStatusMessage);
         }
 
         [TestFixtureTearDown]
@@ -58,7 +58,7 @@ namespace EnigmaMM
         {
             int startingUsers = mPersistentServer.Users.Count;
 
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
 
             mPersistentServer.SendCommand("!useradd");
             WaitForUserCount(startingUsers + 1);
@@ -75,7 +75,7 @@ namespace EnigmaMM
         {
             int startingUsers = mPersistentServer.Users.Count;
 
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(MCServer.Status.Running));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
 
             mPersistentServer.SendCommand("!useradd");
             mPersistentServer.SendCommand("!useradd");

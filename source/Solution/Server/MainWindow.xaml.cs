@@ -14,7 +14,7 @@ namespace EnigmaMM
     /// </summary>
     public partial class MainWindow : Window
     {
-        private MCServer mMinecraft;
+        private EMMServer mMinecraft;
         private CommandParser mParser;
         private const int MAX_LOG_ENTRIES = 100;
 
@@ -34,7 +34,7 @@ namespace EnigmaMM
             uxLogListView.ItemsSource = mLogItems;
 
             // Setup the server manager
-            mMinecraft = new MCServer();
+            mMinecraft = new EMMServer();
             mMinecraft.ServerMessage += HandleServerMessage;
             mMinecraft.StatusChanged += HandleServerMessage;
             mMinecraft.StartCommsServer();
@@ -56,37 +56,37 @@ namespace EnigmaMM
 
                 switch (mMinecraft.CurrentStatus)
                 {
-                    case MCServer.Status.Starting:
+                    case EMMServer.Status.Starting:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-starting.png", UriKind.Relative));
                         break;
 
-                    case MCServer.Status.Stopping:
+                    case EMMServer.Status.Stopping:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-stopping.png", UriKind.Relative));
                         break;
 
-                    case MCServer.Status.Running:
+                    case EMMServer.Status.Running:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-running.png", UriKind.Relative));
                         SetStopButtonState(true);
                         SetRestartButtonState(true);
                         break;
 
-                    case MCServer.Status.PendingRestart:
+                    case EMMServer.Status.PendingRestart:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-pendingrestart.png", UriKind.Relative));
                         SetStopButtonState(true);
                         break;
 
-                    case MCServer.Status.PendingStop:
+                    case EMMServer.Status.PendingStop:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-pendingstop.png", UriKind.Relative));
                         SetStopButtonState(true);
                         SetRestartButtonState(true);
                         break;
 
-                    case MCServer.Status.Stopped:
+                    case EMMServer.Status.Stopped:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-stopped.png", UriKind.Relative));
                         SetStartButtonState(true);
                         break;
 
-                    case MCServer.Status.Failed:
+                    case EMMServer.Status.Failed:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-failed.png", UriKind.Relative));
                         SetStartButtonState(true);
                        break;

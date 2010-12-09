@@ -11,7 +11,7 @@ namespace EnigmaMM
     /// The main Server Manager class.
     /// Keeps track of the server listener, and manages the Minecraft process.
     /// </summary>
-    public class MCServer: IDisposable
+    public class EMMServer: IDisposable
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
@@ -134,13 +134,13 @@ namespace EnigmaMM
         /// Server Constructor
         /// </summary>
         /// <remarks>Defaults to using a config file in the same location as the executing assembly.</remarks>
-        public MCServer():
+        public EMMServer():
             this(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf")){}
 
         /// <summary>
         /// Server Constructor
         /// </summary>
-        public MCServer(string mainSettingsFile)
+        public EMMServer(string mainSettingsFile)
         {
             Settings.Initialise(mainSettingsFile);
 
@@ -599,50 +599,50 @@ namespace EnigmaMM
                 return;
             }
 
-            MCServerMessage M = new MCServerMessage(OutLine.Data);
+            EMMServerMessage M = new EMMServerMessage(OutLine.Data);
 
             switch (M.Type)
             {
-                case MCServerMessage.MessageTypes.AutoSaveEnabled:
+                case EMMServerMessage.MessageTypes.AutoSaveEnabled:
                     mAutoSaveEnabled = true;
                     break;
 
-                case MCServerMessage.MessageTypes.AutoSaveDisabled:
+                case EMMServerMessage.MessageTypes.AutoSaveDisabled:
                     mAutoSaveEnabled = false;
                     break;
 
-                case MCServerMessage.MessageTypes.ErrorPortBusy:
+                case EMMServerMessage.MessageTypes.ErrorPortBusy:
                     OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
                     ServerStatus = Status.Failed;
                     mStatusMessage = M.Message;
                     ForceShutdown();
                     break;
 
-                case MCServerMessage.MessageTypes.HModBanner:
+                case EMMServerMessage.MessageTypes.HModBanner:
                     RaiseServerMessage("Hey0 hMod detected");
                     mServerRunningHMod = true;
                     int.TryParse(M.Data["version"], out mHModversion);
                     break;
 
-                case MCServerMessage.MessageTypes.SaveStarted:
+                case EMMServerMessage.MessageTypes.SaveStarted:
                     mServerSaving = true;
                     break;
 
-                case MCServerMessage.MessageTypes.SaveComplete:
+                case EMMServerMessage.MessageTypes.SaveComplete:
                     mServerSaving = false;
                     LoadSavedUserInfo();
                     break;
 
-                case MCServerMessage.MessageTypes.StartupComplete:
+                case EMMServerMessage.MessageTypes.StartupComplete:
                     mOnlineUsers = new ArrayList();
                     OnServerStarted("Server started");
                     break;
 
-                case MCServerMessage.MessageTypes.UserLoggedIn:
+                case EMMServerMessage.MessageTypes.UserLoggedIn:
                     mOnlineUsers.Add(M.Data["username"]);
                     break;
 
-                case MCServerMessage.MessageTypes.UserLoggedOut:
+                case EMMServerMessage.MessageTypes.UserLoggedOut:
                     mOnlineUsers.Remove(M.Data["username"]);
                     if (mOnlineUsers.Count == 0)
                     {

@@ -6,10 +6,10 @@ namespace EnigmaMM
 {
     class Backup : IDisposable
     {
-        private MCServer mMinecraft;
+        private EMMServer mMinecraft;
         private int BackupsToKeep = 5;
 
-        public Backup(MCServer server)
+        public Backup(EMMServer server)
         {
             mMinecraft = server;
         }
