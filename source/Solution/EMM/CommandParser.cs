@@ -1,4 +1,5 @@
 ﻿using System;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
@@ -9,9 +10,9 @@ namespace EnigmaMM
     /// <remarks>Any unrecognised commands are passed up to Minecraft to process directly.</remarks>
     public class CommandParser
     {
-        private EMMServer mMinecraft;
+        private IServer mMinecraft;
 
-        public CommandParser(EMMServer minecraft)
+        public CommandParser(IServer minecraft)
         {
             mMinecraft = minecraft;
         }

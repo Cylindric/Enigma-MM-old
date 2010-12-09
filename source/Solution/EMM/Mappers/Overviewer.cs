@@ -2,12 +2,13 @@
 using System.Diagnostics;
 using System.Text;
 using System.Collections.Generic;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
     class Overviewer : Mapper
     {
-        public Overviewer(EMMServer server) : base(server, "overviewer")
+        public Overviewer(IServer server) : base(server, "overviewer")
         {
             mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.exe");
             mOutputPath = Path.Combine(Settings.MapRoot, "Overviewer");
@@ -51,12 +52,13 @@ namespace EnigmaMM
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
 
-            //CreateMarkersFromWarpLocations();
-
             mMinecraft.RaiseServerMessage("OVERVIEWER: Done.");
         }
 
 
+        /// <summary>
+        /// Utilises the hMod extension's Warps file to add flags to the map.
+        /// </summary>
         private void CreateMarkersFromWarpLocations()
         {
             if (mMinecraft.ServerWarps != null)

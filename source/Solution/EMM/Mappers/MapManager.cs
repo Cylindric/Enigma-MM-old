@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
     static class MapManager
     {
-        static private Dictionary<string, Mapper> Mappers = new Dictionary<string, Mapper>();
+        static private Dictionary<string, IMapper> Mappers = new Dictionary<string, IMapper>();
         
-        static public void Register(string tag, Mapper mapper)
+        static public void Register(string tag, IMapper mapper)
         {
             Mappers.Add(tag, mapper);
         }
@@ -29,7 +30,7 @@ namespace EnigmaMM
             }
             if (tag == "all")
             {
-                foreach (Mapper mapper in Mappers.Values)
+                foreach (IMapper mapper in Mappers.Values)
                 {
                     mapper.Render(type);
                 }
