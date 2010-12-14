@@ -48,7 +48,7 @@ namespace EnigmaMM
         [TestFixtureTearDown]
         public void FixtureTeardown()
         {
-            mPersistentServer.StopServer(0, true);
+            mPersistentServer.StopServer(false, 0, true);
             mPersistentServer = null;
         }
 
@@ -56,7 +56,6 @@ namespace EnigmaMM
         public void TestServerRecognisesNewUser()
         {
             int startingUsers = mPersistentServer.Users.Count;
-
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
 
             mPersistentServer.SendCommand("!useradd");
@@ -72,7 +71,6 @@ namespace EnigmaMM
         public void TestServerRecognisesRemoveUser()
         {
             int startingUsers = mPersistentServer.Users.Count;
-
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
 
             mPersistentServer.SendCommand("!useradd");
@@ -89,6 +87,31 @@ namespace EnigmaMM
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers));
         }
 
+        [Test]
+        public void TestServerStopsGracefully()
+        {
+            int startingUsers = mPersistentServer.Users.Count;
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+            if (startingUsers > 0)
+            {
+                Assert.Inconclusive("This test must start with zero users online");
+            }
+            mPersistentServer.SendCommand("!useradd");
+            WaitForUserCount(1);
+
+            mPersistentServer.SendCommand("stop-graceful");
+            WaitForServerStatus(EMMServer.Status.PendingStop);
+
+            mPersistentServer.SendCommand("!userdel");
+            WaitForUserCount(0);
+
+            WaitForServerStatus(EMMServer.Status.Stopped);
+
+            //cleanup
+            mPersistentServer.StartServer();
+            WaitForServerStatus(EMMServer.Status.Running);
+        }
+
         private void WaitForUserCount(int targetCount)
         {
             int maxWait = 1000;
@@ -100,5 +123,18 @@ namespace EnigmaMM
             }
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(targetCount));
         }
+
+        private void WaitForServerStatus(EMMServer.Status targetStatus)
+        {
+            int maxWait = 1000;
+            while ((mPersistentServer.CurrentStatus != targetStatus) && (maxWait > 0))
+            {
+                Thread.Sleep(SLEEP_STEP);
+                Console.WriteLine("Waiting for status " + maxWait.ToString());
+                maxWait -= SLEEP_STEP;
+            }
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(targetStatus));
+        }
+    
     }
 }

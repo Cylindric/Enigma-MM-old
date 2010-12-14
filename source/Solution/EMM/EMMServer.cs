@@ -308,24 +308,33 @@ namespace EnigmaMM
         /// Shuts down the running Server.
         /// </summary>
         /// <remarks>Returns immediately, without waiting for the server to actually stop.</remarks>
-        public void StopServer()
+        /// <param name="graceful">Wether to wait for the last user to log out or not</param>
+        public void StopServer(bool graceful)
         {
-            StopServer(-1, false);
+            StopServer(graceful, -1, false);
         }
 
         /// <summary>
         /// Shuts down the running Server.
         /// </summary>
-        /// <param name="timeout">
-        /// Time in milliseconds to wait for the command to complete.
-        /// Set to zero to wait forever, or -1 to return immediately, thus essentially running the command asynchronously.
+        /// <param name="graceful">If true, this will put the server in the 
+        /// "pending shutdown" state, whereby it waits until all users have
+        /// logged out, then shuts down the server.</param>
+        /// <param name="timeout">Time in milliseconds to wait for the command
+        /// to complete.  Set to zero to wait forever, or -1 to return 
+        /// immediately, thus essentially running the command asynchronously.
         /// </param>
-        /// <param name="force">
-        /// If set to true, if the server is still running after the timeout it will be forcefully terminated.
-        /// </param>
-        public void StopServer(int timeout, bool force)
+        /// <param name="force">If set to true, if the server is still running
+        /// after the timeout it will be forcefully terminated.</param>
+        public void StopServer(bool graceful, int timeout, bool force)
         {
             bool neverTimeout = (timeout == 0);
+
+            if ((graceful) && (mOnlineUsers.Count > 0))
+            {
+                ServerStatus = Status.PendingStop;
+                return;
+            }
 
             if ((mServerStatus == Status.Running) || (mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart))
             {
@@ -337,6 +346,7 @@ namespace EnigmaMM
                     Thread.Sleep(100);
                 }
             }
+
             if (force)
             {
                 ForceShutdown();
@@ -349,61 +359,33 @@ namespace EnigmaMM
         /// <remarks>
         /// Same as StopServer() followed by StartServer().
         /// </remarks>
-        public void RestartServer()
+        /// <param name="graceful">If true, this will put the server in the
+        /// "pending restart" state, whereby it waits until all users have 
+        /// logged out, then restarts the server.</param>
+        public void RestartServer(bool graceful)
         {
-            StopServer(0, false);
+            if ((graceful == true) && (mOnlineUsers.Count > 0))
+            {
+                ServerStatus = Status.PendingRestart;
+                return;
+            }
+            
+            StopServer(false, 0, false);
             StartServer();
-        }
-
-        /// <summary>
-        /// Performs a graceful shutdown of the server.  
-        /// </summary>
-        /// <remarks>
-        /// This will put the server in the "pending shutdown" state, whereby it waits
-        /// until all users have logged out, then shuts down the server.
-        /// </remarks>
-        public void GracefulStop()
-        {
-            if (mOnlineUsers.Count == 0)
-            {
-                StopServer();
-            }
-            else
-            {
-                ServerStatus = Status.PendingStop;
-            }
         }
 
         /// <summary>
         /// Aborts a pending stop operation.
         /// </summary>
-        public void AbortPendingStop()
+        public void AbortPendingOperations()
         {
-            if ((mServerStatus == Status.Running) && (mServerStatus == Status.PendingStop))
+            if ((mServerStatus == Status.Running) &&
+                ((mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart)))
             {
                 ServerStatus = Status.Running;
             }
         }
         
-        /// <summary>
-        /// Performs a graceful restart of the server.
-        /// </summary>
-        /// <remarks>
-        /// This will put the server in the "pending restart" state, whereby it waits
-        /// until all users have logged out, then restarts the server.
-        /// </remarks>
-        public void GracefulRestart()
-        {
-            if (mOnlineUsers.Count == 0)
-            {
-                RestartServer();
-            }
-            else
-            {
-                ServerStatus = Status.PendingRestart;
-            }
-        }
-
         /// <summary>
         /// Sends a broadcast message to all players on the server.
         /// </summary>
@@ -428,17 +410,6 @@ namespace EnigmaMM
             {
                 SendCommand("save-off");
                 Thread.Sleep(1000); // bit of a hack to give the server a chance to respond
-            }
-        }
-
-        /// <summary>
-        /// Aborts a pending restart.
-        /// </summary>
-        public void AbortPendingRestart()
-        {
-            if ((mServerStatus == Status.Running) && (mServerStatus == Status.PendingRestart))
-            {
-                ServerStatus = Status.Running;
             }
         }
 
@@ -699,8 +670,7 @@ namespace EnigmaMM
             OnServerStopped("Server Stopped");
             RaiseServerMessage("Stopped");
         }
-
-
+        
         /// <summary>
         /// Called when the minecraft server has fully started.
         /// </summary>
@@ -743,11 +713,11 @@ namespace EnigmaMM
         {
             if (mServerStatus == Status.PendingRestart)
             {
-                RestartServer();
+                RestartServer(false);
             }
             if (mServerStatus == Status.PendingStop)
             {
-                StopServer();
+                StopServer(false);
             }
         }
 
@@ -773,11 +743,12 @@ namespace EnigmaMM
         /// </summary>
         public void Dispose()
         {
-            StopServer(1, true);
+            StopServer(false, 1, true);
             if (mServerProcess != null)
             {
                 mServerProcess.Dispose();
             }
         }
+
     }
 }
