@@ -46,14 +46,11 @@ namespace EnigmaMM.Interfaces
         #endregion
 
         void StartServer();
-        void StopServer();
-        void StopServer(int timeout, bool force);
-        void RestartServer();
-        void GracefulStop();
-        void AbortPendingStop();
-        void GracefulRestart();
+        void StopServer(bool graceful);
+        void StopServer(bool graceful, int timeout, bool force);
+        void RestartServer(bool graceful);
+        void AbortPendingOperations();
         void Broadcast(string message);
-        void AbortPendingRestart();
         void Backup();
         bool RefreshOnlineUserList();
         void SendCommand(string Command);

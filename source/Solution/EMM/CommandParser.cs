@@ -43,20 +43,19 @@ namespace EnigmaMM
                     break;
 
                 case ("restart-graceful"):
-                    mMinecraft.GracefulRestart();
+                    mMinecraft.RestartServer(true);
                     break;
 
                 case ("stop"):
-                    mMinecraft.StopServer();
+                    mMinecraft.StopServer(false);
                     break;
 
                 case ("stop-graceful"):
-                    mMinecraft.GracefulStop();
+                    mMinecraft.StopServer(true);
                     break;
 
                 case ("abort-graceful"):
-                    mMinecraft.AbortPendingRestart();
-                    mMinecraft.AbortPendingStop();
+                    mMinecraft.AbortPendingOperations();
                     break;
 
                 case ("maps"):

@@ -207,26 +207,12 @@ namespace EnigmaMM
 
         private void uxStopButton_Click(object sender, RoutedEventArgs e)
         {
-            if (uxGracefulCheckbox.IsChecked.Value)
-            {
-                mMinecraft.GracefulStop();
-            }
-            else
-            {
-                mMinecraft.StopServer();
-            }
+            mMinecraft.StopServer(uxGracefulCheckbox.IsChecked.Value);
         }
 
         private void uxRestartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (uxGracefulCheckbox.IsChecked.Value)
-            {
-                mMinecraft.GracefulRestart();
-            }
-            else
-            {
-                mMinecraft.RestartServer();
-            }
+            mMinecraft.RestartServer(uxGracefulCheckbox.IsChecked.Value);
         }
 
         private void uxCommandInput_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -245,7 +231,7 @@ namespace EnigmaMM
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            mMinecraft.StopServer(60000, true);
+            mMinecraft.StopServer(false, 60000, true);
         }
 
         private void uxLogListView_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
