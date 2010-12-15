@@ -38,7 +38,6 @@ namespace EnigmaMM
             mMinecraft = new EMMServer();
             mMinecraft.ServerMessage += HandleServerMessage;
             mMinecraft.StatusChanged += HandleServerMessage;
-            mMinecraft.StartCommsServer();
             mParser = new CommandParser(mMinecraft);
         }
 

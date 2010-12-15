@@ -38,11 +38,6 @@ namespace EnigmaMM.Interfaces
             get;
         }
 
-        bool Listening
-        {
-            get;
-        }
-
         #endregion
 
         void StartServer();
@@ -57,6 +52,5 @@ namespace EnigmaMM.Interfaces
         void GenerateMaps(string[] args);
         void LoadSavedUserInfo();
         void RaiseServerMessage(string message);
-        void StopCommsServer();
     }
 }
