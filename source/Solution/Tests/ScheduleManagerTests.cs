@@ -33,6 +33,12 @@ namespace EnigmaMM.Scheduler
             Assert.That(scheduler.NextTask, Is.EqualTo(task));
         }
 
+        [Test]
+        public void TestTasksLoadFromFile()
+        {
+            SchedulerManager scheduler = new SchedulerManager();
+        }
+
         /// <summary>
         /// Tests if an earlier task is added after a later task, 
         /// that nextTask() correctly returns the earlier one.

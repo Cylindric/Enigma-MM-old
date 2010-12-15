@@ -15,6 +15,47 @@ namespace EnigmaMM.Scheduler
         private List<ScheduleTask> mTasks;
         private Timer mTimer;
 
+        /// <summary>
+        /// Gets or sets the filename of the schedule definitions.
+        /// </summary>
+        /// <remarks>Setting it doesn't automatically load it, so it might be
+        /// necessary to call <seealso cref="LoadSchedule"/>.</remarks>
+        public string ScheduleFile
+        {
+            get { return mFile; }
+            set { mFile = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the <seealso cref="IServer"/> to use for executing the
+        /// scheduled commands.
+        /// </summary>
+        public IServer Server
+        {
+            get { return mServer; }
+            set { mServer = value; }
+        }
+
+        /// <summary>
+        /// Gets the <seealso cref="ScheduleTask"/> that is scheduled to run next.
+        /// </summary>
+        /// <remarks>If no tasks are scheduled, returns <c>null</c>.</remarks>
+        public ScheduleTask NextTask
+        {
+            get
+            {
+                ScheduleTask next = null;
+                foreach (ScheduleTask task in mTasks)
+                {
+                    if ((next == null) || (task.NextRun < next.NextRun))
+                    {
+                        next = task;
+                    }
+                }
+                return next;
+            }
+        }
+
         public SchedulerManager()
         {
             mServer = null;
@@ -34,22 +75,6 @@ namespace EnigmaMM.Scheduler
         {
             mServer = server;
             mFile = Path.Combine(Settings.ServerManagerRoot, "scheduler.xml");
-        }
-
-        public ScheduleTask NextTask
-        {
-            get
-            {
-                ScheduleTask next = null;
-                foreach (ScheduleTask task in mTasks)
-                {
-                    if ((next == null) || (task.NextRun < next.NextRun))
-                    {
-                        next = task;
-                    }
-                }
-                return next;
-            }
         }
 
         public void Start()

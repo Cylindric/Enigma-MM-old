@@ -35,14 +35,7 @@ namespace EnigmaMM
             Assert.That(Settings.Filename, Is.EqualTo(settingsFile));
 
             mPersistentServer.StartServer();
-            int maxWait = 3000;
-            while ((mPersistentServer.CurrentStatus != EMMServer.Status.Running) && (maxWait > 0))
-            {
-                Thread.Sleep(SLEEP_STEP);
-                Console.WriteLine("Waiting for running... " + maxWait.ToString());
-                maxWait -= SLEEP_STEP;
-            }
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running), "Expected server to be Running but it wasn't. {0}", mPersistentServer.LastStatusMessage);
+            WaitForServerStatus(EMMServer.Status.Running, 3000);
         }
 
         [TestFixtureTearDown]
@@ -55,35 +48,33 @@ namespace EnigmaMM
         [Test]
         public void TestServerRecognisesNewUser()
         {
-            int startingUsers = mPersistentServer.Users.Count;
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+            int startingUsers = mPersistentServer.Users.Count;
 
-            mPersistentServer.SendCommand("!useradd");
-            WaitForUserCount(startingUsers + 1);
+            AddUser(1);
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 1));
 
-            mPersistentServer.SendCommand("!useradd");
-            WaitForUserCount(startingUsers + 2);
+            AddUser(1);
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 2));
+
+            // cleanup
+            RemoveUser(2);
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers));
         }
 
         [Test]
         public void TestServerRecognisesRemoveUser()
         {
-            int startingUsers = mPersistentServer.Users.Count;
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+            int startingUsers = mPersistentServer.Users.Count;
 
-            mPersistentServer.SendCommand("!useradd");
-            mPersistentServer.SendCommand("!useradd");
-            WaitForUserCount(startingUsers + 2);
-            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 2), "Failed to add two users");
+            AddUser(2);
+            Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 2));
 
-            mPersistentServer.SendCommand("!userdel");
-            WaitForUserCount(startingUsers + 1);
+            RemoveUser(1);
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers + 1));
 
-            mPersistentServer.SendCommand("!userdel");
-            WaitForUserCount(startingUsers);
+            RemoveUser(1);
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(startingUsers));
         }
 
@@ -92,47 +83,115 @@ namespace EnigmaMM
         {
             int startingUsers = mPersistentServer.Users.Count;
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
-            if (startingUsers > 0)
-            {
-                Assert.Inconclusive("This test must start with zero users online");
-            }
-            mPersistentServer.SendCommand("!useradd");
-            WaitForUserCount(1);
 
-            mPersistentServer.SendCommand("stop-graceful");
+            // ensure at least 1 user is online
+            AddUser(1);
+
+            mPersistentServer.StopServer(true);
             WaitForServerStatus(EMMServer.Status.PendingStop);
 
-            mPersistentServer.SendCommand("!userdel");
-            WaitForUserCount(0);
+            // remove all users
+            RemoveUser(mPersistentServer.Users.Count);
 
             WaitForServerStatus(EMMServer.Status.Stopped);
 
-            //cleanup
+            // cleanup
             mPersistentServer.StartServer();
             WaitForServerStatus(EMMServer.Status.Running);
         }
 
+        [Test]
+        public void TestServerRestartsGracefully()
+        {
+            int startingUsers = mPersistentServer.Users.Count;
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+
+            // ensure at least 1 user is online
+            AddUser(1);
+
+            mPersistentServer.RestartServer(true);
+            WaitForServerStatus(EMMServer.Status.PendingRestart);
+
+            // remove all users
+            RemoveUser(mPersistentServer.Users.Count);
+
+            WaitForServerStatus(EMMServer.Status.Running);
+        }
+
+        /// <summary>
+        /// Adds the specified number of users to the simulator.
+        /// Throws an Assert if count doesn't increment by expected number.
+        /// </summary>
+        /// <param name="n">Number of users to add.</param>
+        private void AddUser(int n)
+        {
+            Console.Write(string.Format("Adding {0} user(s)...", n));
+            for (int i = 0; i < n; i++)
+            {
+                int startingUsers = mPersistentServer.Users.Count;
+                mPersistentServer.SendCommand("!useradd");
+                WaitForUserCount(startingUsers + 1);
+            }
+            Console.WriteLine(string.Format("done ({0} online)", mPersistentServer.Users.Count));
+        }
+
+        /// <summary>
+        /// Removes the specified number of users from the simulator.
+        /// Throws an Assert if count doesn't decrement by expected number.
+        /// </summary>
+        /// <param name="n">Number of users to remove.</param>
+        private void RemoveUser(int n)
+        {
+            Console.Write(string.Format("Removing {0} user(s)...", n));
+            for (int i = 0; i < n; i++)
+            {
+                int startingUsers = mPersistentServer.Users.Count;
+                mPersistentServer.SendCommand("!userdel");
+                WaitForUserCount(startingUsers - 1);
+            }
+            Console.WriteLine(string.Format("done ({0} online)", mPersistentServer.Users.Count));
+        }
+
+        /// <summary>
+        /// Blocks until the number of online users matches the specified targetCount.
+        /// </summary>
+        /// <remarks>Throws an Assert if count doesn't reach by expected number.</remarks>
+        /// <param name="targetCount">Number of users to wait for.</param>
         private void WaitForUserCount(int targetCount)
         {
             int maxWait = 1000;
             while ((mPersistentServer.Users.Count != targetCount) && (maxWait > 0))
             {
                 Thread.Sleep(SLEEP_STEP);
-                Console.WriteLine("Waiting for user " + maxWait.ToString());
+                Console.Write(".");
                 maxWait -= SLEEP_STEP;
             }
             Assert.That(mPersistentServer.Users.Count, Is.EqualTo(targetCount));
         }
 
-        private void WaitForServerStatus(EMMServer.Status targetStatus)
+        /// <summary>
+        /// Blocks until the server status matches the specified value.
+        /// </summary>
+        /// <remarks>Throws an Assert if status isn't reached</remarks>
+        /// <param name="targetStatus">The status to reach.</param>
+        private void WaitForServerStatus(EMMServer.Status targetStatus) { WaitForServerStatus(targetStatus, 1000); }
+
+        /// <summary>
+        /// Blocks until the server status matches the specified value, within the specified time.
+        /// </summary>
+        /// <remarks>Throws an Assert if status isn't reached in the specified time.</remarks>
+        /// <param name="targetStatus">The status to reach.</param>
+        /// <param name="maxWait">Milliseconds to wait for status.</param>
+        private void WaitForServerStatus(EMMServer.Status targetStatus, int maxWait)
         {
-            int maxWait = 1000;
+            Console.Write(string.Format("Waiting for status '{0}'...", targetStatus.ToString()));
             while ((mPersistentServer.CurrentStatus != targetStatus) && (maxWait > 0))
             {
                 Thread.Sleep(SLEEP_STEP);
-                Console.WriteLine("Waiting for status " + maxWait.ToString());
+                Console.Write(".");
                 maxWait -= SLEEP_STEP;
             }
+            Console.WriteLine("done");
             Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(targetStatus));
         }
     
