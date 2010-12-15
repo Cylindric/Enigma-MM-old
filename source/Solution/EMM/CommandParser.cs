@@ -30,7 +30,6 @@ namespace EnigmaMM
             {
                 case ("quit"):
                     ParseCommand("stop");
-                    mMinecraft.StopCommsServer();
                     break;
 
                 case ("start"):

@@ -50,17 +50,14 @@
     <Compile Include="Backup.cs" />
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
-    <Compile Include="Comms\CommsManager.cs" />
     <Compile Include="Interfaces\IMapper.cs" />
     <Compile Include="Interfaces\IServer.cs" />
     <Compile Include="Mappers\MapManager.cs" />
     <Compile Include="EMMServerMessage.cs" />
     <Compile Include="SavedUser.cs" />
-    <Compile Include="Comms\CommsServer.cs" />
     <Compile Include="Scheduler\SchedulerManager.cs" />
     <Compile Include="Scheduler\ScheduleTask.cs" />
     <Compile Include="Settings\Settings.cs" />
-    <Compile Include="Comms\SocketPacket.cs" />
     <Compile Include="Mappers\AlphaVespucci.cs" />
     <Compile Include="CLIHelper.cs" />
     <Compile Include="Mappers\Mapper.cs" />

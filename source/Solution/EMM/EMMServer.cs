@@ -20,7 +20,6 @@ namespace EnigmaMM
         private Status mServerStatus;
         private string mStatusMessage;
         private bool mOnlineUserListReady;
-        private CommsServer mCommsServer;
         private CommandParser mParser;
         private bool mServerSaving;
         private Scheduler.SchedulerManager mScheduler;
@@ -113,11 +112,6 @@ namespace EnigmaMM
             get { return mOnlineUsers; }
         }
 
-        public bool Listening
-        {
-            get { return mCommsServer.Listening; }
-        }
-
         #endregion
 
         private Status ServerStatus
@@ -146,7 +140,6 @@ namespace EnigmaMM
             Settings.Initialise(mainSettingsFile);
 
             mServerProperties = new MCServerProperties();
-            mCommsServer = new CommsServer();
             mParser = new CommandParser(this);
             mScheduler = new Scheduler.SchedulerManager(this);
 
@@ -173,30 +166,6 @@ namespace EnigmaMM
             ReloadConfig();
 
             mScheduler.LoadSchedule();
-        }
-
-        /// <summary>
-        /// Starts the CommsServer listening for new connections.
-        /// </summary>
-        public void StartCommsServer()
-        {
-            if (Settings.ServerListenIp.Equals("none", StringComparison.CurrentCultureIgnoreCase))
-            {
-                RaiseServerMessage("Bypassing RCON due to user preference");
-            }
-            else
-            {
-                mCommsServer.StartListener();
-                mCommsServer.MessageReceived += OnRemoteCommandReceived;
-            }
-        }
-
-        /// <summary>
-        /// Stops the CommsServer from listening for new connections.
-        /// </summary>
-        public void StopCommsServer()
-        {
-            mCommsServer.StopListener();
         }
 
         /// <summary>
@@ -610,12 +579,6 @@ namespace EnigmaMM
                     }
                     break;
 
-            }
-
-            // send the output to the comms server
-            if (mCommsServer.Listening)
-            {
-                mCommsServer.SendData(M.Message);
             }
 
             // raise an InfoMessage Event too
