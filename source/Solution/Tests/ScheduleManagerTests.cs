@@ -1,18 +1,28 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
+using EnigmaMM.Interfaces;
+using Moq;
+using NUnit.Framework;
 
 namespace EnigmaMM.Scheduler
 {
     [TestFixture]
     [Category("Utilities")]
-    class ScheduleManagerTests
+    public class ScheduleManagerTests
     {
         /// <summary>
         /// The mondayMorning variable is used as a convenient placeholder to facilitate
         /// consistent tests.
         /// It is set to early monday morning, on 4th January 2010 at 4:30am
         /// </summary>
-        DateTime mondayMorning = new DateTime(2010, 1, 4, 4, 30, 0);
+        private DateTime mondayMorning = new DateTime(2010, 1, 4, 4, 30, 0);
+
+        private Mock<IServer> mockServer;
+
+        [TestFixtureSetUp]
+        public void TestInit()
+        {
+            mockServer = new Mock<IServer>();
+        }
 
         /// <summary>
         /// Trivial test just to make sure the object instantiates successfully.
@@ -20,13 +30,13 @@ namespace EnigmaMM.Scheduler
         [Test]
         public void TestSchedulerCreation()
         {
-            SchedulerManager scheduler = new SchedulerManager();
+            SchedulerManager scheduler = new SchedulerManager(mockServer.Object);
         }
 
         [Test]
         public void TestCanAddTask()
         {
-            SchedulerManager scheduler = new SchedulerManager();
+            SchedulerManager scheduler = new SchedulerManager(mockServer.Object);
             ScheduleTask task = new ScheduleTask("*", 5, 0);
             scheduler.AddTask(task);
             Console.WriteLine(string.Format("nextTask() is at {0}", scheduler.NextTask.NextRun));
@@ -36,7 +46,7 @@ namespace EnigmaMM.Scheduler
         [Test]
         public void TestTasksLoadFromFile()
         {
-            SchedulerManager scheduler = new SchedulerManager();
+            SchedulerManager scheduler = new SchedulerManager(mockServer.Object);
         }
 
         /// <summary>
@@ -46,13 +56,20 @@ namespace EnigmaMM.Scheduler
         [Test]
         public void TestNextTaskSequencing()
         {
-            SchedulerManager scheduler = new SchedulerManager();
+            SchedulerManager scheduler = new SchedulerManager(mockServer.Object);
             ScheduleTask taskA = new ScheduleTask("*", 6, 0);
             ScheduleTask taskB = new ScheduleTask("*", 5, 0);
             scheduler.AddTask(taskA);
             scheduler.AddTask(taskB);
             Assert.That(scheduler.NextTask, Is.Not.EqualTo(taskA));
             Assert.That(scheduler.NextTask, Is.EqualTo(taskB));
+        }
+
+        [Test]
+        public void TestTaskExecutes()
+        {
+            SchedulerManager scheduler = new SchedulerManager(mockServer.Object);
+            //mockServer.Verify(s => s.StartServer(), Times.Exactly(1));
         }
     }
 }

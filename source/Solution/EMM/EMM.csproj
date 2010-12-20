@@ -51,6 +51,7 @@
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
     <Compile Include="Interfaces\IMapper.cs" />
+    <Compile Include="Interfaces\IScheduleTask.cs" />
     <Compile Include="Interfaces\IServer.cs" />
     <Compile Include="Mappers\MapManager.cs" />
     <Compile Include="EMMServerMessage.cs" />

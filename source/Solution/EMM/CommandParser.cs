@@ -11,7 +11,10 @@ namespace EnigmaMM
     public class CommandParser
     {
         private IServer mMinecraft;
-
+        /// <summary>
+        /// Creates a new <c>CommandParser</c> and connects it to the specified <see cref="IServer"/>.
+        /// </summary>
+        /// <param name="minecraft"></param>
         public CommandParser(IServer minecraft)
         {
             mMinecraft = minecraft;
@@ -23,8 +26,9 @@ namespace EnigmaMM
         /// Commands for the server manager are prefixed with the command-character.
         /// </summary>
         /// <param name="Command">The command to parse.</param>
-        public void ParseCommand(String Command)
+        public bool ParseCommand(String Command)
         {
+            bool executed = true;
             string[] args = Command.Split(' ');
             switch (args[0])
             {
@@ -66,9 +70,10 @@ namespace EnigmaMM
                     break;
 
                 default:
-                    mMinecraft.SendCommand(Command);
+                    executed = false;
                     break;
             }
+            return executed;
         }
     }
 }

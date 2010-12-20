@@ -1,4 +1,5 @@
 ﻿using System;
+using Moq;
 using NUnit.Framework;
 
 namespace EnigmaMM.Scheduler
@@ -44,15 +45,28 @@ namespace EnigmaMM.Scheduler
         }
 
         [Test]
+        public void TestLegalSpecialDaysAccepted()
+        {
+            ScheduleTask task = new ScheduleTask(ScheduleTask.AT_STARTUP, 0, 0);
+            Assert.That(task.RunDays, Is.EqualTo(ScheduleTask.AT_NEVER));
+
+            task = new ScheduleTask(ScheduleTask.AT_NEVER, 0, 0);
+            Assert.That(task.RunDays, Is.EqualTo(ScheduleTask.AT_NEVER));
+        }
+
+        [Test]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void TestIllegalValuesAreRejected()
         {
             ScheduleTask task;
-            task = new ScheduleTask("a", 0, 0);
-            task = new ScheduleTask("*", -1, 0);
-            task = new ScheduleTask("*", 0, -1);
-            task = new ScheduleTask("*", 24, 0);
-            task = new ScheduleTask("*", 0, 60);
+            task = new ScheduleTask("a", 0, 0); // invalid day
+            task = new ScheduleTask("*", -1, 0); // too low hour
+            task = new ScheduleTask("*", 0, -1); // too low minute
+            task = new ScheduleTask("*", 24, 0); // too high hour
+            task = new ScheduleTask("*", 0, 60); // too high minute
+            task = new ScheduleTask("", "*", "*"); //empty day
+            task = new ScheduleTask("*", "", "*"); //empty hour
+            task = new ScheduleTask("*", "*", ""); //empty minute
         }
 
         [Test]
@@ -184,5 +198,13 @@ namespace EnigmaMM.Scheduler
                 task.CalculateNextRunTime(task.NextRun);
             }
         }
+
+        [Test]
+        public void TestStartupNextRunIsSoon()
+        {
+            ScheduleTask task = new ScheduleTask(ScheduleTask.AT_STARTUP, 0, 0);
+            Assert.That(task.NextRun, Is.AtMost(DateTime.Now.AddMinutes(1)));
+        }
+
     }
 }

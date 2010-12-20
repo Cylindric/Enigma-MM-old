@@ -15,6 +15,8 @@ namespace EnigmaMM
     {
         private EMMServer mPersistentServer;
         private const int SLEEP_STEP = 100;
+        private const int START_STOP_DELAY = 10000;
+        private const int DEFAULT_DELAY = 1000;
 
         [TestFixtureSetUp]
         public void FixtureSetup()
@@ -35,13 +37,14 @@ namespace EnigmaMM
             Assert.That(Settings.Filename, Is.EqualTo(settingsFile));
 
             mPersistentServer.StartServer();
-            WaitForServerStatus(EMMServer.Status.Running, 3000);
+            WaitForServerStatus(EMMServer.Status.Running);
         }
 
         [TestFixtureTearDown]
         public void FixtureTeardown()
         {
             mPersistentServer.StopServer(false, 0, true);
+            WaitForServerStatus(EMMServer.Status.Stopped);
             mPersistentServer = null;
         }
 
@@ -129,7 +132,7 @@ namespace EnigmaMM
             for (int i = 0; i < n; i++)
             {
                 int startingUsers = mPersistentServer.Users.Count;
-                mPersistentServer.SendCommand("!useradd");
+                mPersistentServer.Execute("!useradd");
                 WaitForUserCount(startingUsers + 1);
             }
             Console.WriteLine(string.Format("done ({0} online)", mPersistentServer.Users.Count));
@@ -146,7 +149,7 @@ namespace EnigmaMM
             for (int i = 0; i < n; i++)
             {
                 int startingUsers = mPersistentServer.Users.Count;
-                mPersistentServer.SendCommand("!userdel");
+                mPersistentServer.Execute("!userdel");
                 WaitForUserCount(startingUsers - 1);
             }
             Console.WriteLine(string.Format("done ({0} online)", mPersistentServer.Users.Count));
@@ -172,23 +175,25 @@ namespace EnigmaMM
         /// <summary>
         /// Blocks until the server status matches the specified value.
         /// </summary>
-        /// <remarks>Throws an Assert if status isn't reached</remarks>
+        /// <remarks>Throws an Assert if status isn't reached in time.</remarks>
         /// <param name="targetStatus">The status to reach.</param>
-        private void WaitForServerStatus(EMMServer.Status targetStatus) { WaitForServerStatus(targetStatus, 1000); }
-
-        /// <summary>
-        /// Blocks until the server status matches the specified value, within the specified time.
-        /// </summary>
-        /// <remarks>Throws an Assert if status isn't reached in the specified time.</remarks>
-        /// <param name="targetStatus">The status to reach.</param>
-        /// <param name="maxWait">Milliseconds to wait for status.</param>
-        private void WaitForServerStatus(EMMServer.Status targetStatus, int maxWait)
+        private void WaitForServerStatus(EMMServer.Status targetStatus)
         {
+            int maxWait = 1000;
+            if (targetStatus == EMMServer.Status.Running || targetStatus == EMMServer.Status.Stopped)
+            {
+                maxWait = START_STOP_DELAY;
+            }
+
             Console.Write(string.Format("Waiting for status '{0}'...", targetStatus.ToString()));
             while ((mPersistentServer.CurrentStatus != targetStatus) && (maxWait > 0))
             {
                 Thread.Sleep(SLEEP_STEP);
                 Console.Write(".");
+                if (mPersistentServer.CurrentStatus == EMMServer.Status.PendingStop || mPersistentServer.CurrentStatus == EMMServer.Status.PendingRestart)
+                {
+                    Console.Write(mPersistentServer.Users.Count);
+                }
                 maxWait -= SLEEP_STEP;
             }
             Console.WriteLine("done");

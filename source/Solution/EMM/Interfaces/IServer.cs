@@ -11,34 +11,11 @@ namespace EnigmaMM.Interfaces
         event EventHandler<ServerMessageEventArgs> ServerError;
         event EventHandler<ServerMessageEventArgs> StatusChanged;
 
-        #region Properties
-
-        MCServerProperties ServerProperties
-        {
-            get;
-        }
-
-        MCServerWarps ServerWarps
-        {
-            get;
-        }
-
-        EnigmaMM.EMMServer.Status CurrentStatus
-        {
-            get;
-        }
-
-        string LastStatusMessage
-        {
-            get;
-        }
-
-        ArrayList Users
-        {
-            get;
-        }
-
-        #endregion
+        MCServerProperties ServerProperties { get; }
+        MCServerWarps ServerWarps { get; }
+        EnigmaMM.EMMServer.Status CurrentStatus { get; }
+        string LastStatusMessage { get; }
+        ArrayList Users { get; }
 
         void StartServer();
         void StopServer(bool graceful);
@@ -48,7 +25,7 @@ namespace EnigmaMM.Interfaces
         void Broadcast(string message);
         void Backup();
         bool RefreshOnlineUserList();
-        void SendCommand(string Command);
+        void Execute(string command);
         void GenerateMaps(string[] args);
         void LoadSavedUserInfo();
         void RaiseServerMessage(string message);

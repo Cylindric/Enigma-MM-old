@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM.Scheduler
 {
@@ -9,8 +8,11 @@ namespace EnigmaMM.Scheduler
     /// The ScheduleTask class provides the functionality for specifying scheduled tasks
     /// with recurring times they should execute.
     /// </summary>
-    public class ScheduleTask
+    public class ScheduleTask : IScheduleTask
     {
+        public const string AT_STARTUP = "@startup";
+        public const string AT_NEVER = "@never";
+
         private string mRunDays;
         private string mRunHours;
         private string mRunMinutes;
@@ -18,7 +20,7 @@ namespace EnigmaMM.Scheduler
         /// <summary>
         /// The set of valid parameter types.
         /// </summary>
-        public enum ParameterType
+        private enum ParameterType
         {
             Days,
             Hours,
@@ -51,9 +53,9 @@ namespace EnigmaMM.Scheduler
             get { return mRunDays; }
             set
             {
-                if (!ValidateParameter(ParameterType.Days, value))
+                if (!IsValidParameter(ParameterType.Days, value))
                 {
-                    throw new ArgumentOutOfRangeException("Days must be * or a valid set of DayOfWeek");
+                    throw new ArgumentOutOfRangeException(string.Format("Days must be * or a valid set of DayOfWeek but was {0}", value));
                 }
                 mRunDays = value;
             }
@@ -68,9 +70,9 @@ namespace EnigmaMM.Scheduler
             get { return mRunHours; }
             set
             {
-                if (!ValidateParameter(ParameterType.Hours, value))
+                if (!IsValidParameter(ParameterType.Hours, value))
                 {
-                    throw new ArgumentOutOfRangeException("Hours must be * or a set of numbers between 0 and 23");
+                    throw new ArgumentOutOfRangeException(string.Format("Hours must be * or a set of numbers between 0 and 23 but was {0}", value));
                 }
                 mRunHours = value;
             }
@@ -84,9 +86,9 @@ namespace EnigmaMM.Scheduler
         {
             get { return mRunMinutes; }
             set {
-                if (!ValidateParameter(ParameterType.Minutes, value))
+                if (!IsValidParameter(ParameterType.Minutes, value))
                 {
-                    throw new ArgumentOutOfRangeException("Minutes must be * or a set of numbers between 0 and 59");
+                    throw new ArgumentOutOfRangeException(string.Format("Minutes must be * or a set of numbers between 0 and 59 but was {0}", value));
                 }
                 mRunMinutes = value; 
             }
@@ -144,9 +146,10 @@ namespace EnigmaMM.Scheduler
         /// Calculates the next time this task is due to run, after the current time.
         /// </summary>
         /// <remarks>The calculated run time will be at least one minute in the future.</remarks>
-        public void CalculateNextRunTime()
+        /// <returns>The calculated next run time.</returns>
+        public DateTime CalculateNextRunTime()
         {
-            CalculateNextRunTime(DateTime.Now);
+            return CalculateNextRunTime(DateTime.Now);
         }
 
         /// <summary>
@@ -159,7 +162,8 @@ namespace EnigmaMM.Scheduler
         /// time the task is run, it's probably not important.
         /// </remarks>
         /// <param name="start">The start time to use from which to find the next run time.</param>
-        public void CalculateNextRunTime(DateTime start)
+        /// <returns>The calculated next run time.</returns>
+        public DateTime CalculateNextRunTime(DateTime start)
         {
             int m = 0;
             int h = 0;
@@ -167,7 +171,7 @@ namespace EnigmaMM.Scheduler
 
             int.TryParse(RunMinutes, out m);
             int.TryParse(RunHours, out h);
-            if (Enum.IsDefined(typeof(DayOfWeek), RunDays))
+            if (IsDoW(RunDays))
             {
                 d = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), RunDays);
             }
@@ -178,6 +182,18 @@ namespace EnigmaMM.Scheduler
             next = next.AddMinutes(1);
 
             bool done = false;
+
+            if (RunDays == AT_STARTUP)
+            {
+                RunDays = AT_NEVER;
+                done = true;
+            }
+            else if (RunDays == AT_NEVER)
+            {
+                next = DateTime.MaxValue;
+                done = true;
+            }
+
             while (!done)
             {
                 if (!Match(next.DayOfWeek, RunDays))
@@ -203,7 +219,9 @@ namespace EnigmaMM.Scheduler
 
                 done = true;
             }
+
             this.NextRun = next;
+            return this.NextRun;
         }
 
         private bool Match(DayOfWeek d, string match)
@@ -258,7 +276,7 @@ namespace EnigmaMM.Scheduler
             return false;
         }
 
-        public bool ValidateParameter(ParameterType type, string param)
+        private bool IsValidParameter(ParameterType type, string param)
         {
             bool result = true;
             
@@ -274,8 +292,16 @@ namespace EnigmaMM.Scheduler
                 string[] parts = param.Split(',');
                 foreach (string part in parts)
                 {
-                    result = (result && ValidateParameter(type, part));
+                    result = (result && IsValidParameter(type, part));
                 }
+            }
+            else if ((type == ParameterType.Days) && (param.Equals(AT_STARTUP)))
+            {
+                return true;
+            }
+            else if ((type == ParameterType.Days) && (param.Equals(AT_NEVER)))
+            {
+                return true;
             }
             else
             {
@@ -284,7 +310,7 @@ namespace EnigmaMM.Scheduler
                 switch (type)
                 {
                     case ParameterType.Days:
-                        result = result && (Enum.IsDefined(typeof(DayOfWeek), param));
+                        result = result && IsDoW(param);
                         break;
 
                     case ParameterType.Hours:
@@ -312,6 +338,12 @@ namespace EnigmaMM.Scheduler
             }
             return result;
         }
+
+        private bool IsDoW(string s)
+        {
+            return Enum.IsDefined(typeof(DayOfWeek), s);
+        }
+
     }
 
 }
