@@ -165,7 +165,7 @@ namespace EnigmaMM
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
 
-            mScheduler.LoadSchedule();
+            mScheduler.LoadSchedule(Path.Combine(Settings.ServerManagerRoot, "scheduler.xml"));
         }
 
         /// <summary>
@@ -452,10 +452,24 @@ namespace EnigmaMM
         }
 
         /// <summary>
+        /// Parses commands and executes them.  Anything unknown is sent to the Minecraft server.
+        /// </summary>
+        /// <param name="command">Command to parse</param>
+        public void Execute(string command)
+        {
+            bool executed;
+            executed = mParser.ParseCommand(command);
+            if (!executed)
+            {
+                SendCommand(command);
+            }
+        }
+
+        /// <summary>
         /// Sends an arbitrary command to the Minecraft server.
         /// </summary>
         /// <param name="Command">Command to send</param>
-        public void SendCommand(string Command)
+        private void SendCommand(string Command)
         {
             if ((mServerStatus == Status.Running) || (mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart))
             {
@@ -578,7 +592,6 @@ namespace EnigmaMM
                         OnServerReachZeroUsers();
                     }
                     break;
-
             }
 
             // raise an InfoMessage Event too

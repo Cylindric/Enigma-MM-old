@@ -16,7 +16,6 @@ namespace EnigmaMM
     public partial class MainWindow : Window
     {
         private EMMServer mMinecraft;
-        private CommandParser mParser;
         private const int MAX_LOG_ENTRIES = 100;
 
         private InvokeOC<LogListItem> mLogItems;
@@ -38,7 +37,6 @@ namespace EnigmaMM
             mMinecraft = new EMMServer();
             mMinecraft.ServerMessage += HandleServerMessage;
             mMinecraft.StatusChanged += HandleServerMessage;
-            mParser = new CommandParser(mMinecraft);
         }
 
         private delegate void UpdateServerMetricsDelegate();
@@ -178,7 +176,7 @@ namespace EnigmaMM
         private void SendServerCommand(string command)
         {
             AddMessageToLog(command);
-            mParser.ParseCommand(command);
+            mMinecraft.Execute(command);
         }
 
         private void AddMessageToLog(string message)
