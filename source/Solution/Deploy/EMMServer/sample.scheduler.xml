@@ -1,10 +1,17 @@
 <?xml version="1.0"?>
 <schedule>
-	<task>
-		<name>Backup</name>
-		<days>*</days>
-		<hours>*</hours>
-		<minutes>*</minutes>
-		<command>backup</command>
-	</task>
+  <task>
+    <name>Start server</name>
+    <days>@startup</days>
+    <hours>*</hours>
+    <minutes>*</minutes>
+    <command>start</command>
+  </task>
+  <task>
+    <name>Daily 4am backup</name>
+    <days>*</days>
+    <hours>4</hours>
+    <minutes>0</minutes>
+    <command>backup</command>
+  </task>
 </schedule>

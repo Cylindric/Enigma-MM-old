@@ -8,7 +8,7 @@
   <message source="core">
 		<name>SaveComplete</name>
 		<type>EndsWith</type>
-		<rule>[INFO] CONSOLE: Save Complete</rule>
+		<rule>[INFO] CONSOLE: Save complete</rule>
 	</message>
   <message source="core">
 		<name>ErrorPortBusy</name>
@@ -64,5 +64,25 @@
 		<name>GiveUserItem</name>
 		<type>Regex</type>
 		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ Giving\ (?&lt;username&gt;\w+?)\ some\ (?&lt;itemid&gt;.*?)$</rule>
+	</message>
+  <message source="core">
+		<name>OpUser</name>
+		<type>Regex</type>
+		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ Opping (?&lt;username&gt;\w+?)$</rule>
+	</message>
+  <message source="core">
+		<name>DeopUser</name>
+		<type>Regex</type>
+		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ De-opping (?&lt;username&gt;\w+?)$</rule>
+	</message>
+  <message source="core">
+		<name>BanningUser</name>
+		<type>Regex</type>
+		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ Banning (?&lt;username&gt;\w+?)$</rule>
+	</message>
+  <message source="core">
+		<name>PardoningUser</name>
+		<type>Regex</type>
+		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ Pardoning (?&lt;username&gt;\w+?)$</rule>
 	</message>
 </messages>
