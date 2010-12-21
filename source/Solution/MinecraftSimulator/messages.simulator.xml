@@ -2,7 +2,7 @@
 <messages>
 	<message source="core">
   	<name>Startup</name>
-		<text>{timestamp} [INFO] Starting minecraft server version 0.2.5 (simulator)</text>
+		<text>{timestamp} [INFO] Starting minecraft server version Beta 1.0 (simulator)</text>
 	</message>
 	<message source="core">
   	<name>NotEnoughMemory</name>
@@ -38,7 +38,7 @@
 	</message>
   <message source="core">
 		<name>SaveComplete</name>
-		<text>{timestamp} [INFO] CONSOLE: Save Complete</text>
+		<text>{timestamp} [INFO] CONSOLE: Save complete.</text>
 	</message>
   <message source="core">
 		<name>ErrorPortBusy</name>
@@ -88,12 +88,24 @@
 		<name>UnknownCommand</name>
 		<text>{timestamp} [INFO] Unknown console command. Type "help" for help.</text>
 	</message>
-  <message source="hmod">
-		<name>GiveUserItem</name>
-		<text>{timestamp} [INFO] Giving {username} some {itemid}</text>
+  <message source="core">
+		<name>OppingPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: Opping {username}</text>
 	</message>
-  <message source="hmod">
-		<name>hModBanner</name>
-		<text>{timestamp} [INFO] Hey0 Server Mod Build 126</text>
+  <message source="core">
+		<name>DeoppingPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: De-opping {username}</text>
+	</message>
+  <message source="core">
+		<name>BanningPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: Banning {username}</text>
+	</message>
+  <message source="core">
+		<name>PardoningPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: Pardoning {username}</text>
+	</message>
+  <message source="core">
+		<name>KickPlayerFailed</name>
+		<text>{timestamp} [INFO] Can't find user {username}. No kick.</text>
 	</message>
 </messages>

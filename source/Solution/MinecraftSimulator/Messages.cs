@@ -146,34 +146,6 @@ namespace MinecraftSimulator
             SendMessage(mMessages["UserCount"].Replace("{count}", mSim.Players.Count.ToString()));
         }
 
-        //[WARNING] **** SERVER IS RUNNING IN OFFLINE/INSECURE MODE!
-        //[WARNING] The server will make no attempt to authenticate usernames. Beware.
-        //[WARNING] While this makes the game possible to play without internet access, it also opens up the ability for hackers to connect with any username they choose.
-        //[WARNING] To change this, set "online-mode" to "true" in the server.settings file.
-
-        //[INFO] Disconnecting Player [/127.0.0.1:61459]: Outdated client!
-
-        //[INFO] To run the server without a gui, start it like this:
-        //[INFO]    java -Xmx1024M -Xms1024M -jar minecraft_server.jar nogui
-        //[INFO] Console commands:
-        //[INFO]    help  or  ?               shows this message
-        //[INFO]    kick <player>             removes a player from the server
-        //[INFO]    ban <player>              bans a player from the server
-        //[INFO]    pardon <player>           pardons a banned player so that they can connect again
-        //[INFO]    ban-ip <ip>               bans an IP address from the server
-        //[INFO]    pardon-ip <ip>            pardons a banned IP address so that they can connect again
-        //[INFO]    op <player>               turns a player into an op
-        //[INFO]    deop <player>             removes op status from a player
-        //[INFO]    tp <player1> <player2>    moves one player to the same location as another player
-        //[INFO]    give <player> <id> [num]  gives a player a resource
-        //[INFO]    tell <player> <message>   sends a private message to a player
-        //[INFO]    stop                      gracefully stops the server
-        //[INFO]    save-all                  forces a server-wide level save
-        //[INFO]    save-off                  disables terrain saving (useful for backup scripts)
-        //[INFO]    save-on                   re-enables terrain saving
-        //[INFO]    list                      lists all currently connected players
-        //[INFO]    say <message>             broadcasts a message to all players
-
         public void SendMessage(string message)
         {
             mSim.SendMessage(message.Replace("{timestamp}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")));
