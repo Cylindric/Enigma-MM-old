@@ -166,6 +166,7 @@ namespace EnigmaMM
             ReloadConfig();
 
             mScheduler.LoadSchedule(Path.Combine(Settings.ServerManagerRoot, "scheduler.xml"));
+            mScheduler.Start();
         }
 
         /// <summary>
