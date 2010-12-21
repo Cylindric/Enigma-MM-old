@@ -123,25 +123,35 @@ namespace MinecraftSimulator
         {
             SendMessage(mMessages["UserLoggedOut"]
                 .Replace("{username}", username)
-                .Replace("{reason}", "Quitting"));
+                .Replace("{reason}", "disconnect.quitting"));
 
             SendMessage(mMessages["UserCount"].Replace("{count}", mSim.Players.Count.ToString()));
         }
 
         internal void PlayerDisconnected(string username)
         {
-            SendMessage("java.net.SocketException: Connection reset");
-            SendMessage("   at java.net.SocketInputStream.read(Unknown Source)");
-            SendMessage("   at java.net.SocketInputStream.read(Unknown Source)");
-            SendMessage("   at java.io.FilterInputStream.read(Unknown Source)");
-            SendMessage("   at io.b(io.java:47)");
-            SendMessage("   at bh.f(SourceFile:147)");
-            SendMessage("   at bh.c(SourceFile:9)");
-            SendMessage("   at im.run(SourceFile:57)");
+            SendMessage("java.net.SocketException: Connection reset by peer: socket write error");
+            SendMessage("        at java.net.SocketOutputStream.socketWrite0(Native Method)");
+            SendMessage("        at java.net.SocketOutputStream.socketWrite(Unknown Source)");
+            SendMessage("        at java.net.SocketOutputStream.write(Unknown Source)");
+            SendMessage("        at java.io.DataOutputStream.write(Unknown Source)");
+            SendMessage("        at ju.a(SourceFile:105)");
+            SendMessage("        at bs.e(SourceFile:142)");
+            SendMessage("        at bs.d(SourceFile:15)");
+            SendMessage("        at jt.run(SourceFile:85)");
+            SendMessage("java.net.SocketException: Software caused connection abort: recv failed");
+            SendMessage("        at java.net.SocketInputStream.socketRead0(Native Method)");
+            SendMessage("        at java.net.SocketInputStream.read(Unknown Source)");
+            SendMessage("        at java.net.SocketInputStream.read(Unknown Source)");
+            SendMessage("        at java.io.FilterInputStream.read(Unknown Source)");
+            SendMessage("        at ju.b(SourceFile:95)");
+            SendMessage("        at bs.f(SourceFile:157)");
+            SendMessage("        at bs.c(SourceFile:15)");
+            SendMessage("        at js.run(SourceFile:68)");
 
             SendMessage(mMessages["UserLoggedOut"]
                 .Replace("{username}", username)
-                .Replace("{reason}", "Internal exception: java.net.SocketException"));
+                .Replace("{reason}", "disconnect.genericReason"));
 
             SendMessage(mMessages["UserCount"].Replace("{count}", mSim.Players.Count.ToString()));
         }

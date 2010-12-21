@@ -117,6 +117,11 @@ namespace EnigmaMM.Scheduler
 
         private void onTimerEvent(object source, ElapsedEventArgs e)
         {
+            if (mTasks.Count == 0)
+            {
+                return;
+            }
+
             // Run all "missed" tasks and increment their run-times
             foreach (IScheduleTask task in mTasks)
             {
