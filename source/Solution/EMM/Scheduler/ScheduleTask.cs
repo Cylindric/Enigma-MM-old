@@ -45,6 +45,11 @@ namespace EnigmaMM.Scheduler
         public DateTime NextRun { get; private set; }
 
         /// <summary>
+        /// Gets the time this task is next set to run, formatted in natural language.
+        /// </summary>
+        public string NextRunString { get { return FormatDateAsString(NextRun); } }
+
+        /// <summary>
         /// Gets or sets the Days schedule.
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">Invalid parameter</exception>
@@ -342,6 +347,19 @@ namespace EnigmaMM.Scheduler
         private bool IsDoW(string s)
         {
             return Enum.IsDefined(typeof(DayOfWeek), s);
+        }
+
+        // TODO: fancy string formatting for relative times
+        private string FormatDateAsString(DateTime d)
+        {
+            int TOLLERANCE_HOUR = 5;
+            string formatString = "{0}";
+
+            if (d == DateTime.MaxValue)
+            {
+                return "never";
+            }
+            return d.ToString();
         }
 
     }

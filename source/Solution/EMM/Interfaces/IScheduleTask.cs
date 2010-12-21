@@ -23,6 +23,11 @@ namespace EnigmaMM.Interfaces
         DateTime NextRun { get; }
 
         /// <summary>
+        /// Gets the time this task is next set to run, formatted in natural language.
+        /// </summary>
+        string NextRunString { get; }
+
+        /// <summary>
         /// Gets or sets the Days part of the task's schedule.
         /// </summary>
         string RunDays { get; set; }

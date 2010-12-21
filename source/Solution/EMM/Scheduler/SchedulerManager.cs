@@ -13,7 +13,7 @@ namespace EnigmaMM.Scheduler
     /// </summary>
     public class SchedulerManager
     {
-        private const int TIMER_INTERVAL = 60000;
+        private const int TIMER_INTERVAL = 5000;
         private IServer mServer;
         private List<IScheduleTask> mTasks;
         private Timer mTimer;
@@ -58,6 +58,7 @@ namespace EnigmaMM.Scheduler
             mServer = server;
             mTasks = new List<IScheduleTask>();
             mTimer = new Timer();
+            mTimer.Elapsed += onTimerEvent;
         }
 
         /// <summary>
@@ -140,11 +141,12 @@ namespace EnigmaMM.Scheduler
 
         private void ExecuteTask(IScheduleTask task)
         {
+            task.CalculateNextRunTime();
             if (mServer != null)
             {
+                mServer.RaiseServerMessage(string.Format("Running scheduled task '{0}'.  Next run will be {1}.", task.Name, task.NextRun));
                 mServer.Execute(task.Command);
             }
-            task.CalculateNextRunTime();
         }
 
     }
