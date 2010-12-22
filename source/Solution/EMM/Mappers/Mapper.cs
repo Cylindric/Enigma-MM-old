@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using EnigmaMM.Interfaces;
 
-namespace EnigmaMM
+namespace EnigmaMM.Mappers
 {
     class Mapper : IMapper
     {

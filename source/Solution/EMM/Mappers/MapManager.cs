@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using EnigmaMM.Interfaces;
 
-namespace EnigmaMM
+namespace EnigmaMM.Mappers
 {
     static class MapManager
     {
