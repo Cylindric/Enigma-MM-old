@@ -39,11 +39,6 @@ namespace EnigmaMM.Interfaces
         MCServerProperties ServerProperties { get; }
 
         /// <summary>
-        /// Gets the Minecraft Warps file.
-        /// </summary>
-        MCServerWarps ServerWarps { get; }
-
-        /// <summary>
         /// Gets the current server status.
         /// </summary>
         EnigmaMM.EMMServer.Status CurrentStatus { get; }

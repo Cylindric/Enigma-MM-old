@@ -4,7 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using EnigmaMM.Interfaces;
 
-namespace EnigmaMM
+namespace EnigmaMM.Mappers
 {
     class Overviewer : Mapper
     {
@@ -53,52 +53,6 @@ namespace EnigmaMM
             p.WaitForExit();
 
             mMinecraft.RaiseServerMessage("OVERVIEWER: Done.");
-        }
-
-
-        /// <summary>
-        /// Utilises the hMod extension's Warps file to add flags to the map.
-        /// </summary>
-        private void CreateMarkersFromWarpLocations()
-        {
-            if (mMinecraft.ServerWarps != null)
-            {
-                StringBuilder markers = new StringBuilder();
-                markers.Append("var markerData=[\n");
-
-                foreach (KeyValuePair<string, string> kvp in mMinecraft.ServerWarps.Values)
-                {
-                    string[] warp = kvp.Value.Split(':');
-
-                    string name = kvp.Key;
-                    float x = 0f;
-                    float y = 0f;
-                    float z = 0f;
-                    string a = "";
-                    string b = "";
-                    string group = "";
-
-                    float.TryParse(warp[0], out x);
-                    float.TryParse(warp[1], out y);
-                    float.TryParse(warp[2], out z);
-                    a = warp[3];
-                    b = warp[4];
-                    group = warp[5];
-
-                    if ((group == "") || (group == "users"))
-                    {
-                        markers.Append("    {");
-                        markers.AppendFormat("\"msg\": \"{0}\", ", name);
-                        markers.AppendFormat("\"y\": {0:f0}, \"z\": {1:f0}, \"x\": {2:f0}", y, z, x);
-                        markers.Append("}, \n");
-                    }
-                }
-                markers.Append("];\n");
-
-                StreamWriter sw = File.CreateText(Path.Combine(mOutputPath, "markers.js"));
-                sw.Write(markers.ToString());
-                sw.Close();
-            }
         }
 
     }

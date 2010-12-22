@@ -5,7 +5,7 @@ using System.IO;
 using System;
 using EnigmaMM.Interfaces;
 
-namespace EnigmaMM
+namespace EnigmaMM.Mappers
 {
     class AlphaVespucci : Mapper
     {

@@ -35,9 +35,6 @@ namespace EnigmaMM
             UserLoggedIn,
             UserLoggedOut,
 
-            // Hey0-specific types
-            HModBanner,
-
             // Anything else is an 'other'
             Other
         }

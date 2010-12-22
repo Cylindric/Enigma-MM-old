@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using EnigmaMM.Interfaces;
+using EnigmaMM.Mappers;
 
 namespace EnigmaMM
 {
@@ -31,9 +32,6 @@ namespace EnigmaMM
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
         private MCServerProperties mServerProperties;
-        private MCServerWarps mServerWarps;
-        private bool mServerRunningHMod;
-        private int mHModversion;
         private ArrayList mSavedUsers;
         private ArrayList mOnlineUsers;
         private int mAutoSaveBlocks;
@@ -96,11 +94,6 @@ namespace EnigmaMM
             get { return mServerProperties; }
         }
 
-        public MCServerWarps ServerWarps
-        {
-            get { return mServerWarps; }
-        }
-
         public Status CurrentStatus
         {
             get { return mServerStatus; }
@@ -150,8 +143,6 @@ namespace EnigmaMM
             ServerStatus = Status.Stopped;
             mOnlineUserListReady = false;
             mServerSaving = false;
-            mServerRunningHMod = false;
-            mHModversion = 0;
             mSavedUsers = new ArrayList();
             mOnlineUsers = new ArrayList();
             mAutoSaveBlocks = 0;
@@ -179,11 +170,6 @@ namespace EnigmaMM
         public void ReloadConfig()
         {
             mServerProperties.LookForNewSettings();
-            if (mServerProperties.WarpLocation != "")
-            {
-                mServerWarps = new MCServerWarps(mServerProperties.WarpLocation);
-                mServerWarps.LookForNewSettings();
-            }
         }
 
         /// <summary>
@@ -413,7 +399,7 @@ namespace EnigmaMM
                     mServerProcess.Kill();
                 }
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 // Task is probably already killed
             }
@@ -569,12 +555,6 @@ namespace EnigmaMM
                     ServerStatus = Status.Failed;
                     mStatusMessage = M.Message;
                     ForceShutdown();
-                    break;
-
-                case EMMServerMessage.MessageTypes.HModBanner:
-                    RaiseServerMessage("Hey0 hMod detected");
-                    mServerRunningHMod = true;
-                    int.TryParse(M.Data["version"], out mHModversion);
                     break;
 
                 case EMMServerMessage.MessageTypes.SaveStarted:
