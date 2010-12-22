@@ -87,7 +87,7 @@ namespace EnigmaMM
             mSettingsNeedSaving = false;
 
             string S;
-            using (FileStream fileStream = new FileStream(mSettingsFile, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(mSettingsFile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 using (StreamReader sr = new StreamReader(fileStream))
                 {

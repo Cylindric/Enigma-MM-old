@@ -23,6 +23,10 @@ namespace EnigmaMM
         private CommandParser mParser;
         private bool mServerSaving;
         private Scheduler.SchedulerManager mScheduler;
+        private Backup mBackup;
+
+        // Thread lock objects
+        private readonly object mAutoSaveLock = new object();
 
         // Java and Minecraft Server settings
         private System.IO.StreamWriter mCommandInjector;
@@ -389,13 +393,12 @@ namespace EnigmaMM
         public void Backup()
         {
             RaiseServerMessage("Starting backup...");
-            BlockAutoSave();
-            using (Backup backup = new Backup(this))
-            {
-                backup.PerformBackup();
-            }
-            UnblockAutoSave();
-            RaiseServerMessage("Backup complete.");
+            mBackup = new Backup(this);
+            mBackup.CheckRequirements();
+            
+            Thread t = new Thread(mBackup.PerformBackup);
+            t.Name = "Backup thread";
+            t.Start();
         }
 
         /// <summary>
@@ -492,12 +495,15 @@ namespace EnigmaMM
         /// Disables server auto-save by incrementing a 'block' counter. Autosaves are not
         /// resumed until all blocks have been released.  <see cref="UnblockAutoSave"/>
         /// </summary>
-        private void BlockAutoSave()
+        public void BlockAutoSave()
         {
-            mAutoSaveBlocks += 1;
-            if ((mAutoSaveEnabled) && (mAutoSaveBlocks > 0))
+            lock (mAutoSaveLock)
             {
-                SetAutoSave(false);
+                mAutoSaveBlocks += 1;
+                if ((mAutoSaveEnabled) && (mAutoSaveBlocks > 0))
+                {
+                    SetAutoSave(false);
+                }
             }
         }
 
@@ -505,12 +511,15 @@ namespace EnigmaMM
         /// Re-enables server auto-save by decrementing a 'block' counter. Autosaves are not
         /// resumed until all blocks have been released.  <see cref="BlockAutoSave"/>
         /// </summary>
-        private void UnblockAutoSave()
+        public void UnblockAutoSave()
         {
-            mAutoSaveBlocks -= 1;
-            if ((!mAutoSaveEnabled) && (mAutoSaveBlocks == 0))
+            lock (mAutoSaveLock)
             {
-                SetAutoSave(true);
+                mAutoSaveBlocks -= 1;
+                if ((!mAutoSaveEnabled) && (mAutoSaveBlocks == 0))
+                {
+                    SetAutoSave(true);
+                }
             }
         }
 

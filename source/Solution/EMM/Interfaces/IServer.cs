@@ -118,5 +118,15 @@ namespace EnigmaMM.Interfaces
         /// </summary>
         /// <param name="message"></param>
         void RaiseServerMessage(string message);
+
+        /// <summary>
+        /// Turns off the server auto-save.
+        /// </summary>
+        void BlockAutoSave();
+
+        /// <summary>
+        /// Turns on the server auto-save.
+        /// </summary>
+        void UnblockAutoSave();
     }
 }
