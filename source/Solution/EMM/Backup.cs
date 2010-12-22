@@ -2,42 +2,62 @@
 using Ionic.Zip;
 using System;
 using EnigmaMM.Interfaces;
+using System.Threading;
 
 namespace EnigmaMM
 {
     class Backup : IDisposable
     {
         private IServer mMinecraft;
-        private int BackupsToKeep = 5;
+        private int mBackupsToKeep = 5;
+        private string mWorldPath;
 
         public Backup(IServer server)
         {
             mMinecraft = server;
+            mMinecraft.ServerProperties.Load();
+            mWorldPath = mMinecraft.ServerProperties.WorldPath;
         }
 
         public void Dispose() {
             mMinecraft = null;
         }
 
-        public void PerformBackup()
+        /// <summary>
+        /// Perform environment checks to make sure backups are reaady to run.
+        /// </summary>
+        /// <returns>True if system is ready; else false.</returns>
+        public bool CheckRequirements()
         {
-            mMinecraft.ServerProperties.Load();
+            bool status = true;
             if (!Directory.Exists(Settings.BackupRoot))
             {
                 mMinecraft.RaiseServerMessage(string.Format("ERROR: Specified backup location doesn't exist! {0}", Settings.BackupRoot));
-                return;
+                status = false;
             }
+            return status;
+        }
 
-            string backupFile = Path.Combine(Settings.BackupRoot, string.Format("backup-{0:yyyyMMdd-HHmmss}.zip", DateTime.Now));
-
+        /// <summary>
+        /// Perform a backup.
+        /// </summary>
+        public void PerformBackup()
+        {
+            mMinecraft.BlockAutoSave();
             RotateFiles();
+            BackupFiles();
+            mMinecraft.UnblockAutoSave();
+        }
+
+        private void BackupFiles()
+        {
+            string backupFile = Path.Combine(Settings.BackupRoot, string.Format("backup-{0:yyyyMMdd-HHmmss}.zip", DateTime.Now));
             using (ZipFile zip = new ZipFile())
             {
-                //zip.AddDirectory(Settings.MinecraftRoot, "Minecraft");
                 zip.AddSelectedFiles("*.txt", Settings.MinecraftRoot, @"minecraft");
                 zip.AddSelectedFiles("*.jar", Settings.MinecraftRoot, @"minecraft");
                 zip.AddSelectedFiles("*.properties", Settings.MinecraftRoot, @"minecraft");
-                zip.AddDirectory(mMinecraft.ServerProperties.WorldPath, @"minecraft\" + Path.GetFileName(mMinecraft.ServerProperties.WorldPath));
+                zip.AddDirectory(mWorldPath, @"minecraft\" + Path.GetFileName(mWorldPath));
                 try
                 {
                     zip.Save(backupFile);
@@ -47,8 +67,8 @@ namespace EnigmaMM
                     mMinecraft.RaiseServerMessage(string.Format("ERROR: Unable to save backup! {0}", e.Message));
                 }
             }
+            mMinecraft.RaiseServerMessage("Backup complete.");
         }
-
 
         private void RotateFiles()
         {
@@ -62,7 +82,7 @@ namespace EnigmaMM
             Array.Sort(creationTimes, fileNames);
 
             // Delete any older ones needed to keep the number to the configured value
-            for (int i = 0; i < fileNames.Length - (BackupsToKeep - 1); i++)
+            for (int i = 0; i < fileNames.Length - (mBackupsToKeep - 1); i++)
             {
                 File.Delete(fileNames[i]);
             }
