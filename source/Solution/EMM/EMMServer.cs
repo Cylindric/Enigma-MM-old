@@ -18,7 +18,7 @@ namespace EnigmaMM
         private const int COMMAND_TIMEOUT_MS = 5000;
 
         private Process mServerProcess;
-        private Interface.Status mServerStatus;
+        private Status mServerStatus;
         private string mStatusMessage;
         private bool mOnlineUserListReady;
         private CommandParser mParser;
@@ -79,7 +79,7 @@ namespace EnigmaMM
             get { return mServerProperties; }
         }
 
-        public Interface.Status CurrentStatus
+        public Status CurrentStatus
         {
             get { return mServerStatus; }
         }
@@ -96,7 +96,7 @@ namespace EnigmaMM
 
         #endregion
 
-        private Interface.Status ServerStatus
+        private Status ServerStatus
         {
             set { 
                 mServerStatus = value;
@@ -125,7 +125,7 @@ namespace EnigmaMM
             mParser = new CommandParser(this);
             mScheduler = new Scheduler.SchedulerManager(this);
 
-            ServerStatus = Interface.Status.Stopped;
+            ServerStatus = Status.Stopped;
             mOnlineUserListReady = false;
             mServerSaving = false;
             mSavedUsers = new ArrayList();
@@ -166,13 +166,13 @@ namespace EnigmaMM
         /// </remarks>
         public void StartServer()
         {
-            if (mServerStatus == Interface.Status.Running)
+            if (mServerStatus == Status.Running)
             {
                 RaiseServerMessage("Server already running, cannot start!");
                 return;
             }
 
-            ServerStatus = Interface.Status.Starting;
+            ServerStatus = Status.Starting;
             ReloadConfig();
 
             if (Directory.Exists(Settings.MinecraftRoot) == false)
@@ -181,7 +181,7 @@ namespace EnigmaMM
                 RaiseServerMessage("Could not find Minecraft root directory");
                 RaiseServerMessage("Check that configuration option 'MinecraftRoot' is correct");
                 RaiseServerMessage("Looking for: " + Settings.MinecraftRoot);
-                ServerStatus = Interface.Status.Failed;
+                ServerStatus = Status.Failed;
                 mStatusMessage = string.Format("Couldn't find Minecraft directory in {0}", Settings.MinecraftRoot);
                 return;
             }
@@ -191,7 +191,7 @@ namespace EnigmaMM
                 RaiseServerMessage("Could not find the Minecraft server file");
                 RaiseServerMessage("Check that configuration option 'ServerJar' is correct");
                 RaiseServerMessage("Looking for: " + Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
-                ServerStatus = Interface.Status.Failed;
+                ServerStatus = Status.Failed;
                 mStatusMessage = string.Format("Couldn't find Minecraft server at {0}", Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
                 return;
             }
@@ -277,15 +277,15 @@ namespace EnigmaMM
 
             if ((graceful) && (mOnlineUsers.Count > 0))
             {
-                ServerStatus = Interface.Status.PendingStop;
+                ServerStatus = Status.PendingStop;
                 return;
             }
 
-            if ((mServerStatus == Interface.Status.Running) || (mServerStatus == Interface.Status.PendingStop) || (mServerStatus == Interface.Status.PendingRestart))
+            if ((mServerStatus == Status.Running) || (mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart))
             {
                 SendCommand("stop");
-                ServerStatus = Interface.Status.Stopping;
-                while (((timeout > 0) || (neverTimeout)) && (mServerStatus != Interface.Status.Stopped))
+                ServerStatus = Status.Stopping;
+                while (((timeout > 0) || (neverTimeout)) && (mServerStatus != Status.Stopped))
                 {
                     timeout -= 100;
                     Thread.Sleep(100);
@@ -311,7 +311,7 @@ namespace EnigmaMM
         {
             if ((graceful == true) && (mOnlineUsers.Count > 0))
             {
-                ServerStatus = Interface.Status.PendingRestart;
+                ServerStatus = Status.PendingRestart;
                 return;
             }
             
@@ -324,10 +324,10 @@ namespace EnigmaMM
         /// </summary>
         public void AbortPendingOperations()
         {
-            if ((mServerStatus == Interface.Status.Running) &&
-                ((mServerStatus == Interface.Status.PendingStop) || (mServerStatus == Interface.Status.PendingRestart)))
+            if ((mServerStatus == Status.Running) &&
+                ((mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart)))
             {
-                ServerStatus = Interface.Status.Running;
+                ServerStatus = Status.Running;
             }
         }
         
@@ -446,7 +446,7 @@ namespace EnigmaMM
         /// <param name="Command">Command to send</param>
         private void SendCommand(string Command)
         {
-            if ((mServerStatus == Interface.Status.Running) || (mServerStatus == Interface.Status.PendingStop) || (mServerStatus == Interface.Status.PendingRestart))
+            if ((mServerStatus == Status.Running) || (mServerStatus == Status.PendingStop) || (mServerStatus == Status.PendingRestart))
             {
                 mCommandInjector.WriteLine(Command);
             }
@@ -537,7 +537,7 @@ namespace EnigmaMM
 
                 case EMMServerMessage.MessageTypes.ErrorPortBusy:
                     OnServerError("Error starting server: port " + mServerProperties.ServerPort + " in use");
-                    ServerStatus = Interface.Status.Failed;
+                    ServerStatus = Status.Failed;
                     mStatusMessage = M.Message;
                     ForceShutdown();
                     break;
@@ -631,7 +631,7 @@ namespace EnigmaMM
         /// <param name="Message"></param>
         private void OnServerStarted(string Message)
         {
-            ServerStatus = Interface.Status.Running;
+            ServerStatus = Status.Running;
             mServerProperties.Load();
             LoadSavedUserInfo();
             if (ServerStarted != null)
@@ -648,7 +648,7 @@ namespace EnigmaMM
         /// <param name="Message"></param>
         private void OnServerStopped(string Message)
         {
-            ServerStatus = Interface.Status.Stopped;
+            ServerStatus = Status.Stopped;
             SetOnlineUserList();
             if (ServerStopped != null)
             {
@@ -662,11 +662,11 @@ namespace EnigmaMM
         /// </summary>
         private void OnServerReachZeroUsers()
         {
-            if (mServerStatus == Interface.Status.PendingRestart)
+            if (mServerStatus == Status.PendingRestart)
             {
                 RestartServer(false);
             }
-            if (mServerStatus == Interface.Status.PendingStop)
+            if (mServerStatus == Status.PendingStop)
             {
                 StopServer(false);
             }

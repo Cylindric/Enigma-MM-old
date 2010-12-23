@@ -53,37 +53,37 @@ namespace EnigmaMM
 
                 switch (mMinecraft.CurrentStatus)
                 {
-                    case EMMServer.Status.Starting:
+                    case Status.Starting:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-starting.png", UriKind.Relative));
                         break;
 
-                    case EMMServer.Status.Stopping:
+                    case Status.Stopping:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-stopping.png", UriKind.Relative));
                         break;
 
-                    case EMMServer.Status.Running:
+                    case Status.Running:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-running.png", UriKind.Relative));
                         SetStopButtonState(true);
                         SetRestartButtonState(true);
                         break;
 
-                    case EMMServer.Status.PendingRestart:
+                    case Status.PendingRestart:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-pendingrestart.png", UriKind.Relative));
                         SetStopButtonState(true);
                         break;
 
-                    case EMMServer.Status.PendingStop:
+                    case Status.PendingStop:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-pendingstop.png", UriKind.Relative));
                         SetStopButtonState(true);
                         SetRestartButtonState(true);
                         break;
 
-                    case EMMServer.Status.Stopped:
+                    case Status.Stopped:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-stopped.png", UriKind.Relative));
                         SetStartButtonState(true);
                         break;
 
-                    case EMMServer.Status.Failed:
+                    case Status.Failed:
                         uxStatusBarStatusIcon.Source = new BitmapImage(new Uri("/Resources/status-failed.png", UriKind.Relative));
                         SetStartButtonState(true);
                        break;
