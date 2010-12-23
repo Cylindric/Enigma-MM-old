@@ -9,7 +9,6 @@ using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
-
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
