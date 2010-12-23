@@ -37,21 +37,21 @@ namespace EnigmaMM
             Assert.That(Settings.Filename, Is.EqualTo(settingsFile));
 
             mPersistentServer.StartServer();
-            WaitForServerStatus(EMMServer.Status.Running);
+            WaitForServerStatus(Status.Running);
         }
 
         [TestFixtureTearDown]
         public void FixtureTeardown()
         {
             mPersistentServer.StopServer(false, 0, true);
-            WaitForServerStatus(EMMServer.Status.Stopped);
+            WaitForServerStatus(Status.Stopped);
             mPersistentServer = null;
         }
 
         [Test]
         public void TestServerRecognisesNewUser()
         {
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(Status.Running));
             int startingUsers = mPersistentServer.Users.Count;
 
             AddUser(1);
@@ -68,7 +68,7 @@ namespace EnigmaMM
         [Test]
         public void TestServerRecognisesRemoveUser()
         {
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(Status.Running));
             int startingUsers = mPersistentServer.Users.Count;
 
             AddUser(2);
@@ -85,40 +85,40 @@ namespace EnigmaMM
         public void TestServerStopsGracefully()
         {
             int startingUsers = mPersistentServer.Users.Count;
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(Status.Running));
 
             // ensure at least 1 user is online
             AddUser(1);
 
             mPersistentServer.StopServer(true);
-            WaitForServerStatus(EMMServer.Status.PendingStop);
+            WaitForServerStatus(Status.PendingStop);
 
             // remove all users
             RemoveUser(mPersistentServer.Users.Count);
 
-            WaitForServerStatus(EMMServer.Status.Stopped);
+            WaitForServerStatus(Status.Stopped);
 
             // cleanup
             mPersistentServer.StartServer();
-            WaitForServerStatus(EMMServer.Status.Running);
+            WaitForServerStatus(Status.Running);
         }
 
         [Test]
         public void TestServerRestartsGracefully()
         {
             int startingUsers = mPersistentServer.Users.Count;
-            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(EMMServer.Status.Running));
+            Assert.That(mPersistentServer.CurrentStatus, Is.EqualTo(Status.Running));
 
             // ensure at least 1 user is online
             AddUser(1);
 
             mPersistentServer.RestartServer(true);
-            WaitForServerStatus(EMMServer.Status.PendingRestart);
+            WaitForServerStatus(Status.PendingRestart);
 
             // remove all users
             RemoveUser(mPersistentServer.Users.Count);
 
-            WaitForServerStatus(EMMServer.Status.Running);
+            WaitForServerStatus(Status.Running);
         }
 
         /// <summary>
@@ -177,10 +177,10 @@ namespace EnigmaMM
         /// </summary>
         /// <remarks>Throws an Assert if status isn't reached in time.</remarks>
         /// <param name="targetStatus">The status to reach.</param>
-        private void WaitForServerStatus(EMMServer.Status targetStatus)
+        private void WaitForServerStatus(Status targetStatus)
         {
             int maxWait = 1000;
-            if (targetStatus == EMMServer.Status.Running || targetStatus == EMMServer.Status.Stopped)
+            if (targetStatus == Status.Running || targetStatus == Status.Stopped)
             {
                 maxWait = START_STOP_DELAY;
             }
@@ -190,7 +190,7 @@ namespace EnigmaMM
             {
                 Thread.Sleep(SLEEP_STEP);
                 Console.Write(".");
-                if (mPersistentServer.CurrentStatus == EMMServer.Status.PendingStop || mPersistentServer.CurrentStatus == EMMServer.Status.PendingRestart)
+                if (mPersistentServer.CurrentStatus == Status.PendingStop || mPersistentServer.CurrentStatus == Status.PendingRestart)
                 {
                     Console.Write(mPersistentServer.Users.Count);
                 }

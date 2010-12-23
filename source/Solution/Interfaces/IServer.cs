@@ -41,7 +41,7 @@ namespace EnigmaMM.Interfaces
         /// <summary>
         /// Gets the current server status.
         /// </summary>
-        Interface.Status CurrentStatus { get; }
+        Status CurrentStatus { get; }
 
         /// <summary>
         /// Returns the last status message of the server.
@@ -123,6 +123,21 @@ namespace EnigmaMM.Interfaces
         /// Turns on the server auto-save.
         /// </summary>
         void UnblockAutoSave();
-
     }
+
+    /// <summary>
+    /// Valid status-states for the server manager's Minecraft instance.
+    /// </summary>
+    public enum Status
+    {
+        Starting,
+        Running,
+        Busy,
+        PendingRestart,
+        PendingStop,
+        Stopping,
+        Stopped,
+        Failed
+    }
+
 }
