@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace EnigmaMM
+namespace EnigmaMM.Interfaces
 {
     public class ServerMessageEventArgs : EventArgs
     {

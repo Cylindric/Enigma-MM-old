@@ -36,12 +36,12 @@ namespace EnigmaMM.Interfaces
         /// <summary>
         /// Gets the Minecraft server properties.
         /// </summary>
-        MCServerProperties ServerProperties { get; }
+        ISettingsFile ServerProperties { get; }
 
         /// <summary>
         /// Gets the current server status.
         /// </summary>
-        EnigmaMM.EMMServer.Status CurrentStatus { get; }
+        Interface.Status CurrentStatus { get; }
 
         /// <summary>
         /// Returns the last status message of the server.
@@ -123,5 +123,6 @@ namespace EnigmaMM.Interfaces
         /// Turns on the server auto-save.
         /// </summary>
         void UnblockAutoSave();
+
     }
 }
