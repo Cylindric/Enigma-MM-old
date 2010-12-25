@@ -10,8 +10,9 @@ namespace EnigmaMM.Mappers
     {
         public Overviewer(IServer server) : base(server, "overviewer")
         {
-            mExePath = Path.Combine(Settings.OverviewerRoot, "gmap.exe");
-            mOutputPath = Path.Combine(Settings.MapRoot, "Overviewer");
+            mExePath = server.Settings.GetRootedPath(server.Settings.ServerManagerRoot, "MinecraftOverviewerRoot");
+            mExePath = Path.Combine(mExePath, "gmap.exe");
+            mOutputPath = Path.Combine(mServer.Settings.MapRoot, "Overviewer");
         }
 
         public override void Render()
@@ -27,11 +28,11 @@ namespace EnigmaMM.Mappers
         protected override void RenderMap()
         {
             base.RenderMap();
-            mMinecraft.RaiseServerMessage("OVERVIEWER: Creating map");
+            mServer.RaiseServerMessage("OVERVIEWER: Creating map");
 
-            if (!Directory.Exists(Settings.CacheRoot))
+            if (!Directory.Exists(mServer.Settings.CacheRoot))
             {
-                throw new DirectoryNotFoundException("Cache path missing: " + Settings.CacheRoot);
+                throw new DirectoryNotFoundException("Cache path missing: " + mServer.Settings.CacheRoot);
             }
             if (!Directory.Exists(mCachePath))
             {
@@ -40,7 +41,7 @@ namespace EnigmaMM.Mappers
 
             string cmd = string.Format(
                 "-p 1 --cachedir \"{0}\" \"{1}\" \"{2}\"",
-                mCachePath, mMinecraft.ServerProperties.WorldPath, mOutputPath
+                mCachePath, mServer.MinecraftSettings.WorldPath, mOutputPath
             );
 
             Process p = new Process();
@@ -52,7 +53,7 @@ namespace EnigmaMM.Mappers
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
 
-            mMinecraft.RaiseServerMessage("OVERVIEWER: Done.");
+            mServer.RaiseServerMessage("OVERVIEWER: Done.");
         }
 
     }

@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
-    public class MCServerProperties : SettingsFile, Interfaces.ISettingsFile
+    public class MCServerProperties : SettingsFile, Interfaces.IMCSettings
     {
 
-        public MCServerProperties() : base(Path.Combine(Settings.MinecraftRoot, "server.properties"), '=')
+        public MCServerProperties(IServer server) : base(server, Path.Combine(server.Settings.MinecraftRoot, "server.properties"), '=')
         {
         }
 
@@ -45,7 +46,7 @@ namespace EnigmaMM
 
         public string WorldPath
         {
-            get { return Path.Combine(Settings.MinecraftRoot, LevelName); }
+            get { return Path.Combine(mServer.Settings.MinecraftRoot, LevelName); }
         }
 
     }

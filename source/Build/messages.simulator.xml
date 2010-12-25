@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<messages>
+	<message>
+  	<name>Startup</name>
+		<text>{timestamp} [INFO] Starting minecraft server version Beta 1.0 (simulator)</text>
+	</message>
+	<message>
+  	<name>NotEnoughMemory</name>
+		<text>{timestamp} [WARNING] **** NOT ENOUGH RAM!</text>
+	</message>
+	<message>
+  	<name>MemorySettingHelp</name>
+		<text>{timestamp} [WARNING] To start the server with more ram, launch it as java -Xmx1024M -Xms1024M -jar minecraft_server.jar</text>
+	</message>
+	<message>
+  	<name>LoadingProps</name>
+		<text>{timestamp} [INFO Loading properties</text>
+	</message>
+	<message>
+  	<name>StartingServerPort</name>
+		<text>{timestamp} [INFO Starting Minecraft server on *:25565</text>
+	</message>
+	<message>
+  	<name>PreparingWorld</name>
+		<text>{timestamp} [INFO] Preparing level "{world}"</text>
+	</message>
+	<message>
+  	<name>PreparingRegion</name>
+		<text>{timestamp} [INFO] Preparing start region</text>
+	</message>
+	<message>
+  	<name>PreparingSpawn</name>
+		<text>Preparing spawn area: {percent}%</text>
+	</message>
+	<message>
+  	<name>StartupComplete</name>
+		<text>{timestamp} [INFO] Done! For help, type "help" or "?"</text>
+	</message>
+  <message>
+		<name>SaveComplete</name>
+		<text>{timestamp} [INFO] CONSOLE: Save complete.</text>
+	</message>
+  <message>
+		<name>ErrorPortBusy</name>
+		<text>{timestamp} [WARNING] **** FAILED TO BIND TO PORT!</text>
+	</message>
+  <message>
+		<name>SaveStarted</name>
+		<text>{timestamp} [INFO] CONSOLE: Forcing save..</text>
+	</message>
+  <message>
+		<name>UserLoggedIn</name>
+		<text>{timestamp} [INFO] {username} [{address}] logged in with entity id {entityid}</text>
+	</message>
+  <message>
+		<name>UserLoggedOut</name>
+		<text>{timestamp} [INFO] {username} lost connection: {reason}</text>
+	</message>
+  <message>
+		<name>AutoSaveEnabled</name>
+		<text>{timestamp} [INFO] CONSOLE: Enabling level saving..</text>
+	</message>
+  <message>
+		<name>AutoSaveDisabled</name>
+		<text>{timestamp} [INFO] CONSOLE: Disabling level saving..</text>
+	</message>
+  <message>
+		<name>UserList</name>
+		<text>{timestamp} [INFO] Connected players: {userlist}</text>
+	</message>
+  <message>
+		<name>UserCount</name>
+		<text>Player count: {count}</text>
+	</message>
+  <message>
+		<name>MinecraftBanner</name>
+		<text>{timestamp} [INFO] Starting minecraft server version {version}</text>
+	</message>
+  <message>
+		<name>ErrorInvalidMove</name>
+		<text>{timestamp} [WARNING] {username} moved wrongly!</text>
+	</message>
+  <message>
+		<name>Overloaded</name>
+		<text>{timestamp} [WARNING] Can't keep up! Did the system time change, or is the server overloaded?</text>
+	</message>
+  <message>
+		<name>UnknownCommand</name>
+		<text>{timestamp} [INFO] Unknown console command. Type "help" for help.</text>
+	</message>
+  <message>
+		<name>OppingPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: Opping {username}</text>
+	</message>
+  <message>
+		<name>DeoppingPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: De-opping {username}</text>
+	</message>
+  <message>
+		<name>BanningPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: Banning {username}</text>
+	</message>
+  <message>
+		<name>PardoningPlayer</name>
+		<text>{timestamp} [INFO] CONSOLE: Pardoning {username}</text>
+	</message>
+  <message>
+		<name>KickPlayerFailed</name>
+		<text>{timestamp} [INFO] Can't find user {username}. No kick.</text>
+	</message>
+</messages>

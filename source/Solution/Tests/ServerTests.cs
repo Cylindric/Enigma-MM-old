@@ -34,7 +34,7 @@ namespace EnigmaMM
             Console.WriteLine("Settings File is: " + settingsFile);
 
             mPersistentServer = new EMMServer(settingsFile);
-            Assert.That(Settings.Filename, Is.EqualTo(settingsFile));
+            Assert.That(mPersistentServer.Settings.Filename, Is.EqualTo(settingsFile));
 
             mPersistentServer.StartServer();
             WaitForServerStatus(Status.Running);

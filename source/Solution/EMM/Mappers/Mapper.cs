@@ -7,7 +7,7 @@ namespace EnigmaMM.Mappers
 {
     class Mapper : IMapper
     {
-        protected IServer mMinecraft;
+        protected IServer mServer;
         protected string mExePath;
         protected string mCachePath;
         protected string mOutputPath;
@@ -23,8 +23,8 @@ namespace EnigmaMM.Mappers
         public Mapper(IServer server, string tag)
         {
             mTag = tag;
-            mMinecraft = server;
-            mCachePath = Path.Combine(Settings.CacheRoot, mTag);
+            mServer = server;
+            mCachePath = Path.Combine(mServer.Settings.CacheRoot, mTag);
         }
 
         /// <summary>
@@ -40,13 +40,13 @@ namespace EnigmaMM.Mappers
 
         protected virtual void RenderMap()
         {
-            if (!Directory.Exists(mMinecraft.ServerProperties.WorldPath))
+            if (!Directory.Exists(mServer.MinecraftSettings.WorldPath))
             {
-                throw new DirectoryNotFoundException("World path missing: " + mMinecraft.ServerProperties.WorldPath);
+                throw new DirectoryNotFoundException("World path missing: " + mServer.MinecraftSettings.WorldPath);
             }
-            if (!Directory.Exists(Settings.MapRoot))
+            if (!Directory.Exists(mServer.Settings.MapRoot))
             {
-                throw new DirectoryNotFoundException("Map output path missing: " + Settings.MapRoot);
+                throw new DirectoryNotFoundException("Map output path missing: " + mServer.Settings.MapRoot);
             }
             if (!Directory.Exists(mOutputPath))
             {
