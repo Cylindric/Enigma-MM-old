@@ -1,0 +1,555 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>emm</name>
+    </assembly>
+    <members>
+        <member name="M:EnigmaMM.Backup.CheckRequirements">
+            <summary>
+            Perform environment checks to make sure backups are reaady to run.
+            </summary>
+            <returns>True if system is ready; else false.</returns>
+        </member>
+        <member name="M:EnigmaMM.Backup.PerformBackup">
+            <summary>
+            Perform a backup.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Mappers.Mapper.#ctor(EnigmaMM.Interfaces.IServer,System.String)">
+            <summary>
+            Creates a new mapper connected to the specified server, with the 
+            specified tag identifier.
+            </summary>
+            <param name="server">The <see cref="T:EnigmaMM.Interfaces.IServer"/> to connect to.</param>
+            <param name="tag">The identifying tag for the mapper.</param>
+        </member>
+        <member name="M:EnigmaMM.Mappers.Mapper.Render">
+            <summary>
+            Renders the default map(s) for this renderer.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Mappers.Mapper.Render(System.String)">
+            <summary>
+            Renders the specified map(s) for this renderer based on mapper-specific criteria.
+            </summary>
+            <param name="type">type of map to render</param>
+        </member>
+        <member name="T:EnigmaMM.Scheduler.SchedulerManager">
+            <summary>
+            Provides functionality for managing scheduled tasks that can execute at
+            pre-defined repeating intervals.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.SchedulerManager.#ctor(EnigmaMM.Interfaces.IServer)">
+            <summary>
+            Creates a new ScheduleManager with default values, linked to the 
+            specified <see cref="T:EnigmaMM.Interfaces.IServer"/>.
+            </summary>
+            <param name="server">The IServer to use for executing commands.</param>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.SchedulerManager.Start">
+            <summary>
+            Starts the scheduler.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.SchedulerManager.Stop">
+            <summary>
+            Stops the scheduler.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.SchedulerManager.LoadSchedule(System.String)">
+            <summary>
+            Parses the file specified by <c>file</c> for tasks, and adds them
+            to the execution queue.
+            </summary>
+            <param name="file">Full path to the schedule file.</param>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.SchedulerManager.AddTask(EnigmaMM.Interfaces.IScheduleTask)">
+            <summary>
+            Adds the specified <see cref="T:EnigmaMM.Interfaces.IScheduleTask"/> to the task list.
+            </summary>
+            <param name="task">The task to add.</param>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.SchedulerManager.Server">
+            <summary>
+            Gets or sets the <seealso cref="T:EnigmaMM.Interfaces.IServer"/> to use for executing the
+            scheduled commands.
+            </summary>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.SchedulerManager.NextTask">
+            <summary>
+            Gets the <seealso cref="T:EnigmaMM.Interfaces.IScheduleTask"/> that is scheduled to run next.
+            </summary>
+            <remarks>If no tasks are scheduled, returns <c>null</c>.</remarks>
+        </member>
+        <member name="M:EnigmaMM.EMMServerMessage.DetermineType">
+            <summary>
+            Iterates over all the defined Patterns to determine the type of message and if applicable
+            extracts any pertinent data.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServerMessage.ProcessMatch(EnigmaMM.EMMServerMessage.MatchTypes,System.String,EnigmaMM.EMMServerMessage.MessageTypes)">
+            <summary>
+            Tries to match the message with a MessageType, using the pattern passed.
+            If the message matches the pattern, and the pattern contains the ?&lt;data&gt; placeholder,
+            any strings in that placeholder are stored into mData.
+            </summary>
+            <param name="rule">The regex to look for</param>
+            <param name="matchType">The type of match to perform, i.e. Regex or EndsWith</param>
+            <param name="type">The type to set this object to if a match is found</param>
+            <returns>True if the message matches, else False.</returns>
+        </member>
+        <member name="M:EnigmaMM.SettingsFile.LookForNewSettings">
+            <summary>
+            Checks for a new.settingsfile file, and if it exists swaps it in for
+            settingsfile.  The current properties file is copied to old.settingsfile.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.SettingsFile.Load">
+            <summary>
+            Loads the current server.properties.
+            </summary>
+            <remarks>
+            It is possible that the server.properties file doesn't exist, usually because it's the first
+            time the server has been started.  This method should be called <em>after</em> the Minecraft server
+            has started, to be sure to get something.</remarks>
+            <returns>true if a file was found and loaded, else false.</returns>
+        </member>
+        <member name="T:EnigmaMM.EMMServer">
+            <summary>
+            The main Server Manager class.
+            Keeps track of the server listener, and manages the Minecraft process.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.#ctor">
+            <summary>
+            Server Constructor
+            </summary>
+            <remarks>Defaults to using a config file in the same location as the executing assembly.</remarks>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.#ctor(System.String)">
+            <summary>
+            Server Constructor
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.ReloadConfig">
+            <summary>
+            Reloads the Minecraft server properties files.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.StartServer">
+            <summary>
+            Starts the Minecraft server process.
+            </summary>
+            <remarks>
+            Note that the server is started asynchronously, so CurrentStatus
+            should be queried to determine when (if!) the server successfully started.
+            </remarks>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.StopServer(System.Boolean)">
+            <summary>
+            Shuts down the running Server.
+            </summary>
+            <remarks>Returns immediately, without waiting for the server to actually stop.</remarks>
+            <param name="graceful">Wether to wait for the last user to log out or not</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.StopServer(System.Boolean,System.Int32,System.Boolean)">
+            <summary>
+            Shuts down the running Server.
+            </summary>
+            <param name="graceful">If true, this will put the server in the 
+            "pending shutdown" state, whereby it waits until all users have
+            logged out, then shuts down the server.</param>
+            <param name="timeout">Time in milliseconds to wait for the command
+            to complete.  Set to zero to wait forever, or -1 to return 
+            immediately, thus essentially running the command asynchronously.
+            </param>
+            <param name="force">If set to true, if the server is still running
+            after the timeout it will be forcefully terminated.</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.RestartServer(System.Boolean)">
+            <summary>
+            Performs a simple restart of the server.
+            </summary>
+            <remarks>
+            Same as StopServer() followed by StartServer().
+            </remarks>
+            <param name="graceful">If true, this will put the server in the
+            "pending restart" state, whereby it waits until all users have 
+            logged out, then restarts the server.</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.AbortPendingOperations">
+            <summary>
+            Aborts a pending stop operation.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.Broadcast(System.String)">
+            <summary>
+            Sends a broadcast message to all players on the server.
+            </summary>
+            <param name="message">Message to send</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.SetAutoSave(System.Boolean)">
+            <summary>
+            Enables or disables server auto-save.
+            </summary>
+            <param name="enabled">True turns on auto-save, false turns it off</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.Backup">
+            <summary>
+            Initiate a backup of the server.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.ForceShutdown">
+            <summary>
+            Forcibly shut down the server by terminating the process.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.RefreshOnlineUserList">
+            <summary>
+            Forces a reload of the online-user list by issuing a server 'list' command.
+            </summary>
+            <remarks>
+            Note that this method blocks until the server replies.  If a user list refresh
+            is required but does not need to be guaranteed current, simply use a call of
+            SendCommand("list") and the online user list will be up-to-date as soon as possible.
+            </remarks>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.Execute(System.String)">
+            <summary>
+            Parses commands and executes them.  Anything unknown is sent to the Minecraft server.
+            </summary>
+            <param name="command">Command to parse</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.SendCommand(System.String)">
+            <summary>
+            Sends an arbitrary command to the Minecraft server.
+            </summary>
+            <param name="Command">Command to send</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.GenerateMaps(System.String[])">
+            <summary>
+            Generates all maps.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.BlockAutoSave">
+            <summary>
+            Disables server auto-save by incrementing a 'block' counter. Autosaves are not
+            resumed until all blocks have been released.  <see cref="M:EnigmaMM.EMMServer.UnblockAutoSave"/>
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.UnblockAutoSave">
+            <summary>
+            Re-enables server auto-save by decrementing a 'block' counter. Autosaves are not
+            resumed until all blocks have been released.  <see cref="M:EnigmaMM.EMMServer.BlockAutoSave"/>
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.LoadSavedUserInfo">
+            <summary>
+            Populates mSavedUsers with details taken from the World's 'players' directory.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.ServerOutputHandler(System.Object,System.Diagnostics.DataReceivedEventArgs)">
+            <summary>
+            Called whenever the server issues a message.
+            </summary>
+            <param name="sender"></param>
+            <param name="OutLine"></param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.RaiseServerMessage(System.String)">
+            <summary>
+            Helper-method to raise ServerMessage Events from other places.
+            </summary>
+            <param name="Message">The message to throw</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.ServerExited(System.Object,System.EventArgs)">
+            <summary>
+            Called when the Minecraft server process terminates.
+            </summary>
+            <remarks>
+            Don't put any logic in here, keep it in the standard onServerStopped event handler.</remarks>
+            <param name="sender"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.OnServerStarted(System.String)">
+            <summary>
+            Called when the minecraft server has fully started.
+            </summary>
+            <remarks>
+            Raises event ServerStarted.
+            </remarks>
+            <param name="Message"></param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.OnServerStopped(System.String)">
+            <summary>
+            Called when the Minecraft server has stopped.
+            </summary>
+            <remarks>Raises event ServerStopped.</remarks>
+            <param name="Message"></param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.OnServerReachZeroUsers">
+            <summary>
+            Called when the last user logs out.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.OnServerError(System.String)">
+            <summary>
+            Called when the minecraft server reports an error.
+            </summary>
+            <remarks>
+            Raises event ServerError.
+            </remarks>
+            <param name="Message">The error message.</param>
+        </member>
+        <member name="M:EnigmaMM.EMMServer.Dispose">
+            <summary>
+            Releases all the resources used by the MCServer.
+            </summary>
+        </member>
+        <member name="E:EnigmaMM.EMMServer.ServerStopped">
+            <summary>
+            Raised whenever the Minecraft server stops.
+            </summary>
+        </member>
+        <member name="E:EnigmaMM.EMMServer.ServerStarted">
+            <summary>
+            Raised whenever the Minecraft server starts.
+            </summary>
+        </member>
+        <member name="E:EnigmaMM.EMMServer.ServerMessage">
+            <summary>
+            Raised whenever the Minecraft server sends a message.
+            </summary>
+        </member>
+        <member name="E:EnigmaMM.EMMServer.ServerError">
+            <summary>
+            Raised whenever the Minecraft server throws an error.
+            </summary>
+        </member>
+        <member name="E:EnigmaMM.EMMServer.StatusChanged">
+            <summary>
+            Raised whenever the Minecraft server status changes.
+            </summary>
+        </member>
+        <member name="T:EnigmaMM.CommandEventArgs">
+            <summary>
+            Utility object for passing data between events.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.CommandEventArgs.#ctor(System.String)">
+            <summary>
+            Simply creates a new CommandEventArgs and sets the Command string to that supplied.
+            </summary>
+            <param name="s">The message</param>
+        </member>
+        <member name="T:EnigmaMM.CommandParser">
+            <summary>
+            The CommandParser is a simple tool for converting user input into Server Manager or
+            Minecraft commands.
+            </summary>
+            <remarks>Any unrecognised commands are passed up to Minecraft to process directly.</remarks>
+        </member>
+        <member name="M:EnigmaMM.CommandParser.#ctor(EnigmaMM.Interfaces.IServer)">
+            <summary>
+            Creates a new <c>CommandParser</c> and connects it to the specified <see cref="T:EnigmaMM.Interfaces.IServer"/>.
+            </summary>
+            <param name="minecraft"></param>
+        </member>
+        <member name="M:EnigmaMM.CommandParser.ParseCommand(System.String)">
+            <summary>
+            Handle a command from the CLI.
+            Commands for the server manager are prefixed with the command-character.
+            </summary>
+            <param name="Command">The command to parse.</param>
+        </member>
+        <member name="T:EnigmaMM.Settings">
+            <summary>
+            Utility class for handling server manager configuration.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Settings.Initialise(System.String)">
+            <summary>
+            Initialises the Settings class and loads the settings from the file specified.
+            </summary>
+            <param name="fileName">The full path to the settings file.</param>
+        </member>
+        <member name="P:EnigmaMM.Settings.Filename">
+            <summary>
+            Returns the filename of the currently-used settings file.
+            </summary>
+        </member>
+        <member name="P:EnigmaMM.Settings.ServerManagerRoot">
+            <summary>
+            Returns the full path to the Server Manager.
+            </summary>
+            <remarks>Is always the location of the main settings file.</remarks>
+        </member>
+        <member name="P:EnigmaMM.Settings.CacheRoot">
+            <summary>
+            Returns the full path to the directory to use for cache files.
+            </summary>
+            <remarks>
+            Can be specified relative to ServerManagerRoot or as an absolute path.
+            Defaults to <code>.\Cache</code>.
+            </remarks>
+            <example>.\Cache</example>
+            <example>C:\MC\Cache</example>
+        </member>
+        <member name="P:EnigmaMM.Settings.BackupRoot">
+            <summary>
+            Returns the full path to the folder to use for backups.
+            </summary>
+            <remarks>
+            Can be specified relative to ServerManagerRoot or as an absolute path.
+            Defaults to <code>.\Backups</code>.
+            </remarks>
+            <example>.\Backups</example>
+            <example>C:\MC\Backups</example>
+            <example>\\Servername\backups\Minecraft</example>
+        </member>
+        <member name="P:EnigmaMM.Settings.MinecraftRoot">
+            <summary>
+            Returns the full path to the folder where Minecraft is installed.
+            </summary>
+            <remarks>
+            Can be specified relative to ServerManagerRoot or as an absolute path.
+            Defaults to <code>.\Minecraft</code>.
+            </remarks>
+            <example>.\Minecraft</example>
+            <example>C:\MC\Minecraft</example>
+        </member>
+        <member name="P:EnigmaMM.Settings.JavaExec">
+            <summary>
+            Returns the executable to execute the Java files.
+            </summary>
+            <remarks>
+            Must be either the full path to the executable, 
+            or the executable name must be in the global system PATH.
+            Defaults to <code>java.exe</code>.
+            </remarks>
+            <example>java.exe</example>
+            <example>c:\Program Files\Java\jre6\bin\java.exe</example>
+        </member>
+        <member name="P:EnigmaMM.Settings.ServerJar">
+            <summary>
+            Returns the jar to use to launch Minecraft.
+            </summary>
+            <remarks>
+            Must be the name of a Java jar file that is in the MinecraftRoot
+            Defaults to <code>minecraft_server.jar</code>.
+            </remarks>
+            <example>minecraft_server.jar</example>
+            <example>Minecraft_Mod.jar</example>
+        </member>
+        <member name="P:EnigmaMM.Settings.JavaHeapInit">
+            <summary>
+            Returns the initial amount of memory, in megabytes, to allocate to the Java heap.
+            </summary>
+            <remarks>Defaults to <code>1024</code> (1Gb).</remarks>
+        </member>
+        <member name="P:EnigmaMM.Settings.JavaHeapMax">
+            <summary>
+            Returns the maximum amount of memory, in megabytes, to allow the Java heap.
+            </summary>
+            <remarks>Defaults to <code>1024</code> (1Gb).</remarks>
+        </member>
+        <member name="T:EnigmaMM.Scheduler.ScheduleTask">
+            <summary>
+            The ScheduleTask class provides the functionality for specifying scheduled tasks
+            with recurring times they should execute.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.ScheduleTask.#ctor">
+            <summary>
+            Initialise a new ScheduleTask with an empty schedule.
+            </summary>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.ScheduleTask.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initialise a new ScheduleTask with the specified schedule.
+            </summary>
+            <param name="days">The days schedule</param>
+            <param name="hours">The hours schedule</param>
+            <param name="minutes">The minutes schedule</param>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.ScheduleTask.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+            Initialise a new ScheduleTask with the specified schedule.
+            </summary>
+            <param name="days">The days schedule</param>
+            <param name="hours">The hours schedule</param>
+            <param name="minutes">The minutes schedule</param>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.ScheduleTask.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+            Initialise a new ScheduleTask with the specified schedule.
+            </summary>
+            <param name="days">The days schedule</param>
+            <param name="hours">The hours schedule</param>
+            <param name="minutes">The minutes schedule</param>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.ScheduleTask.CalculateNextRunTime">
+            <summary>
+            Calculates the next time this task is due to run, after the current time.
+            </summary>
+            <remarks>The calculated run time will be at least one minute in the future.</remarks>
+            <returns>The calculated next run time.</returns>
+        </member>
+        <member name="M:EnigmaMM.Scheduler.ScheduleTask.CalculateNextRunTime(System.DateTime)">
+            <summary>
+            Calculates the next time this task is due to run, after the specified time.
+            </summary>
+            <remarks>
+            The calculated run time will be at least one minute later than start.
+            This method is not optimised.  The loops can be made to finish much
+            sooner, at the expense of complexity.  As this only runs once each 
+            time the task is run, it's probably not important.
+            </remarks>
+            <param name="start">The start time to use from which to find the next run time.</param>
+            <returns>The calculated next run time.</returns>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.ScheduleTask.Name">
+            <summary>
+            Gets or sets the name of this task, for logging and management.
+            </summary>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.ScheduleTask.Command">
+            <summary>
+            Gets or sets the command to send to the server when the schedule is met.
+            </summary>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.ScheduleTask.NextRun">
+            <summary>
+            Gets the next scheduled run time.
+            </summary>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.ScheduleTask.NextRunString">
+            <summary>
+            Gets the time this task is next set to run, formatted in natural language.
+            </summary>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.ScheduleTask.RunDays">
+            <summary>
+            Gets or sets the Days schedule.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">Invalid parameter</exception>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.ScheduleTask.RunHours">
+            <summary>
+            Gets or sets the Hours schedule.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">Invalid parameter</exception>
+        </member>
+        <member name="P:EnigmaMM.Scheduler.ScheduleTask.RunMinutes">
+            <summary>
+            Gets or sets the Minutes schedule.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">Invalid parameter</exception>
+        </member>
+        <member name="T:EnigmaMM.Scheduler.ScheduleTask.ParameterType">
+            <summary>
+            The set of valid parameter types.
+            </summary>
+        </member>
+    </members>
+</doc>

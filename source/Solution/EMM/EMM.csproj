@@ -23,16 +23,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\emm.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build\Docs\emm.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Build\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\emm.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build\Docs\emm.xml</DocumentationFile>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
@@ -41,6 +41,8 @@
       <HintPath>.\Ionic.Zip.Reduced.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.AddIn" />
+    <Reference Include="System.AddIn.Contract" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -50,13 +52,15 @@
     <Compile Include="Backup.cs" />
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
+    <Compile Include="HostViews\ContractToHostViewAdapter.cs" />
+    <Compile Include="HostViews\PluginHostView.cs" />
     <Compile Include="Mappers\MapManager.cs" />
     <Compile Include="EMMServerMessage.cs" />
+    <Compile Include="PluginManager.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="Scheduler\SchedulerManager.cs" />
     <Compile Include="Scheduler\ScheduleTask.cs" />
     <Compile Include="Settings\Settings.cs" />
-    <Compile Include="Mappers\AlphaVespucci.cs" />
     <Compile Include="Mappers\Mapper.cs" />
     <Compile Include="Mappers\Overviewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

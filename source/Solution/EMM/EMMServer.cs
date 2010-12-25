@@ -25,6 +25,7 @@ namespace EnigmaMM
         private bool mServerSaving;
         private Scheduler.SchedulerManager mScheduler;
         private Backup mBackup;
+        private Settings mSettings;
 
         // Thread lock objects
         private readonly object mAutoSaveLock = new object();
@@ -39,12 +40,6 @@ namespace EnigmaMM
 
         #region Server Events
 
-        /// <summary>
-        /// Standard event handler for server messages.
-        /// </summary>
-        /// <param name="Message">the message</param>
-        //public delegate void ServerMessageEventHandler(string Message);
-        
         /// <summary>
         /// Raised whenever the Minecraft server stops.
         /// </summary>
@@ -74,7 +69,7 @@ namespace EnigmaMM
 
         #region Public Properties
 
-        public ISettingsFile ServerProperties
+        public IMCSettings MinecraftSettings
         {
             get { return mServerProperties; }
         }
@@ -92,6 +87,11 @@ namespace EnigmaMM
         public ArrayList Users
         {
             get { return mOnlineUsers; }
+        }
+
+        public IServerSettings Settings
+        {
+            get { return mSettings; }
         }
 
         #endregion
@@ -119,11 +119,14 @@ namespace EnigmaMM
         /// </summary>
         public EMMServer(string mainSettingsFile)
         {
-            Settings.Initialise(mainSettingsFile);
+            mSettings = new Settings(this);
+            mSettings.Initialise(mainSettingsFile);
 
-            mServerProperties = new MCServerProperties();
+            mServerProperties = new MCServerProperties(this);
             mParser = new CommandParser(this);
             mScheduler = new Scheduler.SchedulerManager(this);
+
+            EMMServerMessage.PopulateRules(Path.Combine(mSettings.ServerManagerRoot, "messages.xml"));
 
             ServerStatus = Status.Stopped;
             mOnlineUserListReady = false;
@@ -133,11 +136,7 @@ namespace EnigmaMM
             mAutoSaveBlocks = 0;
             mAutoSaveEnabled = true;
             
-            if (Settings.AlphaVespucciInstalled)
-            {
-                MapManager.Register("av", new AlphaVespucci(this));
-            }
-            if (Settings.OverviewerInstalled)
+            if (mSettings.OverviewerInstalled)
             {
                 MapManager.Register("overviewer", new Overviewer(this));
             }
@@ -145,7 +144,7 @@ namespace EnigmaMM
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
 
-            mScheduler.LoadSchedule(Path.Combine(Settings.ServerManagerRoot, "scheduler.xml"));
+            mScheduler.LoadSchedule(Path.Combine(mSettings.ServerManagerRoot, "scheduler.xml"));
             mScheduler.Start();
         }
 
@@ -175,51 +174,51 @@ namespace EnigmaMM
             ServerStatus = Status.Starting;
             ReloadConfig();
 
-            if (Directory.Exists(Settings.MinecraftRoot) == false)
+            if (Directory.Exists(mSettings.MinecraftRoot) == false)
             {
                 RaiseServerMessage("ERROR");
                 RaiseServerMessage("Could not find Minecraft root directory");
                 RaiseServerMessage("Check that configuration option 'MinecraftRoot' is correct");
-                RaiseServerMessage("Looking for: " + Settings.MinecraftRoot);
+                RaiseServerMessage("Looking for: " + mSettings.MinecraftRoot);
                 ServerStatus = Status.Failed;
-                mStatusMessage = string.Format("Couldn't find Minecraft directory in {0}", Settings.MinecraftRoot);
+                mStatusMessage = string.Format("Couldn't find Minecraft directory in {0}", mSettings.MinecraftRoot);
                 return;
             }
-            if (File.Exists(Path.Combine(Settings.MinecraftRoot, Settings.ServerJar)) == false)
+            if (File.Exists(Path.Combine(mSettings.MinecraftRoot, mSettings.ServerJar)) == false)
             {
                 RaiseServerMessage("ERROR");
                 RaiseServerMessage("Could not find the Minecraft server file");
                 RaiseServerMessage("Check that configuration option 'ServerJar' is correct");
-                RaiseServerMessage("Looking for: " + Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
+                RaiseServerMessage("Looking for: " + Path.Combine(mSettings.MinecraftRoot, mSettings.ServerJar));
                 ServerStatus = Status.Failed;
-                mStatusMessage = string.Format("Couldn't find Minecraft server at {0}", Path.Combine(Settings.MinecraftRoot, Settings.ServerJar));
+                mStatusMessage = string.Format("Couldn't find Minecraft server at {0}", Path.Combine(mSettings.MinecraftRoot, mSettings.ServerJar));
                 return;
             }
 
             string cmdArgs = "";
-            if (Settings.JavaHeapInit > 0)
+            if (mSettings.JavaHeapInit > 0)
             {
-                cmdArgs += "-Xms" + Settings.JavaHeapInit + "M ";
+                cmdArgs += "-Xms" + mSettings.JavaHeapInit + "M ";
             }
-            if (Settings.JavaHeapMax > 0)
+            if (mSettings.JavaHeapMax > 0)
             {
-                cmdArgs += "-Xmx" + Settings.JavaHeapMax + "M ";
+                cmdArgs += "-Xmx" + mSettings.JavaHeapMax + "M ";
             }
-            cmdArgs += "-jar \"" + Settings.ServerJar + "\" ";
+            cmdArgs += "-jar \"" + mSettings.ServerJar + "\" ";
             cmdArgs += "nogui ";
 
             // Configure the main server process
             mServerProcess = new Process();
-            if (Settings.ServerJar.EndsWith(".exe"))
+            if (mSettings.ServerJar.EndsWith(".exe"))
             {
-                mServerProcess.StartInfo.FileName = Path.Combine(Settings.MinecraftRoot, Settings.ServerJar);
+                mServerProcess.StartInfo.FileName = Path.Combine(mSettings.MinecraftRoot, mSettings.ServerJar);
             }
             else
             {
-                mServerProcess.StartInfo.FileName = Settings.JavaExec;
+                mServerProcess.StartInfo.FileName = mSettings.JavaExec;
             }
             mServerProcess.StartInfo.CreateNoWindow = true;
-            mServerProcess.StartInfo.WorkingDirectory = Settings.MinecraftRoot;
+            mServerProcess.StartInfo.WorkingDirectory = mSettings.MinecraftRoot;
             mServerProcess.StartInfo.Arguments = cmdArgs;
             mServerProcess.StartInfo.UseShellExecute = false;
             mServerProcess.StartInfo.RedirectStandardError = true;
@@ -230,6 +229,8 @@ namespace EnigmaMM
             // Wire up an event handler to catch messages out of the process
             // Minecraft uses a mix of standard output and error output, with important messages 
             // on both.  Therefore, we just wire up both to a single handler.
+            // The messages seen in the Minecraft GUI are the ones from the ErrorData stream, the
+            // additional ones only seen from the console are OutputData.
             mServerProcess.OutputDataReceived += new DataReceivedEventHandler(ServerOutputHandler);
             mServerProcess.ErrorDataReceived += new DataReceivedEventHandler(ServerOutputHandler);
             mServerProcess.Exited += new EventHandler(ServerExited);

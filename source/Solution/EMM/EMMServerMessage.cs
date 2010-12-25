@@ -12,7 +12,7 @@ namespace EnigmaMM
         public MessageTypes Type { private set; get; }
         public Dictionary<string, string> Data { private set; get; }
 
-        private static List<MessagePattern> sPatterns;
+        private static List<MessagePattern> sPatterns = new List<MessagePattern>();
 
         public enum MatchTypes
         {
@@ -79,21 +79,17 @@ namespace EnigmaMM
 
         public EMMServerMessage(string msg)
         {
-            if(sPatterns == null)
-            {
-                PopulateRules();
-            }
             Message = msg;
             DetermineType();
         }
 
 
-        private static void PopulateRules()
+        public static void PopulateRules(string fileName)
         {
             sPatterns = new List<MessagePattern>();
 
             XmlDocument xml = new XmlDocument();
-            xml.Load(Path.Combine(Settings.ServerManagerRoot, "messages.xml"));
+            xml.Load(fileName);
             XmlNodeList nodeList = xml.DocumentElement.SelectNodes("/messages/message");
             foreach (XmlNode message in nodeList)
             {

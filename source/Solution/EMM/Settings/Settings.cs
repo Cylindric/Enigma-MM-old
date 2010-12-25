@@ -1,48 +1,50 @@
 ﻿using System.IO;
+using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
     /// <summary>
     /// Utility class for handling server manager configuration.
     /// </summary>
-    /// <remarks>Should always be statically accessed.</remarks>
-    public class Settings
+    public class Settings : IServerSettings
     {
-        private static SettingsFile mSettings;
+        private SettingsFile mSettings;
+        private IServer mServer;
+
+        public Settings(IServer server)
+        {
+            mServer = server;
+        }
 
         /// <summary>
         /// Initialises the Settings class and loads the settings from the file specified.
         /// </summary>
         /// <param name="fileName">The full path to the settings file.</param>
-        public static void Initialise(string fileName)
+        public void Initialise(string fileName)
         {
-            mSettings = new SettingsFile(fileName, '=');
+            mSettings = new SettingsFile(mServer, fileName, '=');
             mSettings.AutoLoad = true;
             mSettings.Load();
         }
 
-        public static bool Loaded
+        public bool Loaded
         {
             get { return mSettings != null;}
         }
 
-        #region Server Settings
-
-
         /// <summary>
         /// Returns the filename of the currently-used settings file.
         /// </summary>
-        public static string Filename
+        public string Filename
         {
             get { return mSettings.Filename; }
         }
-
 
         /// <summary>
         /// Returns the full path to the Server Manager.
         /// </summary>
         /// <remarks>Is always the location of the main settings file.</remarks>
-        public static string ServerManagerRoot
+        public string ServerManagerRoot
         {
             get { return Path.GetDirectoryName(mSettings.Filename); }
         }
@@ -56,11 +58,10 @@ namespace EnigmaMM
         /// </remarks>
         /// <example>.\Cache</example>
         /// <example>C:\MC\Cache</example>
-        public static string CacheRoot
+        public string CacheRoot
         {
             get { return mSettings.GetRootedPath(ServerManagerRoot, "CacheRoot", @".\Cache"); }
         }
-
 
         /// <summary>
         /// Returns the full path to the folder to use for backups.
@@ -72,14 +73,10 @@ namespace EnigmaMM
         /// <example>.\Backups</example>
         /// <example>C:\MC\Backups</example>
         /// <example>\\Servername\backups\Minecraft</example>
-        public static string BackupRoot
+        public string BackupRoot
         {
             get { return mSettings.GetRootedPath(ServerManagerRoot, "BackupRoot", @".\Backups"); }
         }
-
-        #endregion
-
-        #region Minecraft Server Settings
 
         /// <summary>
         /// Returns the full path to the folder where Minecraft is installed.
@@ -90,11 +87,10 @@ namespace EnigmaMM
         /// </remarks>
         /// <example>.\Minecraft</example>
         /// <example>C:\MC\Minecraft</example>
-        public static string MinecraftRoot
+        public string MinecraftRoot
         {
             get { return mSettings.GetRootedPath(ServerManagerRoot, "MinecraftRoot", @".\Minecraft"); }
         }
-
 
         /// <summary>
         /// Returns the executable to execute the Java files.
@@ -106,11 +102,10 @@ namespace EnigmaMM
         /// </remarks>
         /// <example>java.exe</example>
         /// <example>c:\Program Files\Java\jre6\bin\java.exe</example>
-        public static string JavaExec
+        public string JavaExec
         {
             get { return mSettings.GetString("JavaExec", "java.exe"); }
         }
-
 
         /// <summary>
         /// Returns the jar to use to launch Minecraft.
@@ -121,17 +116,16 @@ namespace EnigmaMM
         /// </remarks>
         /// <example>minecraft_server.jar</example>
         /// <example>Minecraft_Mod.jar</example>
-        public static string ServerJar
+        public string ServerJar
         {
             get { return mSettings.GetRootedPath(MinecraftRoot, "ServerJar", "minecraft_server.jar"); }
         }
-
 
         /// <summary>
         /// Returns the initial amount of memory, in megabytes, to allocate to the Java heap.
         /// </summary>
         /// <remarks>Defaults to <code>1024</code> (1Gb).</remarks>
-        public static int JavaHeapInit
+        public int JavaHeapInit
         {
             get { return mSettings.GetInt("JavaHeapInit", 1024); }
         }
@@ -140,54 +134,75 @@ namespace EnigmaMM
         /// Returns the maximum amount of memory, in megabytes, to allow the Java heap.
         /// </summary>
         /// <remarks>Defaults to <code>1024</code> (1Gb).</remarks>
-        public static int JavaHeapMax
+        public int JavaHeapMax
         {
             get { return mSettings.GetInt("JavaHeapMax", 1024); }
         }
 
-        #endregion
-
-        #region General Map Settings
-
-        public static string MapRoot
+        public string MapRoot
         {
             get { return mSettings.GetRootedPath(ServerManagerRoot, "MapRoot", @".\Maps"); }
         }
 
-        public static int OptimisePng
+        public int OptimisePng
         {
             get { return mSettings.GetInt("OptimisePng", 3); }
         }
-        #endregion
-
-        #region AlphaVespucci Settings
-
-        public static bool AlphaVespucciInstalled
-        {
-            get { return mSettings.GetBool("AlphaVespucciInstalled", false); }
-        }
-
-        public static string AlphaVespucciRoot
-        {
-            get { return mSettings.GetRootedPath(ServerManagerRoot, "AlphaVespucciRoot", @".\AlphaVespucci"); }
-        }
-
-        #endregion
 
         #region Overviewer Settings
         
-        public static bool OverviewerInstalled
+        public bool OverviewerInstalled
         {
             get { return mSettings.GetBool("MinecraftOverviewerInstalled", false); }
         }
 
-        public static string OverviewerRoot
+        public string OverviewerRoot
         {
             get { return mSettings.GetRootedPath(ServerManagerRoot, "MinecraftOverviewerRoot", @".\Overviewer"); }
         }
 
         #endregion
 
+
+        public string GetString(string key, string defaultValue)
+        {
+            return mSettings.GetString(key, defaultValue);
+        }
+
+        public string GetString(string key)
+        {
+            return mSettings.GetString(key);
+        }
+
+        public int GetInt(string key, int defaultValue)
+        {
+            return mSettings.GetInt(key, defaultValue);
+        }
+
+        public int GetInt(string key)
+        {
+            return mSettings.GetInt(key);
+        }
+
+        public bool GetBool(string key, bool defaultValue)
+        {
+            return mSettings.GetBool(key, defaultValue);
+        }
+
+        public bool GetBool(string key)
+        {
+            return mSettings.GetBool(key);
+        }
+
+        public string GetRootedPath(string root, string key, string defaultValue)
+        {
+            return mSettings.GetRootedPath(root, key, defaultValue);
+        }
+
+        public string GetRootedPath(string root, string key)
+        {
+            return mSettings.GetRootedPath(root, key);
+        }
     }
 
 }
