@@ -1,64 +1,50 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using EnigmaMM.Interfaces;
+using Interfaces.BaseClasses;
 
 namespace EnigmaMM.Plugin.Implementation
 {
-    class Overviewer
+    public class Overviewer : PluginMapper
     {
-        private IServer mServer;
-
-        public Overviewer(IServer server)
+        public Overviewer()
         {
-            mServer = server;
+            base.Name = "Overviewer";
+            base.Tag = "overviewer";
         }
 
-        public void RenderMap()
+        public override void Initialise(IServer server)
         {
-            string exePath;
-            string outputPath;
-            string cachePath;
-            string worldPath;
+            base.Initialise(server);
 
-            mServer.RaiseServerMessage("OVERVIEWER: Creating map");
+            ExePath = server.Settings.GetRootedPath(server.Settings.ServerManagerRoot, "MinecraftOverviewerRoot");
+            ExePath = Path.Combine(ExePath, "gmap.exe");
+        }
 
-            exePath = mServer.Settings.GetRootedPath(mServer.Settings.ServerManagerRoot, "MinecraftOverviewerRoot");
-            exePath = Path.Combine(exePath, "gmap.exe");
-            outputPath = Path.Combine(mServer.Settings.MapRoot, "Overviewer");
-            cachePath = Path.Combine(mServer.Settings.CacheRoot, "overviewer");
-            worldPath = mServer.MinecraftSettings.WorldPath;
+        public override void Render()
+        {
+            VerifyPath(CachePath, false);
+            VerifyPath(OutputPath, false);
 
-            if (!Directory.Exists(mServer.Settings.CacheRoot))
-            {
-                throw new DirectoryNotFoundException("Cache path missing: " + mServer.Settings.CacheRoot);
-            }
+            string cache = Path.Combine(CachePath, Tag);
+            string output = Path.Combine(OutputPath, Tag);
 
-            if (!Directory.Exists(worldPath))
-            {
-                throw new DirectoryNotFoundException("World path missing: " + worldPath);
-            }
-
-            if (!Directory.Exists(cachePath))
-            {
-                Directory.CreateDirectory(cachePath);
-            }
+            VerifyPath(cache, true);
+            VerifyPath(output, true);
 
             string cmd = string.Format(
                 "-p 1 --cachedir \"{0}\" \"{1}\" \"{2}\"",
-                cachePath, mServer.MinecraftSettings.WorldPath, outputPath
+                cache, WorldPath, output
             );
 
             Process p = new Process();
-            p.StartInfo.FileName = exePath;
+            p.StartInfo.FileName = ExePath;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.Arguments = cmd;
             p.Start();
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
-
-            mServer.RaiseServerMessage("Map complete.");
         }
-
     }
 }

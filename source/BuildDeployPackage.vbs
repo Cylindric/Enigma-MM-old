@@ -5,6 +5,9 @@ Dim cmd
 Set objFS = CreateObject("Scripting.FileSystemObject")
 Set objShell = WScript.CreateObject("WScript.Shell")
 
+' Make sure we're running in CSCript
+ForceCScript
+
 ' -----------------------------------------------------------------------------
 ' Global constants
 ' -----------------------------------------------------------------------------
@@ -126,3 +129,16 @@ Function DeleteFile(Filename)
 	WScript.Echo "Deleting " & Filename & "."
 	objFS.DeleteFile Filename
 End Function
+
+Sub ForceCScript
+    Dim args : args = ""
+    Dim i
+    If Right(LCase(WScript.FullName), 11) = "wscript.exe" Then
+        For i=0 To WScript.Arguments.Count - 1
+            args = args & WScript.Arguments(i) & " "
+        Next
+        objShell.run objShell.ExpandEnvironmentStrings("%comspec%") & _
+            " /c cscript.exe //nologo """ & WScript.ScriptFullName & """" & args
+        WScript.Quit
+    End If
+End Sub

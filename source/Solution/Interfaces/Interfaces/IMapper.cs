@@ -13,7 +13,7 @@
         /// <summary>
         /// Renders the specified map(s) for this renderer based on mapper-specific criteria.
         /// </summary>
-        /// <param name="type">type of map to render</param>
-        void Render(string type);
+        /// <param name="args">arguments for map to render</param>
+        void Render(params string[] args);
     }
 }
