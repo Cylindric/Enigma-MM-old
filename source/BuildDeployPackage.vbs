@@ -1,6 +1,6 @@
 Option Explicit
 Dim objFS, objShell
-Dim ScriptPath, DeployRoot, ServerRoot, EMMRoot, Config, ReBuild
+Dim ScriptPath, DeployRoot, ServerRoot, EMMRoot, Config, ReBuild, BuildRoot, SourceRoot
 Dim cmd
 Set objFS = CreateObject("Scripting.FileSystemObject")
 Set objShell = WScript.CreateObject("WScript.Shell")
@@ -16,7 +16,9 @@ Const WindowStyleShow = 1
 ' Configuration
 ' -----------------------------------------------------------------------------
 ScriptPath = objFS.GetParentFolderName(Wscript.ScriptFullName)
-DeployRoot = objFS.BuildPath(ScriptPath, "Deploy")
+DeployRoot = objFS.BuildPath(objFS.GetParentFolderName(ScriptPath), "Deploy")
+SourceRoot = objFS.BuildPath(ScriptPath, "Solution")
+BuildRoot = objFS.BuildPath(ScriptPath, "Build")
 EMMRoot = objFS.BuildPath(DeployRoot, "EMMServer")
 Rebuild = False
 Config = "Debug"
@@ -54,26 +56,32 @@ CreateFolder(objFS.BuildPath(EMMRoot, "Maps"))
 
 
 ' The EMM core files
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "..\..\readme.txt")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\*.dll")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\*.exe")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\*.txt")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\bin\" & Config & "\messages.xml")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Server\bin\" & Config & "\server.exe")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "..\..\readme.txt")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.dll")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.exe")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.txt")), EMMRoot & "\"
 
 'The 3rd party stuff
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.dll")), EMMRoot & "\"
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.txt")), EMMRoot & "\"
+' objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.dll")), EMMRoot & "\"
+' objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.txt")), EMMRoot & "\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\Settings\*.conf")), EMMRoot
-objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "EMM\Scheduler\*.xml")), EMMRoot
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\messages.xml")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\Settings\*.conf")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\Scheduler\*.xml")), EMMRoot & "\"
+
+' Remove any non-deploy files
+DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "MinecraftSimulator.exe"))
+DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "moq.dll"))
+DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "nunit.framework.dll"))
+DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "Server.vshost.exe"))
+DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "Tests.dll"))
 
 
 Dim zipexe, zipname, buildversion
 buildversion = GetFileVersion(objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "emm.dll")))
-zipexe = objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "Tools\7za.exe"))
+zipexe = objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "Tools\7za.exe"))
 If buildversion = "" Then
 	zipname = objFS.GetAbsolutePathName(objFS.BuildPath(DeployRoot, "EMMServer.zip"))
 Else
@@ -106,3 +114,13 @@ Sub CreateFolder(Path)
 		WScript.Sleep(100)
   End If
 End Sub
+
+Function CopyFile(Source, Destination)
+	WScript.Echo "Copying " & Source & " to " & Destination & "."
+	objFS.CopyFile Source, Destination
+End Function
+
+Function DeleteFile(Filename)
+	WScript.Echo "Deleting " & Filename & "."
+	objFS.DeleteFile Filename
+End Function

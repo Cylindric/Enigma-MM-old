@@ -1,13 +1,10 @@
-﻿using System.AddIn.Contract;
-using System.AddIn.Pipeline;
-
-namespace EnigmaMM.Interfaces
+﻿namespace EnigmaMM.Interfaces
 {
-
-    [AddInContract]
-    public interface IPlugin : IContract
+    public interface IPlugin
     {
-        string SayHello(string name);
+        string Name { get; }
+
+        void Initialise(IServer server);
     }
 
 }
