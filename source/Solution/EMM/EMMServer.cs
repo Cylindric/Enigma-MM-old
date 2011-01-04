@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using EnigmaMM.Interfaces;
+using System.Linq;
 
 namespace EnigmaMM
 {
@@ -456,18 +457,35 @@ namespace EnigmaMM
         /// </summary>
         public void GenerateMaps(string[] args)
         {
+            string specificMapper = "";
+
+            // Strip the first element from the args - it's the command itself
+            args = args.Where((val, idx) => idx != 0).ToArray();
+
+            // Second param, if present, is to limit the mapper to use
+            if (args.Count() > 0)
+            {
+                specificMapper = args[0];
+                args = args.Where((val, idx) => idx != 0).ToArray();
+            }
+
             BlockAutoSave();
             foreach (IMapper p in mPlugins.GetPlugins<IMapper>())
             {
-                //MapManager.RenderMaps(args);
+                // If a specific mapper was requested, and this isn't it, skip
+                if ((specificMapper.Length > 0) && (specificMapper != p.Tag))
+                {
+                    continue;
+                }
+
                 RaiseServerMessage(string.Format("Mapping using plugin '{0}'", p.Name));
                 try
                 {
-                    p.Render();
+                    p.Render(args);
                 }
                 catch (Exception e)
                 {
-                    RaiseServerMessage(string.Format("Failed to execute renderer for plugin '{0}', error '{1}'", p.Name,e.Message));
+                    RaiseServerMessage(string.Format("Failed to execute renderer for plugin '{0}', error '{1}'", p.Name, e.Message));
                 }
             }
             UnblockAutoSave();

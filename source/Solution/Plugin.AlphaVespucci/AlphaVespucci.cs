@@ -4,77 +4,67 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using EnigmaMM.Interfaces;
+using Interfaces.BaseClasses;
 
 namespace EnigmaMM.Plugin.Implementation
 {
-    public class AlphaVespucci
+    public class AlphaVespucci : PluginMapper
     {
-        private IServer mServer;
-        private string mExePath;
-        private string mOutputPath;
-        private string mWorldPath;
-        private int mOptimise = 0;
-        private string mTag = 'av';
 
-        public AlphaVespucci(IServer server)
+        public AlphaVespucci()
         {
-            mServer = server;
+            base.Name = "AlphaVespucci";
+            base.Tag = "av";
         }
 
-        public void RenderMap()
+        public override void Initialise(IServer server)
         {
-            mServer.RaiseServerMessage("AV: Creating map");
-            mServer.RaiseServerMessage("Map complete.");
+            base.Initialise(server);
+
+            ExePath = server.Settings.GetRootedPath(server.Settings.ServerManagerRoot, "AlphaVespucciRoot");
+            ExePath = Path.Combine(ExePath, "alphavespucci.exe");
         }
 
-        public void Render(string type)
+        public override void Render()
         {
-            if (type == "main")
+            Render("main");
+        }
+
+        public override void Render(params string[] args)
+        {
+            if (args[0] == "main")
             {
                 RenderMap("obleft", "day", "mainmap", true);
             }
-            if (type == "extra")
+            if (args[0] == "extra")
             {
-                RenderMap("obleft", "night", "nightmap");
-                RenderMap("obleft", "cave", "caves");
-                RenderMap("obleft", "cavelimit 15", "surfacecaves");
-                RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond");
-                RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone");
-                RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch");
-                RenderMap("flat", "day", "flatmap");
+                RenderMap("obleft", "night", "nightmap", false);
+                RenderMap("obleft", "cave", "caves", false);
+                RenderMap("obleft", "cavelimit 15", "surfacecaves", false);
+                RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond", false);
+                RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone", false);
+                RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch", false);
+                RenderMap("flat", "day", "flatmap", false);
             }
-        }
-
-        private void RenderMap(string display, string features, string Filename)
-        {
-            RenderMap(display, features, Filename, false);
         }
 
         private void RenderMap(string display, string features, string Filename, bool createHistory)
         {
-            string output = Path.Combine(mOutputPath, mTag);
+            Server.RaiseServerMessage(string.Format("AV: Rendering map {0}...", display));
 
-            if (!Directory.Exists(mServer.MinecraftSettings.WorldPath))
-            {
-                throw new DirectoryNotFoundException("World path missing: " + mServer.MinecraftSettings.WorldPath);
-            }
-            if (!Directory.Exists(mOutputPath))
-            {
-                throw new DirectoryNotFoundException("Map output path missing: " + mOutputPath);
-            }
-            if (!Directory.Exists(output))
-            {
-                Directory.CreateDirectory(output);
-            }
-            mServer.RaiseServerMessage(string.Format("AV: Creating map {0} {1}...", display, features));
+            VerifyPath(WorldPath, false);
+            VerifyPath(OutputPath, false);
+
+            string output = Path.Combine(OutputPath, Tag);
+            VerifyPath(output, true);
 
             string cmd = string.Format(
                 "-{0} -{1} -path \"{2}\" -fullname \"{4}\" -outputdir \"{3}\"",
-                display, features, mServer.MinecraftSettings.WorldPath, output, Filename
+                display, features, WorldPath, output, Filename
             );
 
             Process p = new Process();
-            p.StartInfo.FileName = mExePath;
+            p.StartInfo.FileName = ExePath;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.Arguments = cmd;
@@ -84,13 +74,13 @@ namespace EnigmaMM.Plugin.Implementation
 
             // fullFilename now exists, and is the full-size PNG.
             // Optimise it and save a JPEG version
-            string fullFilenamePng = Path.Combine(mOutputPath, Filename + ".png");
-            string fullFilenameJpeg = Path.Combine(mOutputPath, Filename + ".jpg");
+            string fullFilenamePng = Path.Combine(output, Filename + ".png");
+            string fullFilenameJpeg = Path.Combine(output, Filename + ".jpg");
             OptimisePNG(fullFilenamePng);
             ToJpeg(fullFilenamePng);
 
             // save a thumbnail version as a JPEG
-            string smallFilenamePng = Path.Combine(mOutputPath, Filename + "-small.png");
+            string smallFilenamePng = Path.Combine(output, Filename + "-small.png");
             Resize(fullFilenamePng, smallFilenamePng, 480);
             ToJpeg(smallFilenamePng);
             File.Delete(smallFilenamePng);
@@ -98,7 +88,7 @@ namespace EnigmaMM.Plugin.Implementation
             // save a history version
             if (createHistory)
             {
-                string HistoryRoot = Path.Combine(mOutputPath, "History");
+                string HistoryRoot = Path.Combine(output, "History");
                 string HistoryFile = Path.Combine(HistoryRoot, string.Format("{0}-{1:yyyy-MM-dd_HH}.jpg", Path.GetFileNameWithoutExtension(fullFilenameJpeg), DateTime.Now));
                 if (!Directory.Exists(HistoryRoot))
                 {
@@ -107,7 +97,7 @@ namespace EnigmaMM.Plugin.Implementation
                 File.Copy(fullFilenameJpeg, HistoryFile, true);
             }
 
-            mServer.RaiseServerMessage("AV: Done.");
+            Server.RaiseServerMessage("AV: Done.");
         }
 
         private void ToJpeg(string InputFile)
@@ -152,13 +142,13 @@ namespace EnigmaMM.Plugin.Implementation
 
         private void OptimisePNG(string InputFile)
         {
-            if (mOptimise > 0)
+            if (OptimiseLevel > 0)
             {
                 Process p = new Process();
                 p.StartInfo.FileName = "optipng.exe";
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.Arguments = string.Format("-v -o{1} \"{0}\" ", InputFile, mOptimise);
+                p.StartInfo.Arguments = string.Format("-v -o{1} \"{0}\" ", InputFile, OptimiseLevel);
                 p.Start();
                 p.PriorityClass = ProcessPriorityClass.BelowNormal;
                 p.WaitForExit();

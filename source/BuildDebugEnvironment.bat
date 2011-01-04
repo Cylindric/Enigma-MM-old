@@ -17,6 +17,7 @@ SET CACHEROOT=%MCSROOT%\Cache
 SET AVROOT=%MCSROOT%\AlphaVespucci
 SET OVERVIEWERROOT=%MCSROOT%\Overviewer
 SET BACKUPROOT=%MCSROOT%\Backups
+SET MAPROOT=%MCSROOT%\Maps
 
 
 :: Change to the script's path
@@ -32,6 +33,7 @@ IF NOT EXIST "%CACHEROOT%" MKDIR "%CACHEROOT%"
 IF NOT EXIST "%AVROOT%" MKDIR "%AVROOT%"
 IF NOT EXIST "%OVERVIEWERROOT%" MKDIR "%OVERVIEWERROOT%"
 IF NOT EXIST "%BACKUPROOT%" MKDIR "%BACKUPROOT%"
+IF NOT EXIST "%MAPROOT%" MKDIR "%MAPROOT%"
 
 
 ::Copy the files we need to the package
@@ -39,6 +41,9 @@ XCOPY /Y "%REPOSITORY%\Minecraft\minecraft_server.jar" "%MCROOT%"
 IF EXIST "%REPOSITORY%\AlphaVespucci" XCOPY /Y "%REPOSITORY%\AlphaVespucci\*" "%AVROOT%"
 IF EXIST "%REPOSITORY%\Overviewer" XCOPY /Y /S "%REPOSITORY%\Overviewer\*" "%OVERVIEWERROOT%"
 
+CD %MCROOT:~0,2%
+CD "%MCROOT%"
+ECHO stop | java -jar "%MCROOT%\minecraft_server.jar" nogui
 
 :END
 PAUSE
