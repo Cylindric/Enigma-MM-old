@@ -50,9 +50,10 @@ CreateFolder(EMMRoot)
 CreateFolder(objFS.BuildPath(EMMRoot, "AlphaVespucci"))
 CreateFolder(objFS.BuildPath(EMMRoot, "Backups"))
 CreateFolder(objFS.BuildPath(EMMRoot, "Cache"))
+CreateFolder(objFS.BuildPath(EMMRoot, "Maps"))
 CreateFolder(objFS.BuildPath(EMMRoot, "Minecraft"))
 CreateFolder(objFS.BuildPath(EMMRoot, "Overviewer"))
-CreateFolder(objFS.BuildPath(EMMRoot, "Maps"))
+CreateFolder(objFS.BuildPath(EMMRoot, "Plugins"))
 
 
 ' The EMM core files
@@ -60,6 +61,7 @@ CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "..\..\readme.txt
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.dll")), EMMRoot & "\"
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.exe")), EMMRoot & "\"
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.txt")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 
 'The 3rd party stuff
 ' objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.dll")), EMMRoot & "\"

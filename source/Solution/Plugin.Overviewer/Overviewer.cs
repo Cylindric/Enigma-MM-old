@@ -1,7 +1,5 @@
-﻿using System.IO;
-using System.Diagnostics;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Diagnostics;
+using System.IO;
 using EnigmaMM.Interfaces;
 
 namespace EnigmaMM.Plugin.Implementation
