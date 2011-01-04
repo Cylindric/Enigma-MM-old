@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EnigmaMM</RootNamespace>
-    <AssemblyName>emm</AssemblyName>
+    <AssemblyName>EMM</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
@@ -52,17 +52,12 @@
     <Compile Include="Backup.cs" />
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
-    <Compile Include="HostViews\ContractToHostViewAdapter.cs" />
-    <Compile Include="HostViews\PluginHostView.cs" />
-    <Compile Include="Mappers\MapManager.cs" />
     <Compile Include="EMMServerMessage.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="Scheduler\SchedulerManager.cs" />
     <Compile Include="Scheduler\ScheduleTask.cs" />
     <Compile Include="Settings\Settings.cs" />
-    <Compile Include="Mappers\Mapper.cs" />
-    <Compile Include="Mappers\Overviewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EMMServer.cs" />
     <Compile Include="Settings\MCServerProperties.cs" />

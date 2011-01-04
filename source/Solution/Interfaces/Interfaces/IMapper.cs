@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides a simple interface for passing Mappers around.
     /// </summary>
-    public interface IMapper
+    public interface IMapper: IPlugin
     {
         /// <summary>
         /// Renders the default map(s) for this renderer.

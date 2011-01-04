@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using EnigmaMM.Interfaces;
-using EnigmaMM.Mappers;
 
 namespace EnigmaMM
 {
@@ -26,6 +25,7 @@ namespace EnigmaMM
         private Scheduler.SchedulerManager mScheduler;
         private Backup mBackup;
         private Settings mSettings;
+        private PluginManager mPlugins;
 
         // Thread lock objects
         private readonly object mAutoSaveLock = new object();
@@ -136,13 +136,11 @@ namespace EnigmaMM
             mAutoSaveBlocks = 0;
             mAutoSaveEnabled = true;
             
-            if (mSettings.OverviewerInstalled)
-            {
-                MapManager.Register("overviewer", new Overviewer(this));
-            }
-
             // See if we need to swap in a new config file, and load current config.
             ReloadConfig();
+
+            mPlugins = new PluginManager(this);
+            mPlugins.Load(Path.Combine(mSettings.ServerManagerRoot, "plugins"));
 
             mScheduler.LoadSchedule(Path.Combine(mSettings.ServerManagerRoot, "scheduler.xml"));
             mScheduler.Start();
@@ -459,7 +457,19 @@ namespace EnigmaMM
         public void GenerateMaps(string[] args)
         {
             BlockAutoSave();
-            MapManager.RenderMaps(args);
+            foreach (IMapper p in mPlugins.GetPlugins<IMapper>())
+            {
+                //MapManager.RenderMaps(args);
+                RaiseServerMessage(string.Format("Mapping using plugin '{0}'", p.Name));
+                try
+                {
+                    p.Render();
+                }
+                catch (Exception e)
+                {
+                    RaiseServerMessage(string.Format("Failed to execute renderer for plugin '{0}', error '{1}'", p.Name,e.Message));
+                }
+            }
             UnblockAutoSave();
         }
 
