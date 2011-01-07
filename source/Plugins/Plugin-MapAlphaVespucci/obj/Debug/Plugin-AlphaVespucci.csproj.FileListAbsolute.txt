@@ -1,7 +1,0 @@
-D:\Dev\Enigma-MM\source\Solution\Plugin-MapAlphaVespucci\obj\Debug\ResolveAssemblyReference.cache
-D:\Dev\Enigma-MM\source\Solution\Plugin-MapAlphaVespucci\bin\Debug\Plugin-MapAlphaVespucci.dll
-D:\Dev\Enigma-MM\source\Solution\Plugin-MapAlphaVespucci\bin\Debug\Plugin-MapAlphaVespucci.pdb
-D:\Dev\Enigma-MM\source\Solution\Plugin-MapAlphaVespucci\bin\Debug\Interfaces.dll
-D:\Dev\Enigma-MM\source\Solution\Plugin-MapAlphaVespucci\bin\Debug\Interfaces.pdb
-D:\Dev\Enigma-MM\source\Solution\Plugin-MapAlphaVespucci\obj\Debug\Plugin-MapAlphaVespucci.dll
-D:\Dev\Enigma-MM\source\Solution\Plugin-MapAlphaVespucci\obj\Debug\Plugin-MapAlphaVespucci.pdb

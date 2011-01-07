@@ -20,9 +20,6 @@ namespace EnigmaMM.Plugin.Implementation
         public override void Initialise(IServer server)
         {
             base.Initialise(server);
-
-            ExePath = server.Settings.GetRootedPath(server.Settings.ServerManagerRoot, "AlphaVespucciRoot");
-            ExePath = Path.Combine(ExePath, "alphavespucci.exe");
         }
 
         public override void Render()
@@ -32,19 +29,30 @@ namespace EnigmaMM.Plugin.Implementation
 
         public override void Render(params string[] args)
         {
-            if (args[0] == "main")
+            // If no args specified, just run the default task
+            if (args.Length == 0)
             {
-                RenderMap("obleft", "day", "mainmap", true);
+                Render();
             }
-            if (args[0] == "extra")
+
+            foreach (string arg in args)
             {
-                RenderMap("obleft", "night", "nightmap", false);
-                RenderMap("obleft", "cave", "caves", false);
-                RenderMap("obleft", "cavelimit 15", "surfacecaves", false);
-                RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond", false);
-                RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone", false);
-                RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch", false);
-                RenderMap("flat", "day", "flatmap", false);
+                switch (arg)
+                {
+                    case "main":
+                        RenderMap("obleft", "day", "mainmap", true);
+                        break;
+
+                    case "extra":
+                        RenderMap("obleft", "night", "nightmap", false);
+                        RenderMap("obleft", "cave", "caves", false);
+                        RenderMap("obleft", "cavelimit 15", "surfacecaves", false);
+                        RenderMap("obleft", "whitelist \"Diamond ore\"", "resource-diamond", false);
+                        RenderMap("obleft", "whitelist \"Redstone ore\"", "resource-redstone", false);
+                        RenderMap("obleft", "night -whitelist \"Torch\"", "resource-torch", false);
+                        RenderMap("flat", "day", "flatmap", false);
+                        break;
+                }
             }
         }
 
@@ -54,6 +62,8 @@ namespace EnigmaMM.Plugin.Implementation
 
             VerifyPath(WorldPath, false);
             VerifyPath(OutputPath, false);
+
+            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\AlphaVespucci\AlphaVespucci.exe");
 
             string output = Path.Combine(OutputPath, Tag);
             VerifyPath(output, true);
@@ -76,7 +86,6 @@ namespace EnigmaMM.Plugin.Implementation
             // Optimise it and save a JPEG version
             string fullFilenamePng = Path.Combine(output, Filename + ".png");
             string fullFilenameJpeg = Path.Combine(output, Filename + ".jpg");
-            OptimisePNG(fullFilenamePng);
             ToJpeg(fullFilenamePng);
 
             // save a thumbnail version as a JPEG
@@ -138,21 +147,6 @@ namespace EnigmaMM.Plugin.Implementation
 
             output.Save(OutputFile);
             output.Dispose();
-        }
-
-        private void OptimisePNG(string InputFile)
-        {
-            if (OptimiseLevel > 0)
-            {
-                Process p = new Process();
-                p.StartInfo.FileName = "optipng.exe";
-                p.StartInfo.UseShellExecute = false;
-                p.StartInfo.CreateNoWindow = true;
-                p.StartInfo.Arguments = string.Format("-v -o{1} \"{0}\" ", InputFile, OptimiseLevel);
-                p.Start();
-                p.PriorityClass = ProcessPriorityClass.BelowNormal;
-                p.WaitForExit();
-            }
         }
 
         private ImageCodecInfo GetEncoderInfo(string mimeType)

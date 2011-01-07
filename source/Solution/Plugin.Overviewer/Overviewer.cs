@@ -26,6 +26,8 @@ namespace EnigmaMM.Plugin.Implementation
             VerifyPath(CachePath, false);
             VerifyPath(OutputPath, false);
 
+            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\Overviewer\gmap.exe");
+
             string cache = Path.Combine(CachePath, Tag);
             string output = Path.Combine(OutputPath, Tag);
 

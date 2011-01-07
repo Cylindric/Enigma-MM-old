@@ -7,7 +7,7 @@ using EnigmaMM.Interfaces;
 
 namespace EnigmaMM
 {
-    public class SettingsFile
+    public class SettingsFile : ISettings
     {
         protected Dictionary<string, string> mSettings = new Dictionary<string, string>();
         protected IServer mServer;
@@ -19,10 +19,27 @@ namespace EnigmaMM
         private char mSeparator = '=';
         private bool mAutoReload = false;
         private DateTime mLastReload;
+        private bool mLoaded = false;
 
         public Dictionary<string, string> Values
         {
             get { return mSettings; }
+        }
+
+        public string Filename
+        {
+            get { return mSettingsFile; }
+        }
+
+        public bool AutoLoad
+        {
+            get { return mAutoReload; }
+            set { mAutoReload = value; }
+        }
+
+        public bool Loaded
+        {
+            get { return mLoaded; }
         }
 
         public SettingsFile(IServer server, string fileName, char separator)
@@ -31,20 +48,6 @@ namespace EnigmaMM
             mSettingsFile = fileName;
             mSeparator = separator;
         }
-
-
-        public string Filename
-        {
-            get { return mSettingsFile; }
-        }
-
-
-        public bool AutoLoad
-        {
-            get { return mAutoReload; }
-            set { mAutoReload = value; }
-        }
-            
 
         /// <summary>
         /// Checks for a new.settingsfile file, and if it exists swaps it in for
@@ -129,6 +132,7 @@ namespace EnigmaMM
                 }
             }
             mLastReload = DateTime.Now;
+            mLoaded = true;
             return true;
         }
 

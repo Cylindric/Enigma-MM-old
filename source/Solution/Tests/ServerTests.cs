@@ -27,7 +27,6 @@ namespace EnigmaMM
 
             using (TextWriter tw = new StreamWriter(settingsFile))
             {
-                tw.WriteLine(string.Format("MinecraftRoot={0}", testRoot));
                 tw.WriteLine(@"ServerJar=.\MinecraftSimulator.exe");
                 tw.Close();
             }
