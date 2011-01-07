@@ -94,11 +94,6 @@ namespace EnigmaMM.Interfaces
         void Backup();
 
         /// <summary>
-        /// Refreshes the online user list.
-        /// </summary>
-        bool RefreshOnlineUserList();
-
-        /// <summary>
         /// Executes the specified command.
         /// </summary>
         void Execute(string command);
@@ -128,6 +123,13 @@ namespace EnigmaMM.Interfaces
         /// Turns on the server auto-save.
         /// </summary>
         void UnblockAutoSave();
+
+        /// <summary>
+        /// Parse the specified settings file and return an ISettings object.
+        /// </summary>
+        /// <param name="filename">Full filename to the settings file.</param>
+        /// <returns>ISettings object</returns>
+        ISettings GetSettings(string filename);
     }
 
     /// <summary>

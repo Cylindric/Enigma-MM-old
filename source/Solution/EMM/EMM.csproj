@@ -53,7 +53,9 @@
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
     <Compile Include="EMMServerMessage.cs" />
+    <Compile Include="MapManager.cs" />
     <Compile Include="PluginManager.cs" />
+    <Compile Include="PowerManager.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="Scheduler\SchedulerManager.cs" />
     <Compile Include="Scheduler\ScheduleTask.cs" />
@@ -83,12 +85,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="messages.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="optipng.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="optipng.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Scheduler\sample.scheduler.xml" />

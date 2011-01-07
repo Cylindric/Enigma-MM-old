@@ -1,6 +1,6 @@
 Option Explicit
 Dim objFS, objShell
-Dim ScriptPath, DeployRoot, ServerRoot, EMMRoot, Config, ReBuild, BuildRoot, SourceRoot
+Dim ScriptPath, DeployRoot, ServerRoot, EMMRoot, BuildRoot, SourceRoot
 Dim cmd
 Set objFS = CreateObject("Scripting.FileSystemObject")
 Set objShell = WScript.CreateObject("WScript.Shell")
@@ -23,20 +23,6 @@ DeployRoot = objFS.BuildPath(objFS.GetParentFolderName(ScriptPath), "Deploy")
 SourceRoot = objFS.BuildPath(ScriptPath, "Solution")
 BuildRoot = objFS.BuildPath(ScriptPath, "Build")
 EMMRoot = objFS.BuildPath(DeployRoot, "EMMServer")
-Rebuild = False
-Config = "Debug"
-
-' -----------------------------------------------------------------------------
-' Build
-' -----------------------------------------------------------------------------
-If (Rebuild = True) Then
-	Dim compiler
-	compiler = """%WINDIR%\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe"""
-	cmd = compiler & " /nologo /verbosity:q "
-	cmd = cmd & """" & objFS.BuildPath(ScriptPath, "Enigma Minecraft Manager.sln") & """"
-	objShell.Run cmd, WindowStyleShow, True
-End If
-
 
 ' This should only need creating once
 CreateFolder DeployRoot
@@ -66,15 +52,13 @@ CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.exe")), EMMRoo
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.txt")), EMMRoot & "\"
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 
-'The 3rd party stuff
-' objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.dll")), EMMRoot & "\"
-' objFS.CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(ScriptPath, "LibNbt\bin\LibNbt.txt")), EMMRoot & "\"
-
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\messages.xml")), EMMRoot & "\"
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\Settings\*.conf")), EMMRoot & "\"
 CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\Scheduler\*.xml")), EMMRoot & "\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "Plugin.AlphaVespucci\*.conf")), EMMRoot & "\Plugins\"
+CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "Plugin.Overviewer\*.conf")), EMMRoot & "\Plugins\"
 
 ' Remove any non-deploy files
 DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "MinecraftSimulator.exe"))

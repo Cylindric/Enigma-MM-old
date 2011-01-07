@@ -144,26 +144,6 @@ namespace EnigmaMM
             get { return mSettings.GetRootedPath(ServerManagerRoot, "MapRoot", @".\Maps"); }
         }
 
-        public int OptimisePng
-        {
-            get { return mSettings.GetInt("OptimisePng", 3); }
-        }
-
-        #region Overviewer Settings
-        
-        public bool OverviewerInstalled
-        {
-            get { return mSettings.GetBool("MinecraftOverviewerInstalled", false); }
-        }
-
-        public string OverviewerRoot
-        {
-            get { return mSettings.GetRootedPath(ServerManagerRoot, "MinecraftOverviewerRoot", @".\Overviewer"); }
-        }
-
-        #endregion
-
-
         public string GetString(string key, string defaultValue)
         {
             return mSettings.GetString(key, defaultValue);

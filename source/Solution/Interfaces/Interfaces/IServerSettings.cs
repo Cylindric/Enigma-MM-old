@@ -62,8 +62,6 @@ namespace EnigmaMM.Interfaces
 
         string MapRoot { get; }
 
-        int OptimisePng { get; }
-
         string GetString(string key, string defaultValue);
         string GetString(string key);
         int GetInt(string key, int defaultValue);
@@ -72,6 +70,5 @@ namespace EnigmaMM.Interfaces
         bool GetBool(string key);
         string GetRootedPath(string root, string key, string defaultValue);
         string GetRootedPath(string root, string key);
-
     }
 }
