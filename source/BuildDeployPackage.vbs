@@ -77,6 +77,7 @@ Else
 	zipname = objFS.GetAbsolutePathName(objFS.BuildPath(DeployRoot, "EMMServer-" & buildversion & ".zip"))
 End If
 
+DeleteFile zipname
 
 cmd = zipexe
 cmd = cmd & " a -mx9 "
