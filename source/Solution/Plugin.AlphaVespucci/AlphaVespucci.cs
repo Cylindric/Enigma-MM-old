@@ -58,12 +58,17 @@ namespace EnigmaMM.Plugin.Implementation
 
         private void RenderMap(string display, string features, string Filename, bool createHistory)
         {
-            Server.RaiseServerMessage(string.Format("AV: Rendering map {0}...", display));
+            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\AlphaVespucci\AlphaVespucci.exe");
+            if (!File.Exists(ExePath))
+            {
+                Server.RaiseServerMessage("AlphaVespucci not found.  Expected in {0}", ExePath);
+                return;
+            }
+
+            Server.RaiseServerMessage("{0}: Rendering map {1}...", this.Name, display);
 
             VerifyPath(WorldPath, false);
             VerifyPath(OutputPath, false);
-
-            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\AlphaVespucci\AlphaVespucci.exe");
 
             string output = Path.Combine(OutputPath, Tag);
             VerifyPath(output, true);
@@ -106,7 +111,7 @@ namespace EnigmaMM.Plugin.Implementation
                 File.Copy(fullFilenameJpeg, HistoryFile, true);
             }
 
-            Server.RaiseServerMessage("AV: Done.");
+            Server.RaiseServerMessage("{0}: Done.", this.Name);
         }
 
         private void ToJpeg(string InputFile)

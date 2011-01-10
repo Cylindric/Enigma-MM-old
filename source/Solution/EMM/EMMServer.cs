@@ -190,9 +190,6 @@ namespace EnigmaMM
         /// </summary>
         public void GenerateMaps(string[] args)
         { 
-            Thread t = new Thread(mBackup.PerformBackup);
-            t.Name = "Backup thread";
-            t.Start();
             mMapManager.GenerateMaps(args);
         }
 
@@ -219,9 +216,26 @@ namespace EnigmaMM
         /// <param name="Message">The message to throw</param>
         public void RaiseServerMessage(string Message)
         {
+            RaiseServerMessage(Message, new object[0]);
+        }
+
+        /// <summary>
+        /// Helper-method to raise ServerMessage Events from other places.
+        /// </summary>
+        /// <param name="Message">The message to throw</param>
+        /// <param name="args">Arguments to pass into FormatString.</param>
+        public void RaiseServerMessage(string Message, params object[] args)
+        {
             if (ServerMessage != null)
             {
-                ServerMessage(this, new ServerMessageEventArgs(Message));
+                if (args.Length == 0)
+                {
+                    ServerMessage(this, new ServerMessageEventArgs(Message));
+                }
+                else
+                {
+                    ServerMessage(this, new ServerMessageEventArgs(string.Format(Message, args)));
+                }
             }
         }
 
