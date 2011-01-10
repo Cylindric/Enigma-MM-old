@@ -16,13 +16,19 @@ namespace EnigmaMM.Plugin.Implementation
         public override void Initialise(IServer server)
         {
             base.Initialise(server);
-
-            ExePath = server.Settings.GetRootedPath(server.Settings.ServerManagerRoot, "MinecraftOverviewerRoot");
-            ExePath = Path.Combine(ExePath, "gmap.exe");
         }
 
         public override void Render()
         {
+            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\Overviewer\gmap.exe");
+            if (!File.Exists(ExePath))
+            {
+                Server.RaiseServerMessage("Minecraft Overviewer not found.  Expected in {0}", ExePath);
+                return;
+            }
+
+            Server.RaiseServerMessage("{0}: Rendering map...", this.Name);
+
             VerifyPath(CachePath, false);
             VerifyPath(OutputPath, false);
 
@@ -47,6 +53,8 @@ namespace EnigmaMM.Plugin.Implementation
             p.Start();
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
+
+            Server.RaiseServerMessage("{0}: Done.", this.Name);
         }
     }
 }
