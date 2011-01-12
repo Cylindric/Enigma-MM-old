@@ -17,11 +17,6 @@ namespace EnigmaMM.Plugin.Implementation
             base.Tag = "av";
         }
 
-        public override void Initialise(IServer server)
-        {
-            base.Initialise(server);
-        }
-
         public override void Render()
         {
             Render("main");
@@ -58,28 +53,30 @@ namespace EnigmaMM.Plugin.Implementation
 
         private void RenderMap(string display, string features, string Filename, bool createHistory)
         {
-            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\AlphaVespucci\AlphaVespucci.exe");
-            if (!File.Exists(ExePath))
+            // Get and check that the Executable exists
+            string exeFile = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\AlphaVespucci\AlphaVespucci.exe");
+            if (!File.Exists(exeFile))
             {
-                Server.RaiseServerMessage("AlphaVespucci not found.  Expected in {0}", ExePath);
+                Server.RaiseServerMessage("AlphaVespucci not found.  Expected in {0}", exeFile);
                 return;
             }
 
-            Server.RaiseServerMessage("{0}: Rendering map {1}...", this.Name, display);
-
+            // Check the world data exists
             VerifyPath(WorldPath, false);
-            VerifyPath(OutputPath, false);
 
-            string output = Path.Combine(OutputPath, Tag);
-            VerifyPath(output, true);
+            // Check the output path
+            VerifyPath(Path.GetDirectoryName(OutputPath), false);
+            VerifyPath(OutputPath, true);
+
+            Server.RaiseServerMessage("{0}: Rendering map {1}...", this.Name, display);
 
             string cmd = string.Format(
                 "-{0} -{1} -path \"{2}\" -fullname \"{4}\" -outputdir \"{3}\"",
-                display, features, WorldPath, output, Filename
+                display, features, WorldPath, OutputPath, Filename
             );
 
             Process p = new Process();
-            p.StartInfo.FileName = ExePath;
+            p.StartInfo.FileName = exeFile;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.Arguments = cmd;
@@ -89,12 +86,12 @@ namespace EnigmaMM.Plugin.Implementation
 
             // fullFilename now exists, and is the full-size PNG.
             // Optimise it and save a JPEG version
-            string fullFilenamePng = Path.Combine(output, Filename + ".png");
-            string fullFilenameJpeg = Path.Combine(output, Filename + ".jpg");
+            string fullFilenamePng = Path.Combine(OutputPath, Filename + ".png");
+            string fullFilenameJpeg = Path.Combine(OutputPath, Filename + ".jpg");
             ToJpeg(fullFilenamePng);
 
             // save a thumbnail version as a JPEG
-            string smallFilenamePng = Path.Combine(output, Filename + "-small.png");
+            string smallFilenamePng = Path.Combine(OutputPath, Filename + "-small.png");
             Resize(fullFilenamePng, smallFilenamePng, 480);
             ToJpeg(smallFilenamePng);
             File.Delete(smallFilenamePng);
@@ -102,7 +99,7 @@ namespace EnigmaMM.Plugin.Implementation
             // save a history version
             if (createHistory)
             {
-                string HistoryRoot = Path.Combine(output, "History");
+                string HistoryRoot = Path.Combine(OutputPath, "History");
                 string HistoryFile = Path.Combine(HistoryRoot, string.Format("{0}-{1:yyyy-MM-dd_HH}.jpg", Path.GetFileNameWithoutExtension(fullFilenameJpeg), DateTime.Now));
                 if (!Directory.Exists(HistoryRoot))
                 {

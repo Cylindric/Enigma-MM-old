@@ -58,8 +58,8 @@ namespace EnigmaMM
                 mServer.RaiseServerMessage("Mapping using plugin '{0}'", p.Name);
                 try
                 {
-                    p.Render(args);
                     mapperFound = true;
+                    p.Render(args);
                 }
                 catch (Exception e)
                 {
@@ -70,7 +70,7 @@ namespace EnigmaMM
 
             if (!mapperFound)
             {
-                mServer.RaiseServerMessage("No pluggin found with tag '{0}'", specificMapper);
+                mServer.RaiseServerMessage("No plugin found with tag '{0}'", specificMapper);
             }
 
             mRunning = false;

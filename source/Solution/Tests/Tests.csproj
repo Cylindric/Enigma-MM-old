@@ -27,7 +27,7 @@
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +54,7 @@
     <Compile Include="ScheduleTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerTests.cs" />
+    <Compile Include="SettingsFileTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EMM\EMM.csproj">

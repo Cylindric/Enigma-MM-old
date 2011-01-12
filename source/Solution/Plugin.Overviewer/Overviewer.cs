@@ -13,40 +13,36 @@ namespace EnigmaMM.Plugin.Implementation
             base.Tag = "overviewer";
         }
 
-        public override void Initialise(IServer server)
-        {
-            base.Initialise(server);
-        }
-
         public override void Render()
         {
-            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\Overviewer\gmap.exe");
-            if (!File.Exists(ExePath))
+            // Get and check that the Executable exists
+            string exeFile = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\Overviewer\gmap.exe");
+            if (!File.Exists(exeFile))
             {
-                Server.RaiseServerMessage("Minecraft Overviewer not found.  Expected in {0}", ExePath);
+                Server.RaiseServerMessage("Minecraft Overviewer not found.  Expected in {0}", exeFile);
                 return;
             }
 
+            // Check the world data exists
+            VerifyPath(WorldPath, false);
+
+            // Check the output path
+            VerifyPath(Path.GetDirectoryName(OutputPath), false);
+            VerifyPath(OutputPath, true);
+
+            // Check the cache path
+            VerifyPath(Path.GetDirectoryName(CachePath), false);
+            VerifyPath(CachePath, true);
+
             Server.RaiseServerMessage("{0}: Rendering map...", this.Name);
-
-            VerifyPath(CachePath, false);
-            VerifyPath(OutputPath, false);
-
-            ExePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "ExePath", @".\Overviewer\gmap.exe");
-
-            string cache = Path.Combine(CachePath, Tag);
-            string output = Path.Combine(OutputPath, Tag);
-
-            VerifyPath(cache, true);
-            VerifyPath(output, true);
 
             string cmd = string.Format(
                 "-p 1 --cachedir \"{0}\" \"{1}\" \"{2}\"",
-                cache, WorldPath, output
+                CachePath, WorldPath, OutputPath
             );
 
             Process p = new Process();
-            p.StartInfo.FileName = ExePath;
+            p.StartInfo.FileName = exeFile;
             p.StartInfo.UseShellExecute = false;
             p.StartInfo.CreateNoWindow = false;
             p.StartInfo.Arguments = cmd;
