@@ -11,7 +11,11 @@ namespace EnigmaMM
     class AlphaVespucciPlugin
     {
         private Mock<IServer> mockServer;
-        Mock<ISettings> mockSettings;
+        private Mock<ISettings> mockSettings;
+        private string mTestRoot;
+        private string mOutputPath;
+        private string mCachePath;
+        private string mWorldPath;
 
         [TestFixtureSetUp]
         public void TestInit()
@@ -19,22 +23,16 @@ namespace EnigmaMM
             mockServer = new Mock<IServer>();
             mockSettings = new Mock<ISettings>();
 
-            string testRoot = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8));
+            mTestRoot = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8));
 
-            string outputpath = Path.Combine(testRoot, "Maps");
-            string cachepath = Path.Combine(Path.Combine(testRoot, "Cache"), "av");
-            string worldpath = Path.Combine(Path.Combine(testRoot, "Minecraft"), "world");
+            mOutputPath = Path.Combine(Path.Combine(mTestRoot, "Maps"), "av");
+            mCachePath = Path.Combine(Path.Combine(mTestRoot, "Cache"), "av");
+            mWorldPath = Path.Combine(Path.Combine(mTestRoot, "Minecraft"), "world");
 
-            mockSettings.Setup(o => o.GetRootedPath(It.IsAny<string>(), 
-                "OutputPath", It.IsAny<string>()))
-                .Returns(outputpath);
-            
-            mockSettings.Setup(o => o.GetRootedPath(It.IsAny<string>(), 
-                "CachePath", It.IsAny<string>()))
-                .Returns(cachepath);
+            ResetSettings();
 
-            mockServer.SetupGet(o => o.MinecraftSettings.WorldPath).Returns(worldpath);
-            mockServer.SetupGet(o => o.Settings.ServerManagerRoot).Returns(testRoot);
+            mockServer.SetupGet(o => o.MinecraftSettings.WorldPath).Returns(mWorldPath);
+            mockServer.SetupGet(o => o.Settings.ServerManagerRoot).Returns(mTestRoot);
             mockServer.Setup(o => o.GetSettings(It.IsAny<string>())).Returns(mockSettings.Object);
         }
 
@@ -45,13 +43,54 @@ namespace EnigmaMM
         }
 
         [Test]
-        public void TestOutput()
+        public void TestDefaultOutputPathExecutes()
         {
-            //OutputPath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "OutputPath", @".\Maps\" + this.Tag);
-            //CachePath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "CachePath", @".\Cache\" + this.Tag);
+            ResetSettings();
+            AlphaVespucci av = new AlphaVespucci();
+            av.Initialise(mockServer.Object);
+            av.Render();
+        }
+
+        [Test]
+        public void TestNonDefaultOutputDoesNotCreateDefaultOutputPath()
+        {
+            ResetSettings();
+            mockSettings.Setup(o => o.GetRootedPath(It.IsAny<string>(),
+               "OutputPath", It.IsAny<string>()))
+               .Returns(Path.Combine(Path.Combine(mTestRoot, "Maps"), "avnondefault"));
 
             AlphaVespucci av = new AlphaVespucci();
             av.Initialise(mockServer.Object);
+            av.Render();
+
+            if (Directory.Exists(Path.Combine(Path.Combine(mTestRoot, "Maps"), "avnondefault")))
+            {
+                Directory.Delete(Path.Combine(Path.Combine(mTestRoot, "Maps"), "avnondefault"), true);
+            }
         }
+
+        private void ResetSettings()
+        {
+            if (Directory.Exists(mOutputPath))
+            {
+                Directory.Delete(mOutputPath, true);
+            }
+            mockSettings.Setup(o => o.GetRootedPath(It.IsAny<string>(),
+               "OutputPath", It.IsAny<string>()))
+               .Returns(mOutputPath);
+
+            if (Directory.Exists(mCachePath))
+            {
+                Directory.Delete(mCachePath, true);
+            }
+            mockSettings.Setup(o => o.GetRootedPath(It.IsAny<string>(),
+                "CachePath", It.IsAny<string>()))
+                .Returns(mCachePath);
+
+            mockSettings.Setup(o => o.GetRootedPath(It.IsAny<string>(),
+                "ExePath", It.IsAny<string>()))
+                .Returns(Path.Combine(mTestRoot, "Test.NullCommand.exe"));
+        }
+
     }
 }

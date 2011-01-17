@@ -81,7 +81,14 @@ namespace EnigmaMM.Plugin.Implementation
             p.StartInfo.CreateNoWindow = true;
             p.StartInfo.Arguments = cmd;
             p.Start();
-            p.PriorityClass = ProcessPriorityClass.BelowNormal;
+            try
+            {
+                p.PriorityClass = ProcessPriorityClass.BelowNormal;
+            }
+                catch (InvalidOperationException ex)
+            {
+                Debug.Print("Unable to set process priority, probably already exited: {0} ", ex.Message);
+            }
             p.WaitForExit();
 
             // fullFilename now exists, and is the full-size PNG.
@@ -97,7 +104,7 @@ namespace EnigmaMM.Plugin.Implementation
             File.Delete(smallFilenamePng);
 
             // save a history version
-            if (createHistory)
+            if (File.Exists(fullFilenameJpeg) && createHistory)
             {
                 string HistoryRoot = Path.Combine(OutputPath, "History");
                 string HistoryFile = Path.Combine(HistoryRoot, string.Format("{0}-{1:yyyy-MM-dd_HH}.jpg", Path.GetFileNameWithoutExtension(fullFilenameJpeg), DateTime.Now));
@@ -113,12 +120,22 @@ namespace EnigmaMM.Plugin.Implementation
 
         private void ToJpeg(string InputFile)
         {
+            if (!File.Exists(InputFile))
+            {
+                return;
+            }
+        
             string OutputFile = Path.Combine(Path.GetDirectoryName(InputFile), Path.GetFileNameWithoutExtension(InputFile) + ".jpg");
             ToJpeg(InputFile, OutputFile);
         }
 
         private void ToJpeg(string InputFile, string OutputFile)
         {
+            if (!File.Exists(InputFile) || !File.Exists(OutputFile))
+            {
+                return;
+            }
+
             Bitmap input = new Bitmap(InputFile);
 
             Encoder qualityEncoder = Encoder.Quality;
@@ -133,6 +150,11 @@ namespace EnigmaMM.Plugin.Implementation
 
         private void Resize(string InputFile, string OutputFile, int destWidth)
         {
+            if (!File.Exists(InputFile) || !File.Exists(OutputFile))
+            {
+                return;
+            }
+            
             Bitmap input = new Bitmap(InputFile);
 
             int sourceWidth = input.Width;
