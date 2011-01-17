@@ -32,32 +32,28 @@ namespace EnigmaMM
             string[] args = Command.Split(' ');
             switch (args[0])
             {
-                case ("quit"):
-                    ParseCommand("stop");
-                    break;
-
                 case ("start"):
                     mMinecraft.StartServer();
                     break;
 
                 case ("restart"):
+                    mMinecraft.RestartServer(true);
+                    break;
+
+                case ("restart now"):
                     ParseCommand("stop");
                     mMinecraft.StartServer();
                     break;
 
-                case ("restart-graceful"):
-                    mMinecraft.RestartServer(true);
-                    break;
-
                 case ("stop"):
-                    mMinecraft.StopServer(false);
-                    break;
-
-                case ("stop-graceful"):
                     mMinecraft.StopServer(true);
                     break;
 
-                case ("abort-graceful"):
+                case ("stop now"):
+                    mMinecraft.StopServer(false);
+                    break;
+
+                case ("abort"):
                     mMinecraft.AbortPendingOperations();
                     break;
 
