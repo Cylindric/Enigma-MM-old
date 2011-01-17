@@ -13,16 +13,18 @@ ForceCScript
 ' -----------------------------------------------------------------------------
 Const WindowStyleHide = 0
 Const WindowStyleShow = 1
-
+Const ForReading = 1
+Const ForWriting = 2
+Const ForAppending = 8
 
 ' -----------------------------------------------------------------------------
 ' Configuration
 ' -----------------------------------------------------------------------------
 ScriptPath = objFS.GetParentFolderName(Wscript.ScriptFullName)
-DeployRoot = objFS.BuildPath(objFS.GetParentFolderName(ScriptPath), "Deploy")
-SourceRoot = objFS.BuildPath(ScriptPath, "Solution")
-BuildRoot = objFS.BuildPath(ScriptPath, "Build")
-EMMRoot = objFS.BuildPath(DeployRoot, "EMMServer")
+DeployRoot = BuildPath(Array(objFS.GetParentFolderName(ScriptPath), "Deploy"))
+SourceRoot = BuildPath(Array(ScriptPath, "Solution"))
+BuildRoot = BuildPath(Array(ScriptPath, "Build"))
+EMMRoot = BuildPath(Array(DeployRoot, "EMMServer"))
 
 ' This should only need creating once
 CreateFolder DeployRoot
@@ -36,45 +38,72 @@ End If
 
 ' Create the folders
 CreateFolder(EMMRoot)
-CreateFolder(objFS.BuildPath(EMMRoot, "AlphaVespucci"))
-CreateFolder(objFS.BuildPath(EMMRoot, "Backups"))
-CreateFolder(objFS.BuildPath(EMMRoot, "Cache"))
-CreateFolder(objFS.BuildPath(EMMRoot, "Maps"))
-CreateFolder(objFS.BuildPath(EMMRoot, "Minecraft"))
-CreateFolder(objFS.BuildPath(EMMRoot, "Overviewer"))
-CreateFolder(objFS.BuildPath(EMMRoot, "Plugins"))
+CreateFolder(BuildPath(Array(EMMRoot, "AlphaVespucci")))
+CreateFolder(BuildPath(Array(EMMRoot, "Backups")))
+CreateFolder(BuildPath(Array(EMMRoot, "Cache")))
+CreateFolder(BuildPath(Array(EMMRoot, "Maps")))
+CreateFolder(BuildPath(Array(EMMRoot, "Minecraft")))
+CreateFolder(BuildPath(Array(EMMRoot, "Overviewer")))
+CreateFolder(BuildPath(Array(EMMRoot, "Plugins")))
 
 
 ' The EMM core files
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "..\..\readme.txt")), EMMRoot & "\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.dll")), EMMRoot & "\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.exe")), EMMRoot & "\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\*.txt")), EMMRoot & "\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
+CopyFile BuildPath(Array(BuildRoot, "\*.dll")), EMMRoot & "\"
+CopyFile BuildPath(Array(BuildRoot, "\*.exe")), EMMRoot & "\"
+CopyFile BuildPath(Array(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\messages.xml")), EMMRoot & "\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\Settings\*.conf")), EMMRoot & "\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "EMM\Scheduler\*.xml")), EMMRoot & "\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "Plugin.AlphaVespucci\*.conf")), EMMRoot & "\Plugins\"
-CopyFile objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "Plugin.Overviewer\*.conf")), EMMRoot & "\Plugins\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "messages.xml")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "Plugin.AlphaVespucci", "*.conf")), EMMRoot & "\Plugins\"
+CopyFile BuildPath(Array(SourceRoot, "Plugin.Overviewer", "*.conf")), EMMRoot & "\Plugins\"
 
 ' Remove any non-deploy files
-DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "MinecraftSimulator.exe"))
-DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "moq.dll"))
-DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "nunit.framework.dll"))
-DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "Server.vshost.exe"))
-DeleteFile objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "Tests.dll"))
+DeleteFile BuildPath(Array(EMMRoot, "MinecraftSimulator.exe"))
+DeleteFile BuildPath(Array(EMMRoot, "moq.dll"))
+DeleteFile BuildPath(Array(EMMRoot, "nunit.framework.dll"))
+DeleteFile BuildPath(Array(EMMRoot, "Server.vshost.exe"))
+DeleteFile BuildPath(Array(EMMRoot, "Tests.dll"))
+DeleteFile BuildPath(Array(EMMRoot, "Plugin.AlphaVespucci.dll"))
+
+' Concatenate and clean out the license files
+Dim file
+file = BuildPath(Array(EMMROOT, "readme.txt"))
+CreateFile file
+WriteLine file, "##### Contents"
+WriteLine file, "##1## Readme"
+WriteLine file, "##2## LibNbt License"
+WriteLine file, "##3## Ionic Zip License"
+WriteLine file, "#####"
+WriteLine file, ""
+WriteLine file, ""
+WriteLine file, "################################################################################"
+WriteLine file, "##1## Readme"
+WriteLine file, "################################################################################"
+ConcatenateFiles file, BuildPath(Array(SourceRoot, "..", "..", "readme.txt"))
+WriteLine file, ""
+WriteLine file, ""
+WriteLine file, "################################################################################"
+WriteLine file, "##2## LibNbt License"
+WriteLine file, "################################################################################"
+ConcatenateFiles file, BuildPath(Array(SourceRoot, "LibNbt", "LibNbt.txt"))
+WriteLine file, ""
+WriteLine file, ""
+WriteLine file, "################################################################################"
+WriteLine file, "##3## Ionic Zip License"
+WriteLine file, "################################################################################"
+ConcatenateFiles file, BuildPath(Array(SourceRoot, "EMM", "Ionic.txt"))
 
 
 Dim zipexe, zipname, buildversion
-buildversion = GetFileVersion(objFS.GetAbsolutePathName(objFS.BuildPath(EMMRoot, "emm.dll")))
-zipexe = objFS.GetAbsolutePathName(objFS.BuildPath(SourceRoot, "Tools\7za.exe"))
+buildversion = GetFileVersion(BuildPath(Array(EMMRoot, "emm.dll")))
+zipexe = objFS.GetAbsolutePathName(BuildPath(Array(SourceRoot, "Tools", "7za.exe")))
 If buildversion = "" Then
-	zipname = objFS.GetAbsolutePathName(objFS.BuildPath(DeployRoot, "EMMServer.zip"))
+	zipname = objFS.GetAbsolutePathName(BuildPath(Array(DeployRoot, "EMMServer.zip")))
 Else
-	zipname = objFS.GetAbsolutePathName(objFS.BuildPath(DeployRoot, "EMMServer-" & buildversion & ".zip"))
+	zipname = objFS.GetAbsolutePathName(BuildPath(Array(DeployRoot, "EMMServer-" & buildversion & ".zip")))
 End If
 
 DeleteFile zipname
@@ -85,11 +114,16 @@ cmd = cmd & zipname & " "
 cmd = cmd & "EMMServer\"
 
 objShell.CurrentDirectory = DeployRoot
-objShell.Run cmd, WindowStyleShow, True
+WScript.Echo "Creating new zip file..."
+objShell.Run cmd, WindowStyleHide, True
+
+
+
+
 
 Function GetFileVersion(Filename)
 	Dim f
-  If (objFS.FileExists(Filename)) Then
+	If (objFS.FileExists(Filename)) Then
 		Set f = objFS.GetFile(Filename)
 		GetFileVersion = objFS.GetFileVersion(f)
 	Else
@@ -98,11 +132,11 @@ Function GetFileVersion(Filename)
 End Function
 
 Sub CreateFolder(Path)
-  If (Not objFS.FolderExists(Path)) Then
+	If (Not objFS.FolderExists(Path)) Then
 		WScript.Sleep(100)
-    objFS.CreateFolder Path
+		objFS.CreateFolder Path
 		WScript.Sleep(100)
-  End If
+	End If
 End Sub
 
 Function CopyFile(Source, Destination)
@@ -111,19 +145,54 @@ Function CopyFile(Source, Destination)
 End Function
 
 Function DeleteFile(Filename)
-	WScript.Echo "Deleting " & Filename & "."
-	objFS.DeleteFile Filename
+	If objFS.FileExists(Filename) Then
+		WScript.Echo "Deleting " & Filename & "."
+		objFS.DeleteFile Filename
+	End If
 End Function
 
 Sub ForceCScript
-    Dim args : args = ""
-    Dim i
-    If Right(LCase(WScript.FullName), 11) = "wscript.exe" Then
-        For i=0 To WScript.Arguments.Count - 1
-            args = args & WScript.Arguments(i) & " "
-        Next
-        objShell.run objShell.ExpandEnvironmentStrings("%comspec%") & _
-            " /c cscript.exe //nologo """ & WScript.ScriptFullName & """" & args
-        WScript.Quit
-    End If
+	Dim args : args = ""
+	Dim i
+	If Right(LCase(WScript.FullName), 11) = "wscript.exe" Then
+		For i=0 To WScript.Arguments.Count - 1
+			args = args & WScript.Arguments(i) & " "
+		Next
+		objShell.run objShell.ExpandEnvironmentStrings("%comspec%") & _
+			" /c cscript.exe //nologo """ & WScript.ScriptFullName & """" & args
+		WScript.Quit
+	End If
 End Sub
+
+Sub CreateFile(TargetFileName)
+  WScript.Echo "Creating file " & TargetFileName
+  objFS.CreateTextFile TargetFileName, True
+End Sub
+
+Sub WriteLine(TargetFileName, Line)
+  Dim TargetFile
+  Set TargetFile = objFS.OpenTextFile(TargetFileName, ForAppending)
+  TargetFile.WriteLine(Line)
+  TargetFile.Close
+End Sub
+
+Sub ConcatenateFiles(TargetFileName, SecondFileName)
+  Dim TargetFile, SecondFile
+  Dim txt
+	WScript.Echo "Appending " & SecondFilename & " to " & TargetFileName
+  Set TargetFile = objFS.OpenTextFile(TargetFileName, ForAppending)
+  Set SecondFile = objFS.OpenTextFile(SecondFileName, ForReading)
+  txt = SecondFile.ReadAll
+  TargetFile.Write txt
+  TargetFile.Close
+  SecondFile.Close
+End Sub
+
+Function BuildPath(rArgs)
+  Dim c
+  BuildPath = rArgs(0)
+  For c = 1 To UBound(rArgs)
+    BuildPath = objFS.BuildPath(BuildPath, rArgs(c))
+    BuildPath = objFS.GetAbsolutePathName(BuildPath)
+  Next
+End Function

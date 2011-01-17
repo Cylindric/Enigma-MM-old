@@ -63,8 +63,6 @@
     <Compile Include="Tags\NbtTagType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="LibNbt.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="LibNbt.txt" />
   </ItemGroup>
 </Project>
