@@ -66,6 +66,7 @@ DeleteFile BuildPath(Array(EMMRoot, "moq.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "nunit.framework.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "Server.vshost.exe"))
 DeleteFile BuildPath(Array(EMMRoot, "Tests.dll"))
+DeleteFile BuildPath(Array(EMMRoot, "Test.NullCommand.exe"))
 DeleteFile BuildPath(Array(EMMRoot, "Plugin.AlphaVespucci.dll"))
 
 ' Concatenate and clean out the license files
