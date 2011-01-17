@@ -7,7 +7,9 @@ SET SCRIPTDRIVE=%SCRIPTPATH:~0,2%
 
 
 ::Set some common paths
-SET REPOSITORY=D:\Minecraft\MCServerRoot
+SET REPOSITORY=%EMMSERVERBASE%
+IF NOT EXIST "%REPOSITORY%" GOTO HELP
+
 SET ROOT=%SCRIPTPATH%
 SET MCSROOT=%ROOT%\Build
 
@@ -44,7 +46,11 @@ IF EXIST "%REPOSITORY%\Overviewer" XCOPY /Y /S "%REPOSITORY%\Overviewer\*" "%OVE
 CD %MCROOT:~0,2%
 CD "%MCROOT%"
 ECHO stop | java -jar "%MCROOT%\minecraft_server.jar" nogui
+GOTO END
+
+:HELP
+ECHO The environment variable EMMSERVERBASE should point to a repository where EMM test sources can be found
+GOTO END
 
 :END
-PAUSE
 ENDLOCAL
