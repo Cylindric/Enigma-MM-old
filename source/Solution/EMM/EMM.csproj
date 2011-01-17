@@ -81,9 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ionic.Zip.Reduced.dll" />
-    <Content Include="Ionic.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Ionic.txt" />
     <Content Include="messages.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
