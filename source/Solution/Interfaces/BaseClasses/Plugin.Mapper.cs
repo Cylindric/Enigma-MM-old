@@ -62,6 +62,9 @@ namespace Interfaces.BaseClasses
         /// </summary>
         protected ISettings PluginSettings;
 
+        private string mCodeBase;
+        private string mSettingsFileName;
+
         /// <summary>
         /// The default Constructor for the Base Class.
         /// </summary>
@@ -69,6 +72,9 @@ namespace Interfaces.BaseClasses
         public PluginMapper()
         {
             Name = Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetCallingAssembly().CodeBase);
+            mCodeBase = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
+            mSettingsFileName = Path.Combine(Path.GetDirectoryName(mCodeBase), Path.GetFileNameWithoutExtension(mCodeBase) + ".conf");
+            mSettingsFileName = mSettingsFileName.Substring(mSettingsFileName.IndexOf("\\") + 1);
             Tag = Name;
         }
 
@@ -85,10 +91,7 @@ namespace Interfaces.BaseClasses
             Server = server;
             WorldPath = server.MinecraftSettings.WorldPath;
 
-            string codeBase = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
-            string settingsFile = Path.Combine(Path.GetDirectoryName(codeBase), Path.GetFileNameWithoutExtension(codeBase) + ".conf");
-            settingsFile = settingsFile.Substring(settingsFile.IndexOf("\\") + 1);
-            PluginSettings = server.GetSettings(settingsFile);
+            PluginSettings = server.GetSettings(mSettingsFileName);
             PluginSettings.LookForNewSettings();
 
             OutputPath = PluginSettings.GetRootedPath(Server.Settings.ServerManagerRoot, "OutputPath", @".\Maps\" + this.Tag);

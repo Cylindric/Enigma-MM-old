@@ -76,7 +76,7 @@
     <ProjectReference Include="..\Plugin.AlphaVespucci\Plugin.AlphaVespucci.csproj">
       <Project>{F63A86B8-6630-416D-A050-AB56A48D5348}</Project>
       <Name>Plugin.AlphaVespucci</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
