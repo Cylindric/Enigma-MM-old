@@ -2,8 +2,8 @@
 <messages>
 	<message>
   	<name>StartupComplete</name>
-		<type>EndsWith</type>
-		<rule>ns)! For help, type "help" or "?"</rule>
+		<type>Regex</type>
+		<rule>^(?&lt;timestamp&gt;.+?)\ \[INFO]\ Done\ \((?&lt;time&gt;\d+)ns\)!\ For\ help,\ type\ "help"\ or\ "\?"$</rule>
 	</message>
   <message>
 		<name>SaveComplete</name>
@@ -76,8 +76,18 @@
 		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ Banning (?&lt;username&gt;\w+?)$</rule>
 	</message>
   <message>
-		<name>PardoningUser</name>
-		<type>Regex</type>
-		<rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ Pardoning (?&lt;username&gt;\w+?)$</rule>
-	</message>
+    <name>WhiteListOn</name>
+    <type>EndsWith</type>
+    <rule>[INFO] CONSOLE: Turned on white-listing</rule>
+  </message>
+  <message>
+    <name>WhiteListOff</name>
+    <type>EndsWith</type>
+    <rule>[INFO] CONSOLE: Turned off white-listing</rule>
+  </message>
+  <message>
+    <name>PardoningUser</name>
+    <type>Regex</type>
+    <rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ Pardoning (?&lt;username&gt;\w+?)$</rule>
+  </message>
 </messages>

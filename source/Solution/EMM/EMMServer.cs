@@ -37,6 +37,7 @@ namespace EnigmaMM
         private ArrayList mOnlineUsers;
         private int mAutoSaveBlocks;
         private bool mAutoSaveEnabled;
+        private SettingsFile mMinecraftWhitelist;
 
         #region Interface IServer Events
 
@@ -335,6 +336,8 @@ namespace EnigmaMM
             mSettings.Initialise(mainSettingsFile);
 
             mMinecraftSettings = new MCServerProperties(this);
+            mMinecraftWhitelist = new SettingsFile(this, Path.Combine(mSettings.MinecraftRoot, "white-list.txt"), ' ');
+
             mParser = new CommandParser(this);
             mScheduler = new Scheduler.SchedulerManager(this);
             mMapManager = new MapManager(this);
@@ -351,6 +354,7 @@ namespace EnigmaMM
             
             // See if we need to swap in a new config file, and load current config.
             mMinecraftSettings.LookForNewSettings();
+            mMinecraftWhitelist.LookForNewSettings();
 
             mPlugins = new PluginManager(this);
             mPlugins.Load(Path.Combine(mSettings.ServerManagerRoot, "plugins"));
@@ -437,7 +441,7 @@ namespace EnigmaMM
                     break;
 
                 case EMMServerMessage.MessageTypes.UserLoggedIn:
-                    mOnlineUsers.Add(M.Data["username"]);
+                    OnUserJoined(M);
                     break;
 
                 case EMMServerMessage.MessageTypes.UserLoggedOut:
@@ -486,6 +490,15 @@ namespace EnigmaMM
                 ServerStarted(this, new ServerMessageEventArgs(Message));
             }
             RaiseServerMessage("Started");
+        }
+
+        /// <summary>
+        /// Called when a user connects
+        /// </summary>
+        /// <param name="Message"></param>
+        internal void OnUserJoined(EMMServerMessage Message)
+        {
+            mOnlineUsers.Add(Message.Data["username"]);
         }
 
         /// <summary>
