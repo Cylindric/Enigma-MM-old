@@ -3,7 +3,7 @@
 	<message>
   	<name>StartupComplete</name>
 		<type>EndsWith</type>
-		<rule>[INFO] Done! For help, type "help" or "?"</rule>
+		<rule>ns)! For help, type "help" or "?"</rule>
 	</message>
   <message>
 		<name>SaveComplete</name>
