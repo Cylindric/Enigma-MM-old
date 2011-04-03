@@ -44,6 +44,7 @@ CreateFolder(BuildPath(Array(EMMRoot, "Cache")))
 CreateFolder(BuildPath(Array(EMMRoot, "Maps")))
 CreateFolder(BuildPath(Array(EMMRoot, "Minecraft")))
 CreateFolder(BuildPath(Array(EMMRoot, "Overviewer")))
+CreateFolder(BuildPath(Array(EMMRoot, "c10t")))
 CreateFolder(BuildPath(Array(EMMRoot, "Plugins")))
 
 
@@ -59,6 +60,7 @@ CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.AlphaVespucci", "*.conf")), EMMRoot & "\Plugins\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.Overviewer", "*.conf")), EMMRoot & "\Plugins\"
+CopyFile BuildPath(Array(SourceRoot, "Plugin.c10t", "*.conf")), EMMRoot & "\Plugins\"
 
 ' Remove any non-deploy files
 DeleteFile BuildPath(Array(EMMRoot, "MinecraftSimulator.exe"))
