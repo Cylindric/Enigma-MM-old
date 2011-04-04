@@ -33,6 +33,7 @@ namespace EnigmaMM.Plugin.Implementation
             // Check the output path
             VerifyPath(Path.GetDirectoryName(OutputPath), false);
             VerifyPath(OutputPath, true);
+            OutputPath = Path.Combine(OutputPath, "default.png");
 
             // Check the cache path
             VerifyPath(Path.GetDirectoryName(CachePath), false);
