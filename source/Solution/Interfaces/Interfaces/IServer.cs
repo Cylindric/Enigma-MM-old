@@ -102,7 +102,12 @@ namespace EnigmaMM.Interfaces
         /// Generates maps using the specified arguments.
         /// </summary>
         void GenerateMaps(string[] args);
-        
+
+        /// <summary>
+        /// Gives the specified user some items.
+        /// </summary>
+        void GiveItem(string username, int itemId, int qty);
+
         /// <summary>
         /// Loads user data from the world save.
         /// </summary>

@@ -272,6 +272,19 @@ namespace EnigmaMM
             }
         }
 
+        public void GiveItem(string username, int itemId, int qty)
+        {
+            int qtyToGive = qty;
+            int giveStep = 64;
+
+            while (qtyToGive > 0)
+            {
+                int give = Math.Min(qtyToGive, giveStep);
+                SendCommand(string.Format("give {0} {1} {2}", username, itemId, give));
+                qtyToGive = qtyToGive - give;
+            }
+        }
+
         /// <summary>
         /// Return an ISettings object relating to the specified configuration file.
         /// </summary>
@@ -344,6 +357,7 @@ namespace EnigmaMM
             mPowerManager = new PowerManager(this);
 
             EMMServerMessage.PopulateRules(Path.Combine(mSettings.ServerManagerRoot, "messages.xml"));
+            CommandParser.PopulateItems(Path.Combine(mSettings.ServerManagerRoot, "items.xml"));
 
             mServerSaving = false;
             ServerStatus = Status.Stopped;
@@ -442,6 +456,10 @@ namespace EnigmaMM
 
                 case EMMServerMessage.MessageTypes.UserLoggedIn:
                     OnUserJoined(M);
+                    break;
+
+                case EMMServerMessage.MessageTypes.ServerCommand:
+                    mParser.ParseCommand(M.Data["command"] + ' ' + M.Data["username"]);
                     break;
 
                 case EMMServerMessage.MessageTypes.UserLoggedOut:
