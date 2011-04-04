@@ -1,5 +1,7 @@
 ﻿using System;
 using EnigmaMM.Interfaces;
+using System.Collections.Generic;
+using System.Xml;
 
 namespace EnigmaMM
 {
@@ -11,6 +13,44 @@ namespace EnigmaMM
     public class CommandParser
     {
         private IServer mMinecraft;
+        private static List<Item> sItems = new List<Item>();
+
+        private class Item
+        {
+            private string mItemCode;
+            private int mItemId;
+            private int mItemQty;
+            private int mMaxQty;
+
+            public string Code
+            {
+                get { return mItemCode; }
+            }
+
+            public int Id
+            {
+                get { return mItemId; }
+            }
+
+            public int Quantity
+            {
+                get { return mItemQty; }
+            }
+            public int MaxQuantity
+            {
+                get { return mMaxQty; }
+            }
+
+            public Item(string id, string qty, string max, string code)
+            {
+                mItemId = int.Parse(id);
+                mItemQty = int.Parse(qty);
+                mMaxQty = int.Parse(max);
+                mItemCode = code;
+            }
+
+        }
+        
         /// <summary>
         /// Creates a new <c>CommandParser</c> and connects it to the specified <see cref="IServer"/>.
         /// </summary>
@@ -29,7 +69,7 @@ namespace EnigmaMM
         public bool ParseCommand(String Command)
         {
             bool executed = true;
-            string[] args = Command.Split(' ');
+            string[] args = Command.Trim().Replace("  ", " ").Split(' ');
             switch (args[0])
             {
                 case ("start"):
@@ -65,11 +105,74 @@ namespace EnigmaMM
                     mMinecraft.Backup();
                     break;
 
+                case ("get"):
+                    ParseServerCommand(args);
+                    break;
+
                 default:
                     executed = false;
                     break;
             }
             return executed;
         }
+
+        public static void PopulateItems(string fileName)
+        {
+            sItems = new List<Item>();
+
+            XmlDocument xml = new XmlDocument();
+            xml.Load(fileName);
+            XmlNodeList nodeList = xml.DocumentElement.SelectNodes("/items/item");
+            foreach (XmlNode message in nodeList)
+            {
+                XmlNode codeNode = message.SelectSingleNode("code");
+                XmlNode qtyNode = message.SelectSingleNode("quantity");
+                XmlNode maxNode = message.SelectSingleNode("max");
+                XmlNode idNode = message.SelectSingleNode("id");
+                Item p = new Item(idNode.InnerText, qtyNode.InnerText, maxNode.InnerText, codeNode.InnerText);
+                sItems.Add(p);
+            }
+        }
+
+        public void ParseServerCommand(string[] args)
+        {
+            string username = args[args.Length-1];
+            string command = args[0];
+
+            if (command.Equals("get"))
+            {
+                switch (args.Length)
+                {
+                    case 3:
+                        ParseRequestCommand(username, args[1]);
+                        break;
+                    case 4:
+                        ParseRequestCommand(username, args[1], args[2]);
+                        break;
+                }
+            }
+        }
+
+        private void ParseRequestCommand(string username, string item, string quantity = null)
+        {
+            int finalQuantity = 0;
+            int finalItemId = 0;
+         
+            Item foundItem = sItems.Find(i => i.Code == item);
+            if (foundItem != null)
+            {
+                finalItemId = foundItem.Id;
+                int.TryParse(quantity, out finalQuantity);
+                if (quantity == null)
+                {
+                    finalQuantity = foundItem.Quantity;
+                }
+                finalQuantity = Math.Min(finalQuantity, foundItem.MaxQuantity);
+            }
+            
+            mMinecraft.GiveItem(username, finalItemId, finalQuantity);
+        }
+
     }
+
 }

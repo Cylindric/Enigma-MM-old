@@ -56,6 +56,7 @@ CopyFile BuildPath(Array(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
 CopyFile BuildPath(Array(SourceRoot, "EMM", "messages.xml")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "items.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.AlphaVespucci", "*.conf")), EMMRoot & "\Plugins\"

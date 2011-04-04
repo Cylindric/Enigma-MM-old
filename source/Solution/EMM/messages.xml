@@ -90,4 +90,9 @@
     <type>Regex</type>
     <rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ CONSOLE:\ Pardoning (?&lt;username&gt;\w+?)$</rule>
   </message>
+  <message>
+    <name>ServerCommand</name>
+    <type>Regex</type>
+    <rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ issued\ server\ command:(?&lt;command&gt;.*?)$</rule>
+  </message>
 </messages>
