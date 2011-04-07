@@ -38,7 +38,6 @@ End If
 
 ' Create the folders
 CreateFolder(EMMRoot)
-CreateFolder(BuildPath(Array(EMMRoot, "AlphaVespucci")))
 CreateFolder(BuildPath(Array(EMMRoot, "Backups")))
 CreateFolder(BuildPath(Array(EMMRoot, "Cache")))
 CreateFolder(BuildPath(Array(EMMRoot, "Maps")))
@@ -59,7 +58,6 @@ CopyFile BuildPath(Array(SourceRoot, "EMM", "messages.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "items.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
-CopyFile BuildPath(Array(SourceRoot, "Plugin.AlphaVespucci", "*.conf")), EMMRoot & "\Plugins\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.Overviewer", "*.conf")), EMMRoot & "\Plugins\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.c10t", "*.conf")), EMMRoot & "\Plugins\"
 
@@ -70,7 +68,6 @@ DeleteFile BuildPath(Array(EMMRoot, "nunit.framework.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "Server.vshost.exe"))
 DeleteFile BuildPath(Array(EMMRoot, "Tests.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "Test.NullCommand.exe"))
-DeleteFile BuildPath(Array(EMMRoot, "Plugin.AlphaVespucci.dll"))
 
 ' Concatenate and clean out the license files
 Dim file
