@@ -41,8 +41,54 @@ AddForbidden(74) 'redstone ore (glowing)
 AddForbidden(76) 'redstone torch (on)
 AddForbidden(90) 'portal
 AddForbidden(46) 'tnt
+AddForbidden(94) 'redstone repeater (on)
 AddForbidden(95) 'locked chest
 
+Dim blockItems()
+Redim blockItems(0)
+AddBlockItem("arrow")
+AddBlockItem("bedrock")
+AddBlockItem("coalore")
+AddBlockItem("cobblestone")
+AddBlockItem("cobblestonestairs")
+AddBlockItem("diamondore")
+AddBlockItem("dirt")
+AddBlockItem("doubleslabs")
+AddBlockItem("farmland")
+AddBlockItem("fence")
+AddBlockItem("glass")
+AddBlockItem("glowingredstoneore")
+AddBlockItem("goldore")
+AddBlockItem("grass")
+AddBlockItem("gravel")
+AddBlockItem("ice")
+AddBlockItem("ironore")
+AddBlockItem("ladders")
+AddBlockItem("lapislazuliore")
+AddBlockItem("lava")
+AddBlockItem("leaves")
+AddBlockItem("mossstone")
+AddBlockItem("netherrack")
+AddBlockItem("obsidian")
+AddBlockItem("rails")
+AddBlockItem("redstoneore")
+AddBlockItem("sand")
+AddBlockItem("sandstone")
+AddBlockItem("slabs")
+AddBlockItem("snow")
+AddBlockItem("soulsand")
+AddBlockItem("sponge")
+AddBlockItem("stationarylava")
+AddBlockItem("stationarywater")
+AddBlockItem("stick")
+AddBlockItem("stone")
+AddBlockItem("tnt")
+AddBlockItem("torch")
+AddBlockItem("water")
+AddBlockItem("wood")
+AddBlockItem("woodenplank")
+AddBlockItem("woodenstairs")
+AddBlockItem("wool")
 
 Dim fso
 Set fso = CreateObject("Scripting.FileSystemObject")
@@ -55,6 +101,7 @@ Set itemFile = fso.OpenTextFile(itemFileName, ForWriting, True)
 
 
 itemFile.WriteLine("<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>")
+itemFile.WriteLine("<?xml-stylesheet type='text/xsl' href='items.xsl'?>")
 itemFile.WriteLine("<items xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">")
 
 ' Scroll to Block IDs
@@ -146,17 +193,18 @@ wikiFile.Close
 Function isBlock(code)
     isBlock = False
 
-    If ((Right(code, 5) = "block") _
-    Or (code = "torch") _
-    Or (code = "fence") _
-    Or (code = "arrow") _
-    Or (code = "stick") _
-    Or (code = "rails") _
-    Or (code = "ladders") _
-    ) Then
+    If ((Right(code, 5) = "block")) Then
         isBlock = True
     End If
 
+    If (isBlock = False) Then
+        For Each itemCode In blockItems
+            If (code = itemCode) Then
+                isBlock = True
+                Exit For
+            End If
+        Next
+    End If
 End Function
 
 Function GetItemQty(code)
@@ -199,17 +247,6 @@ Function Codify(input)
     output = Replace(output, ")", "")
     output = Replace(output, """", "")
 
-    ' code hacks
-    If (output = "dirt") Then output = output & "block"
-    If (output = "stone") Then output = output & "block"
-    If (output = "cobblestone") Then output = "cobbleblock"
-    If (output = "sand") Then output = output & "block"
-    If (output = "gravel") Then output = output & "block"
-    If (output = "wood") Then output = output & "block"
-    If (output = "glass") Then output = output & "block"
-    If (output = "sandstone") Then output = output & "block"
-    If (output = "obsidian") Then output = output & "block"
-
     Codify = output
 End Function
 
@@ -230,6 +267,14 @@ Function AddIgnore(id)
     size = UBound(ignoredItems)
     Redim Preserve ignoredItems(size+1)
     ignoredItems(UBound(ignoredItems)) = id
+End Function
+
+Function AddBlockItem(code)
+    Dim size
+    size = 0
+    size = UBound(blockItems)
+    Redim Preserve blockItems(size+1)
+    blockItems(UBound(blockItems)) = code
 End Function
 
 Function AddForbidden(id)
