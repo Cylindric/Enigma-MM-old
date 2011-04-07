@@ -95,4 +95,9 @@
     <type>Regex</type>
     <rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ issued\ server\ command:(?&lt;command&gt;.*?)$</rule>
   </message>
+  <message>
+    <name>TriedServerCommand</name>
+    <type>Regex</type>
+    <rule>^(?&lt;timestamp&gt;.+?)\[INFO]\ (?&lt;username&gt;\w+?)\ tried\ command:(?&lt;command&gt;.*?)$</rule>
+  </message>
 </messages>
