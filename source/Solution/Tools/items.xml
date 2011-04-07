@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type='text/xsl' href='items.xsl'?>
 <items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<item>
 		<id>1</id>
-		<code>stoneblock</code>
+		<code>stone</code>
 		<name>Stone</name>
 		<quantity>64</quantity>
 		<max>256</max>
@@ -11,19 +12,19 @@
 		<id>2</id>
 		<code>grass</code>
 		<name>Grass</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>3</id>
-		<code>dirtblock</code>
+		<code>dirt</code>
 		<name>Dirt</name>
 		<quantity>64</quantity>
 		<max>256</max>
 	</item>
 	<item>
 		<id>4</id>
-		<code>cobbleblock</code>
+		<code>cobblestone</code>
 		<name>Cobblestone</name>
 		<quantity>64</quantity>
 		<max>256</max>
@@ -32,8 +33,8 @@
 		<id>5</id>
 		<code>woodenplank</code>
 		<name>Wooden Plank</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>6</id>
@@ -72,14 +73,14 @@
 	</item>
 	<item>
 		<id>12</id>
-		<code>sandblock</code>
+		<code>sand</code>
 		<name>Sand</name>
 		<quantity>64</quantity>
 		<max>256</max>
 	</item>
 	<item>
 		<id>13</id>
-		<code>gravelblock</code>
+		<code>gravel</code>
 		<name>Gravel</name>
 		<quantity>64</quantity>
 		<max>256</max>
@@ -88,26 +89,26 @@
 		<id>14</id>
 		<code>goldore</code>
 		<name>Gold (Ore)</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>15</id>
 		<code>ironore</code>
 		<name>Iron (Ore)</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>16</id>
 		<code>coalore</code>
 		<name>Coal (Ore)</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>17</id>
-		<code>woodblock</code>
+		<code>wood</code>
 		<name>Wood</name>
 		<quantity>64</quantity>
 		<max>256</max>
@@ -116,19 +117,19 @@
 		<id>18</id>
 		<code>leaves</code>
 		<name>Leaves</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>19</id>
 		<code>sponge</code>
 		<name>Sponge</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>20</id>
-		<code>glassblock</code>
+		<code>glass</code>
 		<name>Glass</name>
 		<quantity>64</quantity>
 		<max>256</max>
@@ -137,8 +138,8 @@
 		<id>21</id>
 		<code>lapislazuliore</code>
 		<name>Lapis Lazuli (Ore)</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>22</id>
@@ -156,7 +157,7 @@
 	</item>
 	<item>
 		<id>24</id>
-		<code>sandstoneblock</code>
+		<code>sandstone</code>
 		<name>Sandstone</name>
 		<quantity>64</quantity>
 		<max>256</max>
@@ -172,8 +173,8 @@
 		<id>35</id>
 		<code>wool</code>
 		<name>Wool</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>37</id>
@@ -228,8 +229,8 @@
 		<id>44</id>
 		<code>slabs</code>
 		<name>Slabs</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>45</id>
@@ -256,12 +257,12 @@
 		<id>48</id>
 		<code>mossstone</code>
 		<name>Moss Stone</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>49</id>
-		<code>obsidianblock</code>
+		<code>obsidian</code>
 		<name>Obsidian</name>
 		<quantity>64</quantity>
 		<max>256</max>
@@ -291,8 +292,8 @@
 		<id>53</id>
 		<code>woodenstairs</code>
 		<name>Wooden Stairs</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>54</id>
@@ -312,8 +313,8 @@
 		<id>56</id>
 		<code>diamondore</code>
 		<name>Diamond (Ore)</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>57</id>
@@ -389,8 +390,8 @@
 		<id>67</id>
 		<code>cobblestonestairs</code>
 		<name>Cobblestone Stairs</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>68</id>
@@ -431,8 +432,8 @@
 		<id>73</id>
 		<code>redstoneore</code>
 		<name>Redstone (Ore)</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>74</id>
@@ -466,15 +467,15 @@
 		<id>78</id>
 		<code>snow</code>
 		<name>Snow</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>79</id>
 		<code>ice</code>
 		<name>Ice</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>80</id>
@@ -529,15 +530,15 @@
 		<id>87</id>
 		<code>netherrack</code>
 		<name>Netherrack</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>88</id>
 		<code>soulsand</code>
 		<name>Soul Sand</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>64</quantity>
+		<max>256</max>
 	</item>
 	<item>
 		<id>89</id>
@@ -571,8 +572,8 @@
 		<id>94</id>
 		<code>redstonerepeateronstate</code>
 		<name>Redstone Repeater ("on" state)</name>
-		<quantity>1</quantity>
-		<max>32</max>
+		<quantity>0</quantity>
+		<max>0</max>
 	</item>
 	<item>
 		<id>95</id>
