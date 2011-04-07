@@ -35,6 +35,7 @@ namespace EnigmaMM
             UserLoggedIn,
             UserLoggedOut,
             ServerCommand,
+            TriedServerCommand,
 
             // Anything else is an 'other'
             Other

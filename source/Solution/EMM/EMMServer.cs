@@ -459,6 +459,7 @@ namespace EnigmaMM
                     break;
 
                 case EMMServerMessage.MessageTypes.ServerCommand:
+                case EMMServerMessage.MessageTypes.TriedServerCommand:
                     mParser.ParseCommand(M.Data["command"] + ' ' + M.Data["username"]);
                     break;
 
