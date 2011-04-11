@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using EnigmaMM.Interfaces;
 using Interfaces.BaseClasses;
 
 namespace EnigmaMM.Plugin.Implementation
@@ -146,31 +145,6 @@ namespace EnigmaMM.Plugin.Implementation
             ImageCodecInfo jpegCodecInfo = GetEncoderInfo("image/jpeg");
             input.Save(OutputFile, jpegCodecInfo, codecParams);
             input.Dispose();
-        }
-
-        private void Resize(string InputFile, string OutputFile, int destWidth)
-        {
-            if (!File.Exists(InputFile) || !File.Exists(OutputFile))
-            {
-                return;
-            }
-            
-            Bitmap input = new Bitmap(InputFile);
-
-            int sourceWidth = input.Width;
-            int sourceHeight = input.Height;
-
-            float ratio = (float)destWidth / (float)sourceWidth;
-            int destHeight = (int)(sourceHeight * ratio);
-
-            Bitmap output = new Bitmap(destWidth, destHeight);
-            Graphics g = Graphics.FromImage((Image)output);
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(input, 0, 0, destWidth, destHeight);
-            g.Dispose();
-
-            output.Save(OutputFile);
-            output.Dispose();
         }
 
         private ImageCodecInfo GetEncoderInfo(string mimeType)
