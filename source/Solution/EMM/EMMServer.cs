@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using EnigmaMM.Interfaces;
+using EnigmaMM.Data;
+using System.Linq;
 
 namespace EnigmaMM
 {
@@ -15,6 +17,7 @@ namespace EnigmaMM
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
+        private EMMDataContext mDatabase;
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
@@ -329,6 +332,11 @@ namespace EnigmaMM
             }
         }
 
+        public EMMDataContext Database
+        {
+            get { return mDatabase; }
+        }
+
         #endregion
 
         #region Public Constructors
@@ -345,6 +353,10 @@ namespace EnigmaMM
         /// </summary>
         public EMMServer(string mainSettingsFile)
         {
+            mDatabase = new EnigmaMM.Data.EMMDataContext("Data Source=|DataDirectory|\\Data\\EMM.sdf");
+            mDatabase.SubmitChanges();
+
+
             mSettings = new Settings(this);
             mSettings.Initialise(mainSettingsFile);
 

@@ -100,7 +100,7 @@ namespace EnigmaMM
                 XmlNode rule = message.SelectSingleNode("rule");
                 MessagePattern p = new MessagePattern(name.InnerText, type.InnerText, rule.InnerText);
                 sPatterns.Add(p);
-            }
+            }            
         }
        
         /// <summary>
