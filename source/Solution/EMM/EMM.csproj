@@ -47,13 +47,22 @@
     <Reference Include="System.AddIn.Contract" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backup.cs" />
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
+    <Compile Include="Data\EMMDataContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMMDataContext.dbml</DependentUpon>
+    </Compile>
     <Compile Include="EMMServerMessage.cs" />
     <Compile Include="MapManager.cs" />
     <Compile Include="PluginManager.cs" />
@@ -69,6 +78,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Data\EMMDataContext.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>EMMDataContext.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Data\EMMDataContext.dbml.layout">
+      <DependentUpon>EMMDataContext.dbml</DependentUpon>
+    </None>
     <None Include="Settings\sample.settings.conf" />
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +99,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\EMM.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\schema.sql" />
     <Content Include="Ionic.Zip.Reduced.dll" />
     <Content Include="Ionic.txt" />
     <Content Include="items.xml">
@@ -92,7 +113,9 @@
     </Content>
     <Content Include="Scheduler\sample.scheduler.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
