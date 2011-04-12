@@ -88,7 +88,7 @@ namespace EnigmaMM
                     assembly = Assembly.LoadFrom(assemblyNames[i]);
                     ExamineAssembly(assembly, plugins);
                 }
-                catch (Exception ex)
+                catch
                 {
                     // Error loading DLL
                 }
