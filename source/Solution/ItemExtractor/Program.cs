@@ -179,6 +179,11 @@ namespace ItemExtractor
             output = output.Replace("<span style='color:red'>", "");
             output = output.Replace("<span style='color:green'>", "");
             output = output.Replace("</span>", "");
+            if (output.ToLower().Contains("redstone torch ("))
+            {
+                output = output.Substring(output.IndexOf("|") + 1);
+            }
+
             if (output.Contains("<sup"))
             {
                 output = output.Substring(0, output.IndexOf("<sup"));
@@ -188,10 +193,6 @@ namespace ItemExtractor
                 if (output.ToLower().Contains("mushroom") || output.ToLower().Contains("flowers"))
                 {
                     output = output.Substring(output.IndexOf("#") + 1);
-                }
-                else if (output.ToLower().Contains("redstone torch")) 
-                {
-                    output = output.Substring(output.IndexOf("|") + 1);
                 }
                 else
                 {
