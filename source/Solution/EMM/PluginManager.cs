@@ -79,6 +79,11 @@ namespace EnigmaMM
             string[] assemblyNames = null;
             Assembly assembly = null;
 
+            if (!Directory.Exists(path))
+            {
+                return null;
+            }
+
             // Go through all DLLs in the directory, attempting to load them
             assemblyNames = Directory.GetFileSystemEntries(path, "*.dll");
             for (int i = 0; i <= assemblyNames.Length - 1; i++)

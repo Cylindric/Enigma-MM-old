@@ -354,8 +354,6 @@ namespace EnigmaMM
         public EMMServer(string mainSettingsFile)
         {
             mDatabase = new EnigmaMM.Data.EMMDataContext("Data Source=|DataDirectory|\\Data\\EMM.sdf");
-            mDatabase.SubmitChanges();
-
 
             mSettings = new Settings(this);
             mSettings.Initialise(mainSettingsFile);
