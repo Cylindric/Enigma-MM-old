@@ -15,6 +15,7 @@
       <Column Name="Stack_Size" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Max" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Min_Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Block_Decimal_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="FK_Item_Rank" Member="Rank" ThisKey="Min_Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" />
     </Type>
   </Table>

@@ -352,8 +352,8 @@ namespace EnigmaMM.Scheduler
         // TODO: fancy string formatting for relative times
         private string FormatDateAsString(DateTime d)
         {
-            int TOLLERANCE_HOUR = 5;
-            string formatString = "{0}";
+            //int TOLLERANCE_HOUR = 5;
+            //string formatString = "{0}";
 
             if (d == DateTime.MaxValue)
             {

@@ -240,6 +240,8 @@ namespace EnigmaMM.Data
 		
 		private int _Min_Rank_ID;
 		
+		private int _Block_Decimal_ID;
+		
 		private EntityRef<Rank> _Rank;
 		
     #region Extensibility Method Definitions
@@ -258,6 +260,8 @@ namespace EnigmaMM.Data
     partial void OnMaxChanged();
     partial void OnMin_Rank_IDChanging(int value);
     partial void OnMin_Rank_IDChanged();
+    partial void OnBlock_Decimal_IDChanging(int value);
+    partial void OnBlock_Decimal_IDChanged();
     #endregion
 		
 		public Item()
@@ -386,6 +390,26 @@ namespace EnigmaMM.Data
 					this._Min_Rank_ID = value;
 					this.SendPropertyChanged("Min_Rank_ID");
 					this.OnMin_Rank_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Block_Decimal_ID", DbType="Int NOT NULL")]
+		public int Block_Decimal_ID
+		{
+			get
+			{
+				return this._Block_Decimal_ID;
+			}
+			set
+			{
+				if ((this._Block_Decimal_ID != value))
+				{
+					this.OnBlock_Decimal_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Block_Decimal_ID = value;
+					this.SendPropertyChanged("Block_Decimal_ID");
+					this.OnBlock_Decimal_IDChanged();
 				}
 			}
 		}

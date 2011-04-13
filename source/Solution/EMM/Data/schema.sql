@@ -30,6 +30,7 @@ CREATE TABLE Items
 (
     [Item_ID] int IDENTITY PRIMARY KEY NOT NULL,
     [Code] nvarchar(50) NOT NULL,
+    [Block_ID] int NOT NULL,
     [Name] nvarchar(50) NOT NULL,
     [Stack_Size] int NOT NULL DEFAULT 1,
     [Max] int NOT NULL DEFAULT 64,
