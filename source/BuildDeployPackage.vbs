@@ -39,11 +39,12 @@ End If
 ' Create the folders
 CreateFolder(EMMRoot)
 CreateFolder(BuildPath(Array(EMMRoot, "Backups")))
+CreateFolder(BuildPath(Array(EMMRoot, "c10t")))
 CreateFolder(BuildPath(Array(EMMRoot, "Cache")))
+CreateFolder(BuildPath(Array(EMMRoot, "Data")))
 CreateFolder(BuildPath(Array(EMMRoot, "Maps")))
 CreateFolder(BuildPath(Array(EMMRoot, "Minecraft")))
 CreateFolder(BuildPath(Array(EMMRoot, "Overviewer")))
-CreateFolder(BuildPath(Array(EMMRoot, "c10t")))
 CreateFolder(BuildPath(Array(EMMRoot, "Plugins")))
 
 
@@ -54,20 +55,23 @@ CopyFile BuildPath(Array(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-CopyFile BuildPath(Array(SourceRoot, "EMM", "messages.xml")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "Data", "EMM.sdf")), EMMRoot & "\Data\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "items.xml")), EMMRoot & "\"
-CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "messages.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.Overviewer", "*.conf")), EMMRoot & "\Plugins\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.c10t", "*.conf")), EMMRoot & "\Plugins\"
 
 ' Remove any non-deploy files
+DeleteFile BuildPath(Array(EMMRoot, "ItemExtractor.exe"))
+DeleteFile BuildPath(Array(EMMRoot, "ItemExtractor.vshost.exe"))
 DeleteFile BuildPath(Array(EMMRoot, "MinecraftSimulator.exe"))
 DeleteFile BuildPath(Array(EMMRoot, "moq.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "nunit.framework.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "Server.vshost.exe"))
-DeleteFile BuildPath(Array(EMMRoot, "Tests.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "Test.NullCommand.exe"))
+DeleteFile BuildPath(Array(EMMRoot, "Tests.dll"))
 
 ' Concatenate and clean out the license files
 Dim file

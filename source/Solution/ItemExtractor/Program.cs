@@ -28,6 +28,8 @@ namespace ItemExtractor
             EMMServer server = new EMMServer();
             EnigmaMM.Data.EMMDataContext db = server.Database;
 
+            Console.WriteLine("Using database {0}", db.Connection.Database);
+
             System.IO.StreamReader wiki = new System.IO.StreamReader(WIKI_FILE);
             Boolean blocksFound = false;
             while (!wiki.EndOfStream == true)
@@ -44,7 +46,7 @@ namespace ItemExtractor
             {
                 // Delete all items!
                 db.Items.DeleteAllOnSubmit(db.Items);
-                db.SubmitChanges();            
+                db.SubmitChanges();
 
                 while (!wiki.EndOfStream == true)
                 {
@@ -186,6 +188,10 @@ namespace ItemExtractor
                 if (output.ToLower().Contains("mushroom") || output.ToLower().Contains("flowers"))
                 {
                     output = output.Substring(output.IndexOf("#") + 1);
+                }
+                else if (output.ToLower().Contains("redstone torch")) 
+                {
+                    output = output.Substring(output.IndexOf("|") + 1);
                 }
                 else
                 {
