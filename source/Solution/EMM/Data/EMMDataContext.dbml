@@ -7,16 +7,28 @@
       <Column Name="Value" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="ItemHistory" Member="ItemHistories">
+    <Type Name="ItemHistory">
+      <Column Name="ItemHistory_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Item_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="User_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="ItemHistoryItem" Member="Item" ThisKey="Item_ID" OtherKey="Item_ID" Type="Item" IsForeignKey="true" DeleteOnNull="true" />
+      <Association Name="ItemHistoryUser" Member="User" ThisKey="User_ID" OtherKey="User_ID" Type="User" IsForeignKey="true" DeleteOnNull="true" />
+    </Type>
+  </Table>
   <Table Name="Items">
     <Type Name="Item">
       <Column Name="Item_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Code" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
       <Column Name="Stack_Size" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Max" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Min_Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Block_Decimal_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Association Name="FK_Item_Rank" Member="Rank" ThisKey="Min_Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" />
+      <Association Name="ItemHistoryItem" Member="ItemHistories" ThisKey="Item_ID" OtherKey="Item_ID" Type="ItemHistory" DeleteRule="CASCADE" />
     </Type>
   </Table>
   <Table Name="MessageTypes">
@@ -40,6 +52,7 @@
       <Column Name="Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Username" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="FK_User_Rank" Member="Rank" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" />
+      <Association Name="ItemHistoryUser" Member="ItemHistories" ThisKey="User_ID" OtherKey="User_ID" Type="ItemHistory" DeleteRule="CASCADE" />
     </Type>
   </Table>
 </Database>

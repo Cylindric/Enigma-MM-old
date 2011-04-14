@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using EnigmaMM.Interfaces;
-using EnigmaMM.Data;
 using System.Linq;
 
 namespace EnigmaMM
@@ -17,7 +16,7 @@ namespace EnigmaMM
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
-        private EMMDataContext mDatabase;
+        private DatabaseContext mDatabase;
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
@@ -275,6 +274,14 @@ namespace EnigmaMM
             }
         }
 
+        public void GiveItem(User user, Item item, int qty)
+        {
+            ItemHistory history = new ItemHistory(item, user, qty);
+            this.mDatabase.ItemHistories.InsertOnSubmit(history);
+            this.mDatabase.SubmitChanges();
+            this.GiveItem(user.Username, item.Block_Decimal_ID, qty);
+        }
+
         public void GiveItem(string username, int itemId, int qty)
         {
             int qtyToGive = qty;
@@ -286,6 +293,7 @@ namespace EnigmaMM
                 SendCommand(string.Format("give {0} {1} {2}", username, itemId, give));
                 qtyToGive = qtyToGive - give;
             }
+
         }
 
         /// <summary>
@@ -332,7 +340,7 @@ namespace EnigmaMM
             }
         }
 
-        public EMMDataContext Database
+        public DatabaseContext Database
         {
             get { return mDatabase; }
         }
@@ -353,7 +361,7 @@ namespace EnigmaMM
         /// </summary>
         public EMMServer(string mainSettingsFile)
         {
-            mDatabase = new EnigmaMM.Data.EMMDataContext("Data Source=|DataDirectory|\\Data\\EMM.sdf");
+            mDatabase = new DatabaseContext("Data Source=|DataDirectory|\\EMM.sdf");
 
             mSettings = new Settings(this);
             mSettings.Initialise(mainSettingsFile);

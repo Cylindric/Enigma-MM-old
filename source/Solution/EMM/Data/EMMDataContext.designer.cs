@@ -33,6 +33,9 @@ namespace EnigmaMM.Data
     partial void InsertConfig(Config instance);
     partial void UpdateConfig(Config instance);
     partial void DeleteConfig(Config instance);
+    partial void InsertItemHistory(ItemHistory instance);
+    partial void UpdateItemHistory(ItemHistory instance);
+    partial void DeleteItemHistory(ItemHistory instance);
     partial void InsertItem(Item instance);
     partial void UpdateItem(Item instance);
     partial void DeleteItem(Item instance);
@@ -76,6 +79,14 @@ namespace EnigmaMM.Data
 			get
 			{
 				return this.GetTable<Config>();
+			}
+		}
+		
+		public System.Data.Linq.Table<ItemHistory> ItemHistories
+		{
+			get
+			{
+				return this.GetTable<ItemHistory>();
 			}
 		}
 		
@@ -222,6 +233,246 @@ namespace EnigmaMM.Data
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute()]
+	public partial class ItemHistory : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _ItemHistory_ID;
+		
+		private int _Item_ID;
+		
+		private int _User_ID;
+		
+		private System.DateTime _CreateDate;
+		
+		private int _Quantity;
+		
+		private EntityRef<Item> _Item;
+		
+		private EntityRef<User> _User;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnItemHistory_IDChanging(int value);
+    partial void OnItemHistory_IDChanged();
+    partial void OnItem_IDChanging(int value);
+    partial void OnItem_IDChanged();
+    partial void OnUser_IDChanging(int value);
+    partial void OnUser_IDChanged();
+    partial void OnCreateDateChanging(System.DateTime value);
+    partial void OnCreateDateChanged();
+    partial void OnQuantityChanging(int value);
+    partial void OnQuantityChanged();
+    #endregion
+		
+		public ItemHistory()
+		{
+			this._Item = default(EntityRef<Item>);
+			this._User = default(EntityRef<User>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ItemHistory_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int ItemHistory_ID
+		{
+			get
+			{
+				return this._ItemHistory_ID;
+			}
+			set
+			{
+				if ((this._ItemHistory_ID != value))
+				{
+					this.OnItemHistory_IDChanging(value);
+					this.SendPropertyChanging();
+					this._ItemHistory_ID = value;
+					this.SendPropertyChanged("ItemHistory_ID");
+					this.OnItemHistory_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Item_ID", DbType="Int NOT NULL")]
+		public int Item_ID
+		{
+			get
+			{
+				return this._Item_ID;
+			}
+			set
+			{
+				if ((this._Item_ID != value))
+				{
+					if (this._Item.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnItem_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Item_ID = value;
+					this.SendPropertyChanged("Item_ID");
+					this.OnItem_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_User_ID", DbType="Int NOT NULL")]
+		public int User_ID
+		{
+			get
+			{
+				return this._User_ID;
+			}
+			set
+			{
+				if ((this._User_ID != value))
+				{
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUser_IDChanging(value);
+					this.SendPropertyChanging();
+					this._User_ID = value;
+					this.SendPropertyChanged("User_ID");
+					this.OnUser_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_CreateDate", DbType="DateTime NOT NULL")]
+		public System.DateTime CreateDate
+		{
+			get
+			{
+				return this._CreateDate;
+			}
+			set
+			{
+				if ((this._CreateDate != value))
+				{
+					this.OnCreateDateChanging(value);
+					this.SendPropertyChanging();
+					this._CreateDate = value;
+					this.SendPropertyChanged("CreateDate");
+					this.OnCreateDateChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Quantity", DbType="Int NOT NULL")]
+		public int Quantity
+		{
+			get
+			{
+				return this._Quantity;
+			}
+			set
+			{
+				if ((this._Quantity != value))
+				{
+					this.OnQuantityChanging(value);
+					this.SendPropertyChanging();
+					this._Quantity = value;
+					this.SendPropertyChanged("Quantity");
+					this.OnQuantityChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ItemHistory", Storage="_Item", ThisKey="Item_ID", OtherKey="Item_ID", IsForeignKey=true, DeleteOnNull=true)]
+		public Item Item
+		{
+			get
+			{
+				return this._Item.Entity;
+			}
+			set
+			{
+				Item previousValue = this._Item.Entity;
+				if (((previousValue != value) 
+							|| (this._Item.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._Item.Entity = null;
+						previousValue.ItemHistories.Remove(this);
+					}
+					this._Item.Entity = value;
+					if ((value != null))
+					{
+						value.ItemHistories.Add(this);
+						this._Item_ID = value.Item_ID;
+					}
+					else
+					{
+						this._Item_ID = default(int);
+					}
+					this.SendPropertyChanged("Item");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ItemHistory", Storage="_User", ThisKey="User_ID", OtherKey="User_ID", IsForeignKey=true, DeleteOnNull=true)]
+		public User User
+		{
+			get
+			{
+				return this._User.Entity;
+			}
+			set
+			{
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.ItemHistories.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.ItemHistories.Add(this);
+						this._User_ID = value.User_ID;
+					}
+					else
+					{
+						this._User_ID = default(int);
+					}
+					this.SendPropertyChanged("User");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="Items")]
 	public partial class Item : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -241,6 +492,8 @@ namespace EnigmaMM.Data
 		private int _Min_Rank_ID;
 		
 		private int _Block_Decimal_ID;
+		
+		private EntitySet<ItemHistory> _ItemHistories;
 		
 		private EntityRef<Rank> _Rank;
 		
@@ -266,6 +519,7 @@ namespace EnigmaMM.Data
 		
 		public Item()
 		{
+			this._ItemHistories = new EntitySet<ItemHistory>(new Action<ItemHistory>(this.attach_ItemHistories), new Action<ItemHistory>(this.detach_ItemHistories));
 			this._Rank = default(EntityRef<Rank>);
 			OnCreated();
 		}
@@ -310,7 +564,7 @@ namespace EnigmaMM.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(255) NOT NULL", CanBeNull=false)]
 		public string Name
 		{
 			get
@@ -414,6 +668,19 @@ namespace EnigmaMM.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Item_ItemHistory", Storage="_ItemHistories", ThisKey="Item_ID", OtherKey="Item_ID")]
+		public EntitySet<ItemHistory> ItemHistories
+		{
+			get
+			{
+				return this._ItemHistories;
+			}
+			set
+			{
+				this._ItemHistories.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Rank_Item", Storage="_Rank", ThisKey="Min_Rank_ID", OtherKey="Rank_ID", IsForeignKey=true)]
 		public Rank Rank
 		{
@@ -466,6 +733,18 @@ namespace EnigmaMM.Data
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_ItemHistories(ItemHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Item = this;
+		}
+		
+		private void detach_ItemHistories(ItemHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.Item = null;
 		}
 	}
 	
@@ -733,6 +1012,8 @@ namespace EnigmaMM.Data
 		
 		private string _Username;
 		
+		private EntitySet<ItemHistory> _ItemHistories;
+		
 		private EntityRef<Rank> _Rank;
 		
     #region Extensibility Method Definitions
@@ -749,6 +1030,7 @@ namespace EnigmaMM.Data
 		
 		public User()
 		{
+			this._ItemHistories = new EntitySet<ItemHistory>(new Action<ItemHistory>(this.attach_ItemHistories), new Action<ItemHistory>(this.detach_ItemHistories));
 			this._Rank = default(EntityRef<Rank>);
 			OnCreated();
 		}
@@ -817,6 +1099,19 @@ namespace EnigmaMM.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_ItemHistory", Storage="_ItemHistories", ThisKey="User_ID", OtherKey="User_ID")]
+		public EntitySet<ItemHistory> ItemHistories
+		{
+			get
+			{
+				return this._ItemHistories;
+			}
+			set
+			{
+				this._ItemHistories.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Rank_User", Storage="_Rank", ThisKey="Rank_ID", OtherKey="Rank_ID", IsForeignKey=true)]
 		public Rank Rank
 		{
@@ -869,6 +1164,18 @@ namespace EnigmaMM.Data
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+		
+		private void attach_ItemHistories(ItemHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_ItemHistories(ItemHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
 		}
 	}
 }
