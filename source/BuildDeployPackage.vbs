@@ -41,7 +41,6 @@ CreateFolder(EMMRoot)
 CreateFolder(BuildPath(Array(EMMRoot, "Backups")))
 CreateFolder(BuildPath(Array(EMMRoot, "c10t")))
 CreateFolder(BuildPath(Array(EMMRoot, "Cache")))
-CreateFolder(BuildPath(Array(EMMRoot, "Data")))
 CreateFolder(BuildPath(Array(EMMRoot, "Maps")))
 CreateFolder(BuildPath(Array(EMMRoot, "Minecraft")))
 CreateFolder(BuildPath(Array(EMMRoot, "Overviewer")))
@@ -55,7 +54,7 @@ CopyFile BuildPath(Array(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-CopyFile BuildPath(Array(SourceRoot, "EMM", "Data", "EMM.sdf")), EMMRoot & "\Data\"
+CopyFile BuildPath(Array(SourceRoot, "EMM", "EMM.sdf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "items.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "messages.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
