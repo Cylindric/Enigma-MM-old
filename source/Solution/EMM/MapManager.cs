@@ -29,7 +29,7 @@ namespace EnigmaMM
 
             mRunning = true;
 
-            List<IMapper> mappers = mServer.Plugins.GetPlugins<IMapper>();
+            List<IMapperPlugin> mappers = mServer.Plugins.GetPlugins<IMapperPlugin>();
             if (mappers.Count == 0)
             {
                 mServer.RaiseServerMessage("No mapper plugins installed.");
@@ -47,7 +47,7 @@ namespace EnigmaMM
             }
 
             mServer.BlockAutoSave();
-            foreach (IMapper p in mServer.Plugins.GetPlugins<IMapper>())
+            foreach (IMapperPlugin p in mServer.Plugins.GetPlugins<IMapperPlugin>())
             {
                 // If a specific mapper was requested, and this isn't it, skip
                 if ((specificMapper.Length > 0) && (specificMapper != p.Tag))

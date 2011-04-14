@@ -5,7 +5,7 @@ using Interfaces.BaseClasses;
 
 namespace EnigmaMM.Plugin.Implementation
 {
-    public class Overviewer : PluginMapper
+    public class Overviewer : MapperPlugin
     {
         public Overviewer()
         {
