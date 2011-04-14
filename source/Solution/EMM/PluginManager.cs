@@ -93,9 +93,10 @@ namespace EnigmaMM
                     assembly = Assembly.LoadFrom(assemblyNames[i]);
                     ExamineAssembly(assembly, plugins);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Error loading DLL
+                    mServer.RaiseServerMessage("Failed to load plugin!");
+                    mServer.RaiseServerMessage(ex.Message);
                 }
             }
 

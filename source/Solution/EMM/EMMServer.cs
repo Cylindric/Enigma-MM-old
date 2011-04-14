@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading;
 using EnigmaMM.Interfaces;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace EnigmaMM
 {
@@ -176,6 +177,7 @@ namespace EnigmaMM
 
         /// <summary>
         /// Parses commands and executes them.  Anything unknown is sent to the Minecraft server.
+        /// After that, they are sent to plugins.
         /// </summary>
         /// <param name="command">Command to parse</param>
         public void Execute(string command)
@@ -185,6 +187,11 @@ namespace EnigmaMM
             if (!executed)
             {
                 SendCommand(command);
+            }
+            List<ICommandPlugin> plugins = Plugins.GetPlugins<ICommandPlugin>();
+            foreach (ICommandPlugin plugin in plugins)
+            {
+                plugin.ParseCommand(command);
             }
         }
 

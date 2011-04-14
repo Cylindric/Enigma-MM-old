@@ -10,7 +10,7 @@ namespace Interfaces.BaseClasses
     /// <summary>
     /// A helper base class for implementing ICommand plugins.
     /// </summary>
-	public abstract class PluginCommand : IPluginCommand
+	public abstract class CommandPlugin : ICommandPlugin
 	{
         /// <summary>
         /// Gets and sets the Name of the plugin.
@@ -48,7 +48,7 @@ namespace Interfaces.BaseClasses
         /// The default Constructor for the Base Class.
         /// </summary>
         /// <remarks>Sets the <see cref="Name"/> and <see cref="Tag"/> to the filename of the plugin.</remarks>
-        public PluginCommand()
+        public CommandPlugin()
         {
             Name = Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetCallingAssembly().CodeBase);
             mCodeBase = System.Reflection.Assembly.GetCallingAssembly().CodeBase;
@@ -71,6 +71,19 @@ namespace Interfaces.BaseClasses
 
             PluginSettings = server.GetSettings(mSettingsFileName);
             PluginSettings.LookForNewSettings();
+        }
+
+        /// <summary>
+        /// Parse the specified command.
+        /// </summary>
+        /// <remarks>
+        /// Defaults to doing nothing, so should be overriden in the specific plugin implementation.
+        /// </remarks>
+        /// <param name="command">The command to parse</param>
+        /// <returns>true if the plugin actioned the command, else false.</returns>
+        public virtual Boolean ParseCommand(string command)
+        {
+            return false;
         }
 
     }
