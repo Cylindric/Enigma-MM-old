@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EnigmaMM;
-using EnigmaMM.Data;
 using System.Data.Linq;
 using System.Text.RegularExpressions;
 
-namespace ItemExtractor
+namespace EnigmaMM
 {
-    class Program
+    class ItemExtractor
     {
         private const string WIKI_FILE = "items.wiki.txt";
         private const int DEFAULT_STACK_SIZE = 1;
@@ -17,16 +16,21 @@ namespace ItemExtractor
         private const int BLOCK_STACK_SIZE = 64;
         private const int BLOCK_MAX = 256;
 
-        private static Dictionary<int, string> mBlackListItems = new Dictionary<int, string>();
-        private static List<string> mBlockItems = new List<string>();
+        private EMMServer mServer;
+        private Dictionary<int, string> mBlackListItems = new Dictionary<int, string>();
+        private List<string> mBlockItems = new List<string>();
 
-        static void Main(string[] args)
+        internal ItemExtractor(EMMServer server)
+        {
+            mServer = server;
+        }
+
+        internal void ExtractItems()
         {
             InitialiseBlackList();
             InitialiseBlockList();
 
-            EMMServer server = new EMMServer();
-            EnigmaMM.Data.EMMDataContext db = server.Database;
+            EnigmaMM.Data.EMMDataContext db = mServer.Database;
 
             Console.WriteLine("Using database {0}", db.Connection.Database);
 
@@ -102,7 +106,7 @@ namespace ItemExtractor
             db.SubmitChanges();
         }
 
-        private static void InitialiseBlockList()
+        private void InitialiseBlockList()
         {
             mBlockItems.Add("arrow");
             mBlockItems.Add("bedrock");
@@ -150,7 +154,7 @@ namespace ItemExtractor
             mBlockItems.Add("wool");
         }
 
-        private static void InitialiseBlackList()
+        private void InitialiseBlackList()
         {
             mBlackListItems.Add(0, "air");
             mBlackListItems.Add(7, "bedrock");
@@ -171,7 +175,7 @@ namespace ItemExtractor
             mBlackListItems.Add(95, "locked chest");
         }
 
-        private static string CleanString(string input)
+        private string CleanString(string input)
         {
             string output = input.Trim();
             output = output.Replace("[[", "");
@@ -207,7 +211,7 @@ namespace ItemExtractor
             return output;
         }
 
-        private static string CodifyName(string input)
+        private string CodifyName(string input)
         {
             string code = input.Trim();
             code = code.ToLower();
@@ -218,7 +222,7 @@ namespace ItemExtractor
             return code;
         }
 
-        private static Boolean IsBlock(string code)
+        private Boolean IsBlock(string code)
         {
             if (code.EndsWith("block"))
             {

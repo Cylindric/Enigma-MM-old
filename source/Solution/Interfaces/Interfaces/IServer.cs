@@ -136,6 +136,8 @@ namespace EnigmaMM.Interfaces
         /// </summary>
         void UnblockAutoSave();
 
+        void System_ImportItems();
+
         /// <summary>
         /// Parse the specified settings file and return an ISettings object.
         /// </summary>
