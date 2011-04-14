@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -58,15 +58,19 @@
     <Compile Include="Backup.cs" />
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
+    <Compile Include="DatabaseContext.cs" />
     <Compile Include="Data\EMMDataContext.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EMMDataContext.dbml</DependentUpon>
     </Compile>
     <Compile Include="EMMServerMessage.cs" />
+    <Compile Include="Item.cs" />
+    <Compile Include="ItemHistory.cs" />
     <Compile Include="MapManager.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="PowerManager.cs" />
+    <Compile Include="Commands\ItemExtractor.cs" />
     <Compile Include="SavedUser.cs" />
     <Compile Include="Scheduler\SchedulerManager.cs" />
     <Compile Include="Scheduler\ScheduleTask.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="EMMServer.cs" />
     <Compile Include="Settings\MCServerProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -99,7 +104,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Data\EMM.sdf">
+    <Content Include="Data\items.wiki.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\items.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\items.xsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="EMM.sdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\schema.sql" />

@@ -274,14 +274,6 @@ namespace EnigmaMM
             }
         }
 
-        public void GiveItem(User user, Item item, int qty)
-        {
-            ItemHistory history = new ItemHistory(item, user, qty);
-            this.mDatabase.ItemHistories.InsertOnSubmit(history);
-            this.mDatabase.SubmitChanges();
-            this.GiveItem(user.Username, item.Block_Decimal_ID, qty);
-        }
-
         public void GiveItem(string username, int itemId, int qty)
         {
             int qtyToGive = qty;
@@ -294,6 +286,12 @@ namespace EnigmaMM
                 qtyToGive = qtyToGive - give;
             }
 
+        }
+
+        public void System_ImportItems()
+        {
+            ItemExtractor extractor = new ItemExtractor(this);
+            extractor.ExtractItems();
         }
 
         /// <summary>
@@ -340,7 +338,7 @@ namespace EnigmaMM
             }
         }
 
-        public DatabaseContext Database
+        internal DatabaseContext Database
         {
             get { return mDatabase; }
         }
