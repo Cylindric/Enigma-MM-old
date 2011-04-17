@@ -122,9 +122,6 @@
     <Content Include="items.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="messages.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Scheduler\sample.scheduler.xml" />
   </ItemGroup>
   <ItemGroup>

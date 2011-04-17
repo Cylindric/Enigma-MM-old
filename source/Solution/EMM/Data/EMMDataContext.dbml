@@ -35,7 +35,8 @@
     <Type Name="MessageType">
       <Column Name="Message_Type_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Expression" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Expression" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="MatchType" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="Ranks">
