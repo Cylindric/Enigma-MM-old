@@ -17,7 +17,7 @@ namespace EnigmaMM
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
-        private DatabaseContext mDatabase;
+        private static DatabaseContext sDatabase;
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
@@ -177,7 +177,6 @@ namespace EnigmaMM
 
         /// <summary>
         /// Parses commands and executes them.  Anything unknown is sent to the Minecraft server.
-        /// After that, they are sent to plugins.
         /// </summary>
         /// <param name="command">Command to parse</param>
         public void Execute(string command)
@@ -187,11 +186,6 @@ namespace EnigmaMM
             if (!executed)
             {
                 SendCommand(command);
-            }
-            List<ICommandPlugin> plugins = Plugins.GetPlugins<ICommandPlugin>();
-            foreach (ICommandPlugin plugin in plugins)
-            {
-                plugin.ParseCommand(command);
             }
         }
 
@@ -345,9 +339,15 @@ namespace EnigmaMM
             }
         }
 
-        internal DatabaseContext Database
+        internal static DatabaseContext Database
         {
-            get { return mDatabase; }
+            get {
+                if (sDatabase == null)
+                {
+                    sDatabase = new DatabaseContext("EMM.sdf");
+                }
+                return sDatabase; 
+            }
         }
 
         #endregion
@@ -366,8 +366,6 @@ namespace EnigmaMM
         /// </summary>
         public EMMServer(string mainSettingsFile)
         {
-            mDatabase = new DatabaseContext("Data Source=|DataDirectory|\\EMM.sdf");
-
             mSettings = new Settings(this);
             mSettings.Initialise(mainSettingsFile);
 
@@ -379,7 +377,7 @@ namespace EnigmaMM
             mMapManager = new MapManager(this);
             mPowerManager = new PowerManager(this);
 
-            EMMServerMessage.PopulateRules(Path.Combine(mSettings.ServerManagerRoot, "messages.xml"));
+            EMMServerMessage.PopulateRules();
             CommandParser.PopulateItems(Path.Combine(mSettings.ServerManagerRoot, "items.xml"));
 
             mServerSaving = false;
@@ -484,6 +482,13 @@ namespace EnigmaMM
                 case EMMServerMessage.MessageTypes.ServerCommand:
                 case EMMServerMessage.MessageTypes.TriedServerCommand:
                     mParser.ParseCommand(M.Data["command"] + ' ' + M.Data["username"]);
+
+                    User user = (User)EMMServer.Database.Users.First(u => u.Username == M.Data["username"]);
+
+                    foreach (ICommandPlugin plugin in Plugins.GetPlugins<ICommandPlugin>())
+                    {
+                        plugin.ParseCommand(user, M.Data["command"]);
+                    }
                     break;
 
                 case EMMServerMessage.MessageTypes.UserLoggedOut:

@@ -30,7 +30,7 @@ namespace EnigmaMM
             InitialiseBlackList();
             InitialiseBlockList();
 
-            EnigmaMM.Data.EMMDataContext db = mServer.Database;
+            EnigmaMM.Data.EMMDataContext db = EMMServer.Database;
 
             Console.WriteLine("Using database {0}", db.Connection.Database);
 

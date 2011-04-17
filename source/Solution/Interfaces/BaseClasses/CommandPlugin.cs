@@ -81,7 +81,7 @@ namespace Interfaces.BaseClasses
         /// </remarks>
         /// <param name="command">The command to parse</param>
         /// <returns>true if the plugin actioned the command, else false.</returns>
-        public virtual Boolean ParseCommand(string command)
+        public virtual Boolean ParseCommand(IUser user, string command)
         {
             return false;
         }

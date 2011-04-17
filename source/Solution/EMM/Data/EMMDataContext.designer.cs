@@ -760,6 +760,8 @@ namespace EnigmaMM.Data
 		
 		private string _Expression;
 		
+		private string _MatchType;
+		
     #region Extensibility Method Definitions
     partial void OnLoaded();
     partial void OnValidate(System.Data.Linq.ChangeAction action);
@@ -770,6 +772,8 @@ namespace EnigmaMM.Data
     partial void OnNameChanged();
     partial void OnExpressionChanging(string value);
     partial void OnExpressionChanged();
+    partial void OnMatchTypeChanging(string value);
+    partial void OnMatchTypeChanged();
     #endregion
 		
 		public MessageType()
@@ -817,7 +821,7 @@ namespace EnigmaMM.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Expression", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Expression", DbType="NVarChar(128) NOT NULL", CanBeNull=false)]
 		public string Expression
 		{
 			get
@@ -833,6 +837,26 @@ namespace EnigmaMM.Data
 					this._Expression = value;
 					this.SendPropertyChanged("Expression");
 					this.OnExpressionChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_MatchType", DbType="NVarChar(10) NOT NULL", CanBeNull=false)]
+		public string MatchType
+		{
+			get
+			{
+				return this._MatchType;
+			}
+			set
+			{
+				if ((this._MatchType != value))
+				{
+					this.OnMatchTypeChanging(value);
+					this.SendPropertyChanging();
+					this._MatchType = value;
+					this.SendPropertyChanged("MatchType");
+					this.OnMatchTypeChanged();
 				}
 			}
 		}

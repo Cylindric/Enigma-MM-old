@@ -5,6 +5,6 @@
     /// </summary>
     public interface ICommandPlugin: IPlugin
     {
-        bool ParseCommand(string command);
+        bool ParseCommand(IUser user, string command);
     }
 }
