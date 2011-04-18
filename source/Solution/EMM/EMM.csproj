@@ -65,13 +65,12 @@
       <DependentUpon>EMMDataContext.dbml</DependentUpon>
     </Compile>
     <Compile Include="EMMServerMessage.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="ItemHistory.cs" />
+    <Compile Include="Data\Item.cs" />
+    <Compile Include="Data\ItemHistory.cs" />
     <Compile Include="MapManager.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="PowerManager.cs" />
     <Compile Include="Commands\ItemExtractor.cs" />
-    <Compile Include="SavedUser.cs" />
     <Compile Include="Scheduler\SchedulerManager.cs" />
     <Compile Include="Scheduler\ScheduleTask.cs" />
     <Compile Include="Settings\Settings.cs" />
@@ -79,7 +78,7 @@
     <Compile Include="EMMServer.cs" />
     <Compile Include="Settings\MCServerProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Data\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
