@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Drawing;
 using EnigmaMM.Interfaces;
 using System.IO;
 
@@ -135,5 +132,30 @@ namespace Interfaces.BaseClasses
             }
         }
 
+        protected void Resize(string InputFile, string OutputFile, int destWidth)
+        {
+            if (!File.Exists(InputFile) || !File.Exists(OutputFile))
+            {
+                return;
+            }
+
+            Bitmap input = new Bitmap(InputFile);
+
+            int sourceWidth = input.Width;
+            int sourceHeight = input.Height;
+
+            float ratio = (float)destWidth / (float)sourceWidth;
+            int destHeight = (int)(sourceHeight * ratio);
+
+            Bitmap output = new Bitmap(destWidth, destHeight);
+            Graphics g = Graphics.FromImage((Image)output);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.DrawImage(input, 0, 0, destWidth, destHeight);
+            g.Dispose();
+
+            output.Save(OutputFile);
+            output.Dispose();
+        }
+    
     }
 }
