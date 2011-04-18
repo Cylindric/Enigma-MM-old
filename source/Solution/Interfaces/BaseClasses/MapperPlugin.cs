@@ -7,7 +7,7 @@ namespace Interfaces.BaseClasses
     /// <summary>
     /// A helper base class for implementing IMapper plugins.
     /// </summary>
-	public abstract class PluginMapper : IMapper
+	public abstract class MapperPlugin : IMapperPlugin
 	{
         /// <summary>
         /// Gets and sets the Name of the plugin.
@@ -66,7 +66,7 @@ namespace Interfaces.BaseClasses
         /// The default Constructor for the Base Class.
         /// </summary>
         /// <remarks>Sets the <see cref="Name"/> and <see cref="Tag"/> to the filename of the plugin.</remarks>
-        public PluginMapper()
+        public MapperPlugin()
         {
             Name = Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetCallingAssembly().CodeBase);
             mCodeBase = System.Reflection.Assembly.GetCallingAssembly().CodeBase;

@@ -7,7 +7,7 @@ using Interfaces.BaseClasses;
 
 namespace EnigmaMM.Plugin.Implementation
 {
-    public class AlphaVespucci : PluginMapper
+    public class AlphaVespucci : MapperPlugin
     {
 
         public AlphaVespucci()
