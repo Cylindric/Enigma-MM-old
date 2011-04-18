@@ -109,11 +109,6 @@ namespace EnigmaMM.Interfaces
         void GiveItem(string username, int itemId, int qty);
 
         /// <summary>
-        /// Loads user data from the world save.
-        /// </summary>
-        void LoadSavedUserInfo();
-
-        /// <summary>
         /// Raise a server message.
         /// </summary>
         /// <param name="message"></param>

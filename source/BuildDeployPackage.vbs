@@ -56,7 +56,6 @@ CopyFile BuildPath(Array(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 ' we don't get any modified-for-test versions
 CopyFile BuildPath(Array(SourceRoot, "EMM", "EMM.sdf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "items.xml")), EMMRoot & "\"
-CopyFile BuildPath(Array(SourceRoot, "EMM", "messages.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.Overviewer", "*.conf")), EMMRoot & "\Plugins\"

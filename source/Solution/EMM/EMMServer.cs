@@ -198,23 +198,6 @@ namespace EnigmaMM
         }
 
         /// <summary>
-        /// Populates mSavedUsers with details taken from the World's 'players' directory.
-        /// </summary>
-        public void LoadSavedUserInfo()
-        {
-            mSavedUsers.Clear();
-            if (Directory.Exists(Path.Combine(mMinecraftSettings.WorldPath, "players")))
-            {
-                foreach (string fileName in Directory.GetFiles(Path.Combine(mMinecraftSettings.WorldPath, "players")))
-                {
-                    SavedUser user = new SavedUser();
-                    user.LoadData(fileName);
-                    mSavedUsers.Add(user);
-                }
-            }
-        }
-
-        /// <summary>
         /// Helper-method to raise ServerMessage Events from other places.
         /// </summary>
         /// <param name="Message">The message to throw</param>
@@ -467,7 +450,6 @@ namespace EnigmaMM
 
                 case EMMServerMessage.MessageTypes.SaveComplete:
                     mServerSaving = false;
-                    LoadSavedUserInfo();
                     break;
 
                 case EMMServerMessage.MessageTypes.StartupComplete:
@@ -531,7 +513,6 @@ namespace EnigmaMM
         {
             ServerStatus = Status.Running;
             mMinecraftSettings.Load();
-            LoadSavedUserInfo();
             if (ServerStarted != null)
             {
                 ServerStarted(this, new ServerMessageEventArgs(Message));
