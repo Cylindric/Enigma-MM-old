@@ -3,6 +3,7 @@ using System.Xml;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace EnigmaMM
 {
@@ -85,20 +86,12 @@ namespace EnigmaMM
             DetermineType();
         }
 
-
-        public static void PopulateRules(string fileName)
+        public static void PopulateRules()
         {
             sPatterns = new List<MessagePattern>();
-
-            XmlDocument xml = new XmlDocument();
-            xml.Load(fileName);
-            XmlNodeList nodeList = xml.DocumentElement.SelectNodes("/messages/message");
-            foreach (XmlNode message in nodeList)
-            {
-                XmlNode name = message.SelectSingleNode("name");
-                XmlNode type = message.SelectSingleNode("type");
-                XmlNode rule = message.SelectSingleNode("rule");
-                MessagePattern p = new MessagePattern(name.InnerText, type.InnerText, rule.InnerText);
+            Data.EMMDataContext db = EMMServer.Database;
+            foreach(Data.MessageType message in db.MessageTypes) {
+                MessagePattern p = new MessagePattern(message.Name, message.MatchType, message.Expression);
                 sPatterns.Add(p);
             }
         }

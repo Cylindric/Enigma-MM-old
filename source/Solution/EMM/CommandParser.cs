@@ -109,6 +109,10 @@ namespace EnigmaMM
                     ParseServerCommand(args);
                     break;
 
+                case ("sys.importitems"):
+                    mMinecraft.System_ImportItems();
+                    break;
+
                 default:
                     executed = false;
                     break;

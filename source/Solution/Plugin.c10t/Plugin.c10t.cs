@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace EnigmaMM.Plugin.Implementation
 {
-    public class c10t : PluginMapper
+    public class c10t : MapperPlugin
     {
         public c10t()
         {

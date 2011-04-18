@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using EnigmaMM.Interfaces;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace EnigmaMM
 {
@@ -15,6 +17,7 @@ namespace EnigmaMM
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
+        private static DatabaseContext sDatabase;
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
@@ -195,23 +198,6 @@ namespace EnigmaMM
         }
 
         /// <summary>
-        /// Populates mSavedUsers with details taken from the World's 'players' directory.
-        /// </summary>
-        public void LoadSavedUserInfo()
-        {
-            mSavedUsers.Clear();
-            if (Directory.Exists(Path.Combine(mMinecraftSettings.WorldPath, "players")))
-            {
-                foreach (string fileName in Directory.GetFiles(Path.Combine(mMinecraftSettings.WorldPath, "players")))
-                {
-                    SavedUser user = new SavedUser();
-                    user.LoadData(fileName);
-                    mSavedUsers.Add(user);
-                }
-            }
-        }
-
-        /// <summary>
         /// Helper-method to raise ServerMessage Events from other places.
         /// </summary>
         /// <param name="Message">The message to throw</param>
@@ -283,6 +269,13 @@ namespace EnigmaMM
                 SendCommand(string.Format("give {0} {1} {2}", username, itemId, give));
                 qtyToGive = qtyToGive - give;
             }
+
+        }
+
+        public void System_ImportItems()
+        {
+            ItemExtractor extractor = new ItemExtractor(this);
+            extractor.ExtractItems();
         }
 
         /// <summary>
@@ -329,6 +322,17 @@ namespace EnigmaMM
             }
         }
 
+        internal static DatabaseContext Database
+        {
+            get {
+                if (sDatabase == null)
+                {
+                    sDatabase = new DatabaseContext("EMM.sdf");
+                }
+                return sDatabase; 
+            }
+        }
+
         #endregion
 
         #region Public Constructors
@@ -356,7 +360,7 @@ namespace EnigmaMM
             mMapManager = new MapManager(this);
             mPowerManager = new PowerManager(this);
 
-            EMMServerMessage.PopulateRules(Path.Combine(mSettings.ServerManagerRoot, "messages.xml"));
+            EMMServerMessage.PopulateRules();
             CommandParser.PopulateItems(Path.Combine(mSettings.ServerManagerRoot, "items.xml"));
 
             mServerSaving = false;
@@ -446,7 +450,6 @@ namespace EnigmaMM
 
                 case EMMServerMessage.MessageTypes.SaveComplete:
                     mServerSaving = false;
-                    LoadSavedUserInfo();
                     break;
 
                 case EMMServerMessage.MessageTypes.StartupComplete:
@@ -461,6 +464,13 @@ namespace EnigmaMM
                 case EMMServerMessage.MessageTypes.ServerCommand:
                 case EMMServerMessage.MessageTypes.TriedServerCommand:
                     mParser.ParseCommand(M.Data["command"] + ' ' + M.Data["username"]);
+
+                    User user = (User)EMMServer.Database.Users.First(u => u.Username == M.Data["username"]);
+
+                    foreach (ICommandPlugin plugin in Plugins.GetPlugins<ICommandPlugin>())
+                    {
+                        plugin.ParseCommand(user, M.Data["command"]);
+                    }
                     break;
 
                 case EMMServerMessage.MessageTypes.UserLoggedOut:
@@ -503,7 +513,6 @@ namespace EnigmaMM
         {
             ServerStatus = Status.Running;
             mMinecraftSettings.Load();
-            LoadSavedUserInfo();
             if (ServerStarted != null)
             {
                 ServerStarted(this, new ServerMessageEventArgs(Message));
