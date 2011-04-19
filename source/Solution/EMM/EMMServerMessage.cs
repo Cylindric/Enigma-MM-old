@@ -12,7 +12,7 @@ namespace EnigmaMM
         public string Message { private set; get; }
         public MessageTypes Type { private set; get; }
         public Dictionary<string, string> Data { private set; get; }
-
+        private Data.User mUser;
         private static List<MessagePattern> sPatterns;
 
         public enum MatchTypes
@@ -79,11 +79,21 @@ namespace EnigmaMM
             }
         }
 
-
         public EMMServerMessage(string msg)
         {
             Message = msg;
             DetermineType();
+        }
+
+        public Data.User User
+        {
+            set { mUser = value; }
+            get { return mUser; }
+        }
+        
+        public void SetUser(string username)
+        {
+            mUser = EMMServer.Database.Users.SingleOrDefault(u => u.Username == username);
         }
 
         /// <summary>
@@ -155,6 +165,11 @@ namespace EnigmaMM
                         retval = true;
                     }
                     break;
+            }
+
+            if (Data.ContainsKey("username"))
+            {
+                SetUser(Data["username"]);
             }
 
             return retval;

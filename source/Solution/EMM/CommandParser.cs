@@ -2,6 +2,7 @@
 using EnigmaMM.Interfaces;
 using System.Collections.Generic;
 using System.Xml;
+using EnigmaMM.Commands;
 
 namespace EnigmaMM
 {
@@ -70,15 +71,18 @@ namespace EnigmaMM
                     break;
 
                 case ("backup"):
-                    mMinecraft.Backup();
+                    using (BackupCommand command = new BackupCommand())
+                    {
+                        executed = command.Execute();
+                    }
+
                     break;
 
                 case ("get"):
-                    using (Commands.GetItems command = new Commands.GetItems)
+                    using (GetCommand command = new GetCommand())
                     {
-                        
+                        executed = command.Execute(Command);
                     }
-                    ParseServerCommand(args);
                     break;
 
                 case ("sys.importitems"):

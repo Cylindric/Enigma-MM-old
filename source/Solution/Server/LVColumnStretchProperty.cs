@@ -18,7 +18,7 @@ namespace EnigmaMM
         /// <summary>
         /// Holds a reference to our parent ListView control
         /// </summary>
-        private ListView _parentListView = null;
+        //private ListView _parentListView = null;
 
         #endregion
 

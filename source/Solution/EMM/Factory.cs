@@ -1,11 +1,11 @@
 ﻿namespace EnigmaMM
 {
-    class Factory
+    public class Factory
     {
         private static volatile EMMServer sEmm;
         private static object sEmmSync = new object();
 
-        internal static EMMServer GetServer()
+        public static EMMServer GetServer()
         {
             if (sEmm == null)
             {

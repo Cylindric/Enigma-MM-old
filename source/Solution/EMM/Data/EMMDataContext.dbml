@@ -39,11 +39,20 @@
       <Column Name="MatchType" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
+  <Table Name="Permissions">
+    <Type Name="Permission">
+      <Column Name="Permission_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Association Name="FK_Rank" Member="Rank" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" DeleteOnNull="true" />
+    </Type>
+  </Table>
   <Table Name="Ranks">
     <Type Name="Rank">
       <Column Name="Rank_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Association Name="FK_Item_Rank" Member="Items" ThisKey="Rank_ID" OtherKey="Min_Rank_ID" Type="Item" DeleteRule="NO ACTION" />
+      <Association Name="FK_Rank" Member="Permissions" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Permission" DeleteRule="CASCADE" />
       <Association Name="FK_User_Rank" Member="Users" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="User" DeleteRule="NO ACTION" />
     </Type>
   </Table>
