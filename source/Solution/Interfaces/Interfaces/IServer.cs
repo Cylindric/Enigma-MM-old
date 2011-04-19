@@ -89,11 +89,6 @@ namespace EnigmaMM.Interfaces
         void Broadcast(string message);
 
         /// <summary>
-        /// Initiate a server backup.
-        /// </summary>
-        void Backup();
-
-        /// <summary>
         /// Executes the specified command.
         /// </summary>
         void Execute(string command);

@@ -1,7 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Ionic.Zip;
-using System;
-using EnigmaMM.Interfaces;
 using System.Threading;
 
 namespace EnigmaMM.Commands
@@ -18,10 +17,27 @@ namespace EnigmaMM.Commands
         }
 
         /// <summary>
+        /// Perform a backup.
+        /// </summary>
+        public bool Execute()
+        {
+            if (!CheckRequirements())
+            {
+                return false;
+            } else {
+                mServer.RaiseServerMessage("Starting backup...");
+                Thread t = new Thread(PerformBackup);
+                t.Name = "Backup thread";
+                t.Start();
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Perform environment checks to make sure backups are reaady to run.
         /// </summary>
         /// <returns>True if system is ready; else false.</returns>
-        public bool CheckRequirements()
+        private bool CheckRequirements()
         {
             bool status = true;
             if (!Directory.Exists(mServer.Settings.BackupRoot))
@@ -32,10 +48,7 @@ namespace EnigmaMM.Commands
             return status;
         }
 
-        /// <summary>
-        /// Perform a backup.
-        /// </summary>
-        public void PerformBackup()
+        private void PerformBackup()
         {
             mServer.BlockAutoSave();
             RotateFiles();

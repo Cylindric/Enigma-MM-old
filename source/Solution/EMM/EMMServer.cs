@@ -163,23 +163,6 @@ namespace EnigmaMM
         }
 
         /// <summary>
-        /// Initiate a backup of the server.
-        /// </summary>
-        public void Backup()
-        {
-            RaiseServerMessage("Starting backup...");
-            using (BackupCommand backup = new BackupCommand())
-            {
-                if (backup.CheckRequirements())
-                {
-                    Thread t = new Thread(backup.PerformBackup);
-                    t.Name = "Backup thread";
-                    t.Start();
-                }
-            }
-        }
-
-        /// <summary>
         /// Parses commands and executes them.  Anything unknown is sent to the Minecraft server.
         /// </summary>
         /// <param name="command">Command to parse</param>
@@ -187,7 +170,7 @@ namespace EnigmaMM
         {
             bool executed = false;
             EMMServerMessage message = new EMMServerMessage(command);
-            message.Data.Add("username", "console");
+            message.SetUser("console");
             executed = mParser.ParseCommand(message);
             if (!executed)
             {
@@ -266,8 +249,10 @@ namespace EnigmaMM
 
         public void System_ImportItems()
         {
-            Commands.ItemExtractor extractor = new Commands.ItemExtractor(this);
-            extractor.ExtractItems();
+            using (Commands.ItemExtractor command = new Commands.ItemExtractor())
+            {
+                command.Execute();
+            }
         }
 
         /// <summary>

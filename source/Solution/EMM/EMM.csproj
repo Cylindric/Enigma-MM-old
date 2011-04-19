@@ -55,11 +55,11 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Backup.cs" />
+    <Compile Include="Commands\BackupCommand.cs" />
     <Compile Include="CommandEventArgs.cs" />
     <Compile Include="CommandParser.cs" />
     <Compile Include="Commands\Command.cs" />
-    <Compile Include="Commands\GetItems.cs" />
+    <Compile Include="Commands\GetCommand.cs" />
     <Compile Include="DatabaseContext.cs" />
     <Compile Include="Data\EMMDataContext.designer.cs">
       <AutoGen>True</AutoGen>
@@ -67,8 +67,6 @@
       <DependentUpon>EMMDataContext.dbml</DependentUpon>
     </Compile>
     <Compile Include="EMMServerMessage.cs" />
-    <Compile Include="Data\Item.cs" />
-    <Compile Include="Data\ItemHistory.cs" />
     <Compile Include="Factory.cs" />
     <Compile Include="MapManager.cs" />
     <Compile Include="PluginManager.cs" />
@@ -81,7 +79,6 @@
     <Compile Include="EMMServer.cs" />
     <Compile Include="Settings\MCServerProperties.cs" />
     <Compile Include="Settings\SettingsFile.cs" />
-    <Compile Include="Data\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -33,7 +33,7 @@ namespace EnigmaMM
             uxLogListView.ItemsSource = mLogItems;
 
             // Setup the server manager
-            mMinecraft = new EMMServer();
+            mMinecraft = Factory.GetServer();
             mMinecraft.ServerMessage += HandleServerMessage;
             mMinecraft.StatusChanged += HandleServerMessage;
         }

@@ -12,16 +12,15 @@ namespace EnigmaMM.Commands
         private const int BLOCK_STACK_SIZE = 64;
         private const int BLOCK_MAX = 256;
 
-        private EMMServer mServer;
+
         private Dictionary<int, string> mBlackListItems = new Dictionary<int, string>();
         private List<string> mBlockItems = new List<string>();
 
-        internal ItemExtractor(EMMServer server)
+        internal ItemExtractor()
         {
-            mServer = server;
         }
 
-        internal void ExtractItems()
+        internal void Execute()
         {
             InitialiseBlackList();
             InitialiseBlockList();
@@ -85,7 +84,7 @@ namespace EnigmaMM.Commands
 
                         if (id > 0)
                         {
-                            Item item = new Item();
+                            Data.Item item = new Data.Item();
                             item.Name = name;
                             item.Code = code;
                             item.Max = max;
