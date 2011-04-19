@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using EnigmaMM.Commands;
 using EnigmaMM.Interfaces;
 using System.Linq;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ namespace EnigmaMM
         private bool mServerSaving;
         private CommandParser mParser;
         private Scheduler.SchedulerManager mScheduler;
-        private Backup mBackup;
         private Settings mSettings;
         private PluginManager mPlugins;
         private MapManager mMapManager;
@@ -70,6 +70,7 @@ namespace EnigmaMM
         public event EventHandler<ServerMessageEventArgs> StatusChanged;
 
         #endregion
+        
         #region Interface IServer Properties
 
         public IServerSettings Settings
@@ -98,6 +99,7 @@ namespace EnigmaMM
         }
         
         #endregion
+        
         #region Interface IServer Methods
 
         /// <summary>
@@ -166,12 +168,14 @@ namespace EnigmaMM
         public void Backup()
         {
             RaiseServerMessage("Starting backup...");
-            mBackup = new Backup(this);
-            if (mBackup.CheckRequirements())
+            using (BackupCommand backup = new BackupCommand())
             {
-                Thread t = new Thread(mBackup.PerformBackup);
-                t.Name = "Backup thread";
-                t.Start();
+                if (backup.CheckRequirements())
+                {
+                    Thread t = new Thread(backup.PerformBackup);
+                    t.Name = "Backup thread";
+                    t.Start();
+                }
             }
         }
 
@@ -181,8 +185,10 @@ namespace EnigmaMM
         /// <param name="command">Command to parse</param>
         public void Execute(string command)
         {
-            bool executed;
-            executed = mParser.ParseCommand(command);
+            bool executed = false;
+            EMMServerMessage message = new EMMServerMessage(command);
+            message.Data.Add("username", "console");
+            executed = mParser.ParseCommand(message);
             if (!executed)
             {
                 SendCommand(command);
@@ -258,23 +264,9 @@ namespace EnigmaMM
             }
         }
 
-        public void GiveItem(string username, int itemId, int qty)
-        {
-            int qtyToGive = qty;
-            int giveStep = 64;
-
-            while (qtyToGive > 0)
-            {
-                int give = Math.Min(qtyToGive, giveStep);
-                SendCommand(string.Format("give {0} {1} {2}", username, itemId, give));
-                qtyToGive = qtyToGive - give;
-            }
-
-        }
-
         public void System_ImportItems()
         {
-            ItemExtractor extractor = new ItemExtractor(this);
+            Commands.ItemExtractor extractor = new Commands.ItemExtractor(this);
             extractor.ExtractItems();
         }
 
@@ -359,9 +351,6 @@ namespace EnigmaMM
             mScheduler = new Scheduler.SchedulerManager(this);
             mMapManager = new MapManager(this);
             mPowerManager = new PowerManager(this);
-
-            EMMServerMessage.PopulateRules();
-            CommandParser.PopulateItems(Path.Combine(mSettings.ServerManagerRoot, "items.xml"));
 
             mServerSaving = false;
             ServerStatus = Status.Stopped;
@@ -463,14 +452,7 @@ namespace EnigmaMM
 
                 case EMMServerMessage.MessageTypes.ServerCommand:
                 case EMMServerMessage.MessageTypes.TriedServerCommand:
-                    mParser.ParseCommand(M.Data["command"] + ' ' + M.Data["username"]);
-
-                    User user = (User)EMMServer.Database.Users.First(u => u.Username == M.Data["username"]);
-
-                    foreach (ICommandPlugin plugin in Plugins.GetPlugins<ICommandPlugin>())
-                    {
-                        plugin.ParseCommand(user, M.Data["command"]);
-                    }
+                    mParser.ParseCommand(M);
                     break;
 
                 case EMMServerMessage.MessageTypes.UserLoggedOut:

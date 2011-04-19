@@ -4,23 +4,17 @@ using System;
 using EnigmaMM.Interfaces;
 using System.Threading;
 
-namespace EnigmaMM
+namespace EnigmaMM.Commands
 {
-    class Backup : IDisposable
+    class BackupCommand : Command
     {
-        private IServer mServer;
         private int mBackupsToKeep = 5;
         private string mWorldPath;
 
-        public Backup(IServer server)
+        public BackupCommand()
         {
-            mServer = server;
             mServer.MinecraftSettings.Load();
             mWorldPath = mServer.MinecraftSettings.WorldPath;
-        }
-
-        public void Dispose() {
-            mServer = null;
         }
 
         /// <summary>

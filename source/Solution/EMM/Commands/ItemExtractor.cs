@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EnigmaMM;
-using System.Data.Linq;
 using System.Text.RegularExpressions;
 
-namespace EnigmaMM
+namespace EnigmaMM.Commands
 {
-    class ItemExtractor
+    class ItemExtractor: Command
     {
         private const string WIKI_FILE = "items.wiki.txt";
         private const int DEFAULT_STACK_SIZE = 1;
