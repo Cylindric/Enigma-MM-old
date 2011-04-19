@@ -7,13 +7,13 @@ using System.Linq;
 
 namespace EnigmaMM
 {
-    class EMMServerMessage
+    public class EMMServerMessage
     {
         public string Message { private set; get; }
         public MessageTypes Type { private set; get; }
         public Dictionary<string, string> Data { private set; get; }
 
-        private static List<MessagePattern> sPatterns = new List<MessagePattern>();
+        private static List<MessagePattern> sPatterns;
 
         public enum MatchTypes
         {
@@ -86,29 +86,34 @@ namespace EnigmaMM
             DetermineType();
         }
 
-        public static void PopulateRules()
-        {
-            sPatterns = new List<MessagePattern>();
-            Data.EMMDataContext db = EMMServer.Database;
-            foreach(Data.MessageType message in db.MessageTypes) {
-                MessagePattern p = new MessagePattern(message.Name, message.MatchType, message.Expression);
-                sPatterns.Add(p);
-            }
-        }
-       
         /// <summary>
         /// Iterates over all the defined Patterns to determine the type of message and if applicable
         /// extracts any pertinent data.
         /// </summary>
         private void DetermineType()
         {
+            if (sPatterns == null)
+            {
+                PopulateRules();
+            }
             Type = MessageTypes.Other;
             foreach (MessagePattern pattern in sPatterns)
             {
                 if (ProcessMatch(pattern.MatchType, pattern.Pattern, pattern.MessageType)) { return; }
             }
         }
-        
+
+        private void PopulateRules()
+        {
+            sPatterns = new List<MessagePattern>();
+            Data.EMMDataContext db = EMMServer.Database;
+            foreach (Data.MessageType message in db.MessageTypes)
+            {
+                MessagePattern p = new MessagePattern(message.Name, message.MatchType, message.Expression);
+                sPatterns.Add(p);
+            }
+        }
+
         /// <summary>
         /// Tries to match the message with a MessageType, using the pattern passed.
         /// If the message matches the pattern, and the pattern contains the ?&lt;data&gt; placeholder,

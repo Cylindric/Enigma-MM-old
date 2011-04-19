@@ -24,8 +24,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.NullCommand", "Test.Nu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.c10t", "Plugin.c10t\Plugin.c10t.csproj", "{64E91C3F-212B-4D01-AC1D-67BFB118B8E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Command.GetItems", "Plugin.Command.GetItems\Plugin.Command.GetItems.csproj", "{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,16 +147,6 @@ Global
 		{64E91C3F-212B-4D01-AC1D-67BFB118B8E3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{64E91C3F-212B-4D01-AC1D-67BFB118B8E3}.Release|x86.ActiveCfg = Release|Any CPU
 		{64E91C3F-212B-4D01-AC1D-67BFB118B8E3}.Release|x86.Build.0 = Release|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{1D8A3467-0C87-43FB-BA08-A2D44FA118A0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

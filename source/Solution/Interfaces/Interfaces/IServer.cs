@@ -104,11 +104,6 @@ namespace EnigmaMM.Interfaces
         void GenerateMaps(string[] args);
 
         /// <summary>
-        /// Gives the specified user some items.
-        /// </summary>
-        void GiveItem(string username, int itemId, int qty);
-
-        /// <summary>
         /// Raise a server message.
         /// </summary>
         /// <param name="message"></param>
