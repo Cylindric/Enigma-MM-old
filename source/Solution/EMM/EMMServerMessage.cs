@@ -1,9 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using System.Xml;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace EnigmaMM
 {
@@ -93,7 +91,7 @@ namespace EnigmaMM
         
         public void SetUser(string username)
         {
-            mUser = EMMServer.Database.Users.SingleOrDefault(u => u.Username == username);
+            mUser = Manager.Database.Users.SingleOrDefault(u => u.Username == username);
         }
 
         /// <summary>
@@ -116,7 +114,7 @@ namespace EnigmaMM
         private void PopulateRules()
         {
             sPatterns = new List<MessagePattern>();
-            Data.EMMDataContext db = EMMServer.Database;
+            Data.EMMDataContext db = Manager.Database;
             foreach (Data.MessageType message in db.MessageTypes)
             {
                 MessagePattern p = new MessagePattern(message.Name, message.MatchType, message.Expression);

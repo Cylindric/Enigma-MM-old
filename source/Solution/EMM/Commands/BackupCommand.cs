@@ -12,25 +12,21 @@ namespace EnigmaMM.Commands
 
         public BackupCommand()
         {
-            mServer.MinecraftSettings.Load();
-            mWorldPath = mServer.MinecraftSettings.WorldPath;
+            Manager.Server.MinecraftSettings.Load();
+            mWorldPath = Manager.Server.MinecraftSettings.WorldPath;
         }
 
         /// <summary>
         /// Perform a backup.
         /// </summary>
-        public bool Execute()
+        protected override void ExecuteTask(EMMServerMessage command)
         {
-            if (!CheckRequirements())
+            if (CheckRequirements())
             {
-                return false;
-            } else {
-                mServer.RaiseServerMessage("Starting backup...");
-                Thread t = new Thread(PerformBackup);
-                t.Name = "Backup thread";
-                t.Start();
+                Manager.Server.RaiseServerMessage("Backing up...");
+                PerformBackup();
+                Manager.Server.RaiseServerMessage("Backup complete.");
             }
-            return true;
         }
 
         /// <summary>
@@ -39,10 +35,11 @@ namespace EnigmaMM.Commands
         /// <returns>True if system is ready; else false.</returns>
         private bool CheckRequirements()
         {
+            EMMServer server = Manager.Server;
             bool status = true;
-            if (!Directory.Exists(mServer.Settings.BackupRoot))
+            if (!Directory.Exists(server.Settings.BackupRoot))
             {
-                mServer.RaiseServerMessage(string.Format("ERROR: Specified backup location doesn't exist! {0}", mServer.Settings.BackupRoot));
+                server.RaiseServerMessage(string.Format("ERROR: Specified backup location doesn't exist! {0}", server.Settings.BackupRoot));
                 status = false;
             }
             return status;
@@ -50,20 +47,21 @@ namespace EnigmaMM.Commands
 
         private void PerformBackup()
         {
-            mServer.BlockAutoSave();
+            Manager.Server.BlockAutoSave();
             RotateFiles();
             BackupFiles();
-            mServer.UnblockAutoSave();
+            Manager.Server.UnblockAutoSave();
         }
 
         private void BackupFiles()
         {
-            string backupFile = Path.Combine(mServer.Settings.BackupRoot, string.Format("backup-{0:yyyyMMdd-HHmmss}.zip", DateTime.Now));
+            EMMServer server = Manager.Server;
+            string backupFile = Path.Combine(server.Settings.BackupRoot, string.Format("backup-{0:yyyyMMdd-HHmmss}.zip", DateTime.Now));
             using (ZipFile zip = new ZipFile())
             {
-                zip.AddSelectedFiles("*.txt", mServer.Settings.MinecraftRoot, @"minecraft");
-                zip.AddSelectedFiles("*.jar", mServer.Settings.MinecraftRoot, @"minecraft");
-                zip.AddSelectedFiles("*.properties", mServer.Settings.MinecraftRoot, @"minecraft");
+                zip.AddSelectedFiles("*.txt", server.Settings.MinecraftRoot, @"minecraft");
+                zip.AddSelectedFiles("*.jar", server.Settings.MinecraftRoot, @"minecraft");
+                zip.AddSelectedFiles("*.properties", server.Settings.MinecraftRoot, @"minecraft");
                 zip.AddDirectory(mWorldPath, @"minecraft\" + Path.GetFileName(mWorldPath));
                 try
                 {
@@ -71,16 +69,16 @@ namespace EnigmaMM.Commands
                 }
                 catch (Exception e)
                 {
-                    mServer.RaiseServerMessage(string.Format("ERROR: Unable to save backup! {0}", e.Message));
+                    server.RaiseServerMessage(string.Format("ERROR: Unable to save backup! {0}", e.Message));
                 }
             }
-            mServer.RaiseServerMessage("Backup complete.");
         }
 
         private void RotateFiles()
-        {
+        {            
             // Get a list of current backups, sorted by created-date
-            string[] fileNames = Directory.GetFiles(mServer.Settings.BackupRoot, "*.zip");
+            EMMServer server = Manager.Server;
+            string[] fileNames = Directory.GetFiles(server.Settings.BackupRoot, "*.zip");
             DateTime[] creationTimes = new DateTime[fileNames.Length];
             for (int i = 0; i < fileNames.Length; i++)
             {

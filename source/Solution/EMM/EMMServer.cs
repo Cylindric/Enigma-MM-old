@@ -18,7 +18,6 @@ namespace EnigmaMM
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
-        private static DatabaseContext sDatabase;
         private Process mServerProcess;
         private Status mServerStatus;
         private string mStatusMessage;
@@ -251,7 +250,7 @@ namespace EnigmaMM
         {
             using (Commands.ItemExtractor command = new Commands.ItemExtractor())
             {
-                command.Execute();
+                //command.Execute();
             }
         }
 
@@ -296,17 +295,6 @@ namespace EnigmaMM
                 {
                     StatusChanged(this, new ServerMessageEventArgs(mServerStatus.ToString()));
                 }
-            }
-        }
-
-        internal static DatabaseContext Database
-        {
-            get {
-                if (sDatabase == null)
-                {
-                    sDatabase = new DatabaseContext("EMM.sdf");
-                }
-                return sDatabase; 
             }
         }
 
