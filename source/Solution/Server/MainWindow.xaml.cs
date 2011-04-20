@@ -227,7 +227,11 @@ namespace EnigmaMM
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            mMinecraft.StopServer(false, 60000, true);
+            if (mMinecraft.CurrentStatus != Status.Stopped)
+            {
+                e.Cancel = true;
+                AddMessageToLog("Server still running - cannot close");
+            }
         }
 
         private void uxLogListView_SourceUpdated(object sender, System.Windows.Data.DataTransferEventArgs e)
