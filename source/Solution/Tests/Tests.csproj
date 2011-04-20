@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,7 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Plugin.AlphaVespucciTests.cs" />
     <Compile Include="ScheduleManagerTests.cs" />
     <Compile Include="ScheduleTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,11 +71,6 @@
     <ProjectReference Include="..\MinecraftSimulator\MinecraftSimulator.csproj">
       <Project>{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}</Project>
       <Name>MinecraftSimulator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Plugin.AlphaVespucci\Plugin.AlphaVespucci.csproj">
-      <Project>{F63A86B8-6630-416D-A050-AB56A48D5348}</Project>
-      <Name>Plugin.AlphaVespucci</Name>
-      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
