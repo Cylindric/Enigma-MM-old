@@ -2,28 +2,45 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using EnigmaMM.Data;
 
 namespace EnigmaMM.Commands
 {
     abstract class Command: IDisposable
     {
-        protected EMMServer mServer;
         protected List<Data.Permission> mPermissionsRequired = new List<Data.Permission>();
-        protected EnigmaMM.DatabaseContext mDB;
 
         public Command()
         {
-            mServer = Factory.GetServer();
-            mDB = EMMServer.Database;
         }
 
         public void Dispose()
         {
-            mServer = null;
         }
+
+        public void Execute(EMMServerMessage serverMessage)
+        {
+            if (CheckAccess(serverMessage.User))
+            {
+                ThreadPool.QueueUserWorkItem(new WaitCallback(ExecuteTask), serverMessage);
+            }
+        }
+
+        private void ExecuteTask(object param)
+        {
+            ExecuteTask((EMMServerMessage)param);
+        }
+
+        /// <summary>
+        /// Method that will be called to perform the command
+        /// </summary>
+        /// <param name="serverMessage">User's full command</param>
+        abstract protected void ExecuteTask(EMMServerMessage serverMessage);
 
         protected bool CheckAccess(Data.User user)
         {
+            EMMDataContext mDB = Manager.Database;
             if (mPermissionsRequired.Count == 0)
             {
                 return true;
@@ -40,7 +57,7 @@ namespace EnigmaMM.Commands
             }
             else
             {
-                mServer.RaiseServerMessage("Access to command denied");
+                Manager.Server.RaiseServerMessage("Access to command denied");
                 return false;
             }
         }

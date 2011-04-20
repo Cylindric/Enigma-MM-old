@@ -34,11 +34,12 @@ namespace EnigmaMM
         /// Handle a command from the CLI.
         /// Commands for the server manager are prefixed with the command-character.
         /// </summary>
-        /// <param name="Command">The command to parse.</param>
-        public bool ParseCommand(EMMServerMessage Command)
+        /// <param name="serverMessage">The command to parse.</param>
+        public bool ParseCommand(EMMServerMessage serverMessage)
         {
+            Command command;
             bool executed = true;
-            string[] args = Command.Message.Split(' ');
+            string[] args = serverMessage.Message.Split(' ');
             switch (args[0])
             {
                 case ("start"):
@@ -71,18 +72,13 @@ namespace EnigmaMM
                     break;
 
                 case ("backup"):
-                    using (BackupCommand command = new BackupCommand())
-                    {
-                        executed = command.Execute();
-                    }
-
+                    command = new BackupCommand();
+                    command.Execute(serverMessage);
                     break;
 
                 case ("get"):
-                    using (GetCommand command = new GetCommand())
-                    {
-                        executed = command.Execute(Command);
-                    }
+                    command = new GetCommand();
+                    command.Execute(serverMessage);
                     break;
 
                 case ("sys.importitems"):

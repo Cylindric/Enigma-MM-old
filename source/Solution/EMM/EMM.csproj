@@ -60,14 +60,13 @@
     <Compile Include="CommandParser.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Commands\GetCommand.cs" />
-    <Compile Include="DatabaseContext.cs" />
     <Compile Include="Data\EMMDataContext.designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EMMDataContext.dbml</DependentUpon>
     </Compile>
     <Compile Include="EMMServerMessage.cs" />
-    <Compile Include="Factory.cs" />
+    <Compile Include="Manager.cs" />
     <Compile Include="MapManager.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="PowerManager.cs" />

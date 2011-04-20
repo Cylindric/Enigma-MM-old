@@ -16,16 +16,12 @@ namespace EnigmaMM.Commands
         private Dictionary<int, string> mBlackListItems = new Dictionary<int, string>();
         private List<string> mBlockItems = new List<string>();
 
-        internal ItemExtractor()
-        {
-        }
-
-        internal void Execute()
+        protected override void ExecuteTask(EMMServerMessage servermessage)
         {
             InitialiseBlackList();
             InitialiseBlockList();
 
-            EnigmaMM.Data.EMMDataContext db = EMMServer.Database;
+            EnigmaMM.Data.EMMDataContext db = Manager.Database;
 
             Console.WriteLine("Using database {0}", db.Connection.Database);
 

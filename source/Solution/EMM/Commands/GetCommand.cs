@@ -12,11 +12,12 @@ namespace EnigmaMM.Commands
 
         public GetCommand()
         {
+            EMMDataContext mDB = Manager.Database;
             mPermissionsRequired.Add(mDB.Permissions.Single(i => i.Name == "get-item"));
             mPermissionsRequired.Add(mDB.Permissions.Single(i => i.Name == "reboot"));
         }
 
-        public bool Execute(EMMServerMessage command)
+        protected override void ExecuteTask(EMMServerMessage command)
         {
             string[] parameters = command.Message.Split(' ');
             string itemName = "";
@@ -33,6 +34,7 @@ namespace EnigmaMM.Commands
             int itemID = 0;
             int.TryParse(itemName, out itemID);
             Item item;
+            EMMDataContext mDB = Manager.Database;
             if (itemID != 0)
             {
                 item = mDB.Items.SingleOrDefault(i => i.Block_Decimal_ID == itemID);
@@ -43,34 +45,27 @@ namespace EnigmaMM.Commands
             }
             if (item == null)
             {
-                return false;
+                return;
             }
 
-            return Execute(command.User, item, quantity);
+            ExecuteTask(command.User, item, quantity);
         }
 
-        public bool Execute(User user, Item item, int quantity)
+        private void ExecuteTask(User user, Item item, int quantity)
         {
-            if (CheckAccess(user) == false)
-            {
-                return false;
-            }
-
             int qtyToGive = GetActualQuantity(user, item, quantity);
 
             if (qtyToGive == 0)
             {
-                return false;
+                return;
             }
 
             while (qtyToGive > 0)
             {
                 int give = Math.Min(qtyToGive, MAX_GIVE_STEP);
-                mServer.Execute(string.Format("give {0} {1} {2}", user.Username, item.Block_Decimal_ID, give));
+                Manager.Server.Execute(string.Format("give {0} {1} {2}", user.Username, item.Block_Decimal_ID, give));
                 qtyToGive = qtyToGive - give;
             }
-
-            return true;
         }
 
         private int GetActualQuantity(User user, Item item, int requestedQuantity)
