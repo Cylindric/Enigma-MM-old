@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using EnigmaMM.Data;
+using EnigmaMM.Engine.Data;
 
-namespace EnigmaMM.Commands
+namespace EnigmaMM.Engine.Commands
 {
     abstract class Command: IDisposable
     {
@@ -46,12 +45,12 @@ namespace EnigmaMM.Commands
                 return true;
             }
 
-            var userPermissions = from p in mDB.Permissions
+            int userPermissions = (from p in mDB.Permissions
                                   where p.Rank.Rank_ID <= user.Rank.Rank_ID
                                   && mPermissionsRequired.Contains(p)
-                                  select p;
+                                  select p).Count();
 
-            if (userPermissions.Count() == mPermissionsRequired.Count)
+            if (userPermissions == mPermissionsRequired.Count)
             {
                 return true;
             }

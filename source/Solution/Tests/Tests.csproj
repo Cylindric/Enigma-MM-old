@@ -60,10 +60,6 @@
     <Compile Include="SettingsFileTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EMM\EMM.csproj">
-      <Project>{E6CD972B-28CF-4096-8E1A-368AD575A62C}</Project>
-      <Name>EMM</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{970B78FB-587F-48FD-89B5-222B448FE10B}</Project>
       <Name>Interfaces</Name>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EnigmaMM
+namespace EnigmaMM.Engine
 {
     /// <summary>
     /// Utility object for passing data between events.

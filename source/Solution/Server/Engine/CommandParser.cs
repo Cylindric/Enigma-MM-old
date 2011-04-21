@@ -1,10 +1,7 @@
-﻿using System;
+﻿using EnigmaMM.Engine.Commands;
 using EnigmaMM.Interfaces;
-using System.Collections.Generic;
-using System.Xml;
-using EnigmaMM.Commands;
 
-namespace EnigmaMM
+namespace EnigmaMM.Engine
 {
     /// <summary>
     /// The CommandParser is a simple tool for converting user input into Server Manager or
@@ -39,7 +36,17 @@ namespace EnigmaMM
         {
             Command command;
             bool executed = true;
-            string[] args = serverMessage.Message.Split(' ');
+
+            string[] args;
+
+            if (serverMessage.Data.ContainsKey("command"))
+            {
+                args = serverMessage.Data["command"].Split(' ');
+            }
+            else
+            {
+                args = serverMessage.Message.Split(' ');
+            }
             switch (args[0])
             {
                 case ("start"):
@@ -79,10 +86,6 @@ namespace EnigmaMM
                 case ("get"):
                     command = new GetCommand();
                     command.Execute(serverMessage);
-                    break;
-
-                case ("sys.importitems"):
-                    mMinecraft.System_ImportItems();
                     break;
 
                 default:

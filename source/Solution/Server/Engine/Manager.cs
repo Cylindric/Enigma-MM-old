@@ -1,5 +1,6 @@
-﻿using EnigmaMM.Data;
-namespace EnigmaMM
+﻿using EnigmaMM.Engine.Data;
+
+namespace EnigmaMM.Engine
 {
     public class Manager
     {

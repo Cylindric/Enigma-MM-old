@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using System.Collections;
 using EnigmaMM.Interfaces;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM
 {

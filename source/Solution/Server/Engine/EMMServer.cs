@@ -3,12 +3,9 @@ using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using EnigmaMM.Commands;
 using EnigmaMM.Interfaces;
-using System.Linq;
-using System.Collections.Generic;
 
-namespace EnigmaMM
+namespace EnigmaMM.Engine
 {
     /// <summary>
     /// The main Server Manager class.
@@ -243,14 +240,6 @@ namespace EnigmaMM
                 {
                     SetAutoSave(true);
                 }
-            }
-        }
-
-        public void System_ImportItems()
-        {
-            using (Commands.ItemExtractor command = new Commands.ItemExtractor())
-            {
-                //command.Execute();
             }
         }
 

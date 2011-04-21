@@ -3,7 +3,7 @@ using System.Linq;
 using EnigmaMM.Interfaces;
 using System.Collections.Generic;
 
-namespace EnigmaMM
+namespace EnigmaMM.Engine
 {
     class MapManager
     {

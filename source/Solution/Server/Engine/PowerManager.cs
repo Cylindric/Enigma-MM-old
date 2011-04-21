@@ -4,7 +4,7 @@ using EnigmaMM.Interfaces;
 using System.IO;
 using System.Diagnostics;
 
-namespace EnigmaMM
+namespace EnigmaMM.Engine
 {
     class PowerManager
     {
