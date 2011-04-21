@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EnigmaMM</RootNamespace>
     <AssemblyName>EMM</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -117,9 +117,6 @@
     <Content Include="Data\schema.sql" />
     <Content Include="Ionic.Zip.Reduced.dll" />
     <Content Include="Ionic.txt" />
-    <Content Include="items.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Scheduler\sample.scheduler.xml" />
   </ItemGroup>
   <ItemGroup>
