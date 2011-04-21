@@ -1,7 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMM", "EMM\EMM.csproj", "{E6CD972B-28CF-4096-8E1A-368AD575A62C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibNbt", "LibNbt\LibNbt.csproj", "{4488498D-976D-4DA3-BF72-109531AF0488}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{FA641914-FBA9-4109-A9A6-A7C9CC356739}"
@@ -32,18 +30,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Debug|x86.ActiveCfg = Release|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Debug|x86.Build.0 = Release|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Release|x86.ActiveCfg = Release|Any CPU
-		{E6CD972B-28CF-4096-8E1A-368AD575A62C}.Release|x86.Build.0 = Release|Any CPU
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

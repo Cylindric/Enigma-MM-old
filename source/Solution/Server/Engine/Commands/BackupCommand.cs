@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Ionic.Zip;
-using System.Threading;
 
-namespace EnigmaMM.Commands
+namespace EnigmaMM.Engine.Commands
 {
     class BackupCommand : Command
     {
@@ -12,6 +12,7 @@ namespace EnigmaMM.Commands
 
         public BackupCommand()
         {
+            mPermissionsRequired.Add(Manager.Database.Permissions.Single(i => i.Name == "backup"));
             Manager.Server.MinecraftSettings.Load();
             mWorldPath = Manager.Server.MinecraftSettings.WorldPath;
         }

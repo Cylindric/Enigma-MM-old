@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EnigmaMM.Data
+namespace EnigmaMM.Engine.Data
 {
 	using System.Data.Linq;
 	using System.Data.Linq.Mapping;

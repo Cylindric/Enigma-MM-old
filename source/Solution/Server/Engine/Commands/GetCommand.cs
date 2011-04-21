@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using EnigmaMM.Data;
+using EnigmaMM.Engine.Data;
 
-namespace EnigmaMM.Commands
+namespace EnigmaMM.Engine.Commands
 {
     class GetCommand: Command
     {
@@ -12,9 +10,7 @@ namespace EnigmaMM.Commands
 
         public GetCommand()
         {
-            EMMDataContext mDB = Manager.Database;
-            mPermissionsRequired.Add(mDB.Permissions.Single(i => i.Name == "get-item"));
-            mPermissionsRequired.Add(mDB.Permissions.Single(i => i.Name == "reboot"));
+            mPermissionsRequired.Add(Manager.Database.Permissions.Single(i => i.Name == "get-item"));
         }
 
         protected override void ExecuteTask(EMMServerMessage command)

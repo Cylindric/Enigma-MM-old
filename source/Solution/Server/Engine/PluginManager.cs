@@ -6,7 +6,7 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 
-namespace EnigmaMM
+namespace EnigmaMM.Engine
 {
     class PluginManager
     {

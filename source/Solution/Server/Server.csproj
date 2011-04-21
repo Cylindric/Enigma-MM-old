@@ -16,6 +16,21 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -43,8 +58,13 @@
     <ApplicationIcon>server.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.5, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Engine\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -60,9 +80,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Settings.xaml.cs">
-      <DependentUpon>Settings.xaml</DependentUpon>
-    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -71,6 +88,27 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Engine\CommandEventArgs.cs" />
+    <Compile Include="Engine\CommandParser.cs" />
+    <Compile Include="Engine\Commands\BackupCommand.cs" />
+    <Compile Include="Engine\Commands\Command.cs" />
+    <Compile Include="Engine\Commands\GetCommand.cs" />
+    <Compile Include="Engine\Data\EMMDataContext.designer.cs">
+      <DependentUpon>EMMDataContext.dbml</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="Engine\EMMServer.cs" />
+    <Compile Include="Engine\EMMServerMessage.cs" />
+    <Compile Include="Engine\Manager.cs" />
+    <Compile Include="Engine\MapManager.cs" />
+    <Compile Include="Engine\PluginManager.cs" />
+    <Compile Include="Engine\PowerManager.cs" />
+    <Compile Include="Engine\Scheduler\SchedulerManager.cs" />
+    <Compile Include="Engine\Scheduler\ScheduleTask.cs" />
+    <Compile Include="Engine\Settings\MCServerProperties.cs" />
+    <Compile Include="Engine\Settings\Settings.cs" />
+    <Compile Include="Engine\Settings\SettingsFile.cs" />
     <Compile Include="InvokeOC.cs" />
     <Compile Include="LogListItem.cs" />
     <Compile Include="LVColumnStretchProperty.cs" />
@@ -78,10 +116,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Settings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -103,6 +137,15 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="Engine\Data\EMMDataContext.dbml">
+      <Generator>MSLinqToSQLGenerator</Generator>
+      <LastGenOutput>EMMDataContext.designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Engine\Data\EMMDataContext.dbml.layout">
+      <DependentUpon>EMMDataContext.dbml</DependentUpon>
+    </None>
+    <None Include="Engine\Settings\sample.settings.conf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -131,10 +174,6 @@
     <Resource Include="Resources\status-stopping.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EMM\EMM.csproj">
-      <Project>{E6CD972B-28CF-4096-8E1A-368AD575A62C}</Project>
-      <Name>EMM</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{970B78FB-587F-48FD-89B5-222B448FE10B}</Project>
       <Name>Interfaces</Name>
@@ -154,6 +193,54 @@
   <ItemGroup>
     <Resource Include="Resources\toolbar-restart-active.png" />
     <Resource Include="Resources\toolbar-restart-inactive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Engine\Data\items.wiki.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Engine\Data\items.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Engine\Data\items.xsl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="Engine\Data\schema.sql" />
+    <Content Include="EMM.sdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Engine\Scheduler\sample.scheduler.xml" />
+    <Resource Include="Engine\Ionic.txt" />
+    <Content Include="Engine\Ionic.Zip.Reduced.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.SQL.Server.Compact.3.5">
+      <Visible>False</Visible>
+      <ProductName>SQL Server Compact 3.5 SP2</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
