@@ -54,16 +54,13 @@ CopyFile BuildPath(Array(BuildRoot, "\Plugins\*.dll")), EMMRoot & "\Plugins\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-CopyFile BuildPath(Array(SourceRoot, "EMM", "EMM.sdf")), EMMRoot & "\"
-CopyFile BuildPath(Array(SourceRoot, "EMM", "items.xml")), EMMRoot & "\"
-CopyFile BuildPath(Array(SourceRoot, "EMM", "Scheduler", "*.xml")), EMMRoot & "\"
-CopyFile BuildPath(Array(SourceRoot, "EMM", "Settings", "*.conf")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "Server", "EMM.sdf")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "Scheduler", "*.xml")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "Settings", "*.conf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.Overviewer", "*.conf")), EMMRoot & "\Plugins\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.c10t", "*.conf")), EMMRoot & "\Plugins\"
 
 ' Remove any non-deploy files
-DeleteFile BuildPath(Array(EMMRoot, "ItemExtractor.exe"))
-DeleteFile BuildPath(Array(EMMRoot, "ItemExtractor.vshost.exe"))
 DeleteFile BuildPath(Array(EMMRoot, "MinecraftSimulator.exe"))
 DeleteFile BuildPath(Array(EMMRoot, "moq.dll"))
 DeleteFile BuildPath(Array(EMMRoot, "nunit.framework.dll"))
@@ -97,7 +94,7 @@ WriteLine file, ""
 WriteLine file, "################################################################################"
 WriteLine file, "##3## Ionic Zip License"
 WriteLine file, "################################################################################"
-ConcatenateFiles file, BuildPath(Array(SourceRoot, "EMM", "Ionic.txt"))
+ConcatenateFiles file, BuildPath(Array(SourceRoot, "Server", "Engine", "Ionic.txt"))
 
 
 Dim zipexe, zipname, buildversion
