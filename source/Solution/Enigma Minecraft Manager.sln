@@ -7,13 +7,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinecraftSimulator", "MinecraftSimulator\MinecraftSimulator.csproj", "{0D7FFBF5-9340-47AE-B8DC-73131D35DBB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{483C8D87-5418-4226-9F54-08475EE633A1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D} = {410D1FCA-29B4-40A1-96A5-1E6033B58A8D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{970B78FB-587F-48FD-89B5-222B448FE10B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plugin.Overviewer", "Plugin.Overviewer\Plugin.Overviewer.csproj", "{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.NullCommand", "Test.NullCommand\Test.NullCommand.csproj", "{7BE0E7D3-5343-4526-B160-BEEF84DC2AC7}"
 EndProject
@@ -84,18 +79,6 @@ Global
 		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|x86.ActiveCfg = Release|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Debug|x86.Build.0 = Debug|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Release|x86.ActiveCfg = Release|Any CPU
-		{410D1FCA-29B4-40A1-96A5-1E6033B58A8D}.Release|x86.Build.0 = Release|Any CPU
 		{7BE0E7D3-5343-4526-B160-BEEF84DC2AC7}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{7BE0E7D3-5343-4526-B160-BEEF84DC2AC7}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{7BE0E7D3-5343-4526-B160-BEEF84DC2AC7}.Debug|Mixed Platforms.Build.0 = Debug|x86

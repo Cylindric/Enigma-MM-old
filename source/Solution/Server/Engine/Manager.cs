@@ -38,6 +38,8 @@ namespace EnigmaMM.Engine
                         if (sDatabase == null)
                         {
                             sDatabase = new EMMDataContext("EMM.sdf");
+                            DatabaseManager dbm = new DatabaseManager();
+                            dbm.CheckDatabaseState();
                         }
                     }
                 }
