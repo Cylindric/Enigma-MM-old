@@ -21,12 +21,6 @@ namespace EnigmaMM.Engine
             mMinecraft = minecraft;
         }
 
-        //public bool ParseCommand(string Command)
-        //{
-        //    bool executed = true;
-        //    return executed;
-        //}
-
         /// <summary>
         /// Handle a command from the CLI.
         /// Commands for the server manager are prefixed with the command-character.
@@ -75,7 +69,8 @@ namespace EnigmaMM.Engine
                     break;
 
                 case ("maps"):
-                    mMinecraft.GenerateMaps(args);
+                    command = new MapsCommand();
+                    command.Execute(serverMessage);
                     break;
 
                 case ("backup"):

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using EnigmaMM.Interfaces;
 
@@ -287,6 +288,12 @@ namespace EnigmaMM.Engine
             }
         }
 
+        internal string ReadConfig(string key)
+        {
+            string value = Manager.Database.Configs.Single(c => c.Key == key).Value;
+            return value;
+        }
+
         #endregion
 
         #region Public Constructors
@@ -470,6 +477,28 @@ namespace EnigmaMM.Engine
         /// <param name="Message"></param>
         internal void OnUserJoined(EMMServerMessage Message)
         {
+            // make sure user exists in database
+            Data.User user = Manager.Database.Users.SingleOrDefault(i => i.Username == Message.Data["username"]);
+            if (user == null)
+            {
+                user = new Data.User();
+                user.Username = Message.Data["username"];
+                user.Rank = Manager.Database.Ranks.Single(rank => rank.Name == "Everyone");
+                Manager.Database.Users.InsertOnSubmit(user);
+            }
+            double positionX = 0;
+            double positionY = 0;
+            double positionZ = 0;
+            double.TryParse(Message.Data["LocX"], out positionX);
+            double.TryParse(Message.Data["LocY"], out positionY);
+            double.TryParse(Message.Data["LocZ"], out positionZ);
+            user.LocX = positionX;
+            user.LocY = positionY;
+            user.LocZ = positionZ;
+            user.LastSeen = DateTime.Now;
+            
+            Manager.Database.SubmitChanges();
+            
             mOnlineUsers.Add(Message.Data["username"]);
         }
 

@@ -58,7 +58,6 @@ CopyFile BuildPath(Array(SourceRoot, "Server", "EMM.sdf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "Scheduler", "*.xml")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "Settings", "*.conf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Plugin.Overviewer", "*.conf")), EMMRoot & "\Plugins\"
-CopyFile BuildPath(Array(SourceRoot, "Plugin.c10t", "*.conf")), EMMRoot & "\Plugins\"
 
 ' Remove any non-deploy files
 DeleteFile BuildPath(Array(EMMRoot, "MinecraftSimulator.exe"))
@@ -98,7 +97,7 @@ ConcatenateFiles file, BuildPath(Array(SourceRoot, "Server", "Engine", "Ionic.tx
 
 
 Dim zipexe, zipname, buildversion
-buildversion = GetFileVersion(BuildPath(Array(EMMRoot, "emm.dll")))
+buildversion = GetFileVersion(BuildPath(Array(EMMRoot, "Server.exe")))
 zipexe = objFS.GetAbsolutePathName(BuildPath(Array(SourceRoot, "Tools", "7za.exe")))
 If buildversion = "" Then
 	zipname = objFS.GetAbsolutePathName(BuildPath(Array(DeployRoot, "EMMServer.zip")))
