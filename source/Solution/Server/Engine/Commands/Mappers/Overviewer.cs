@@ -1,10 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 
 namespace EnigmaMM.Engine.Commands.Mappers
 {
-    public class C10t : Mapper
+    public class Overviewer : Mapper
     {
         public override void RenderMap()
         {
@@ -16,7 +15,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
                 OutputPath = Path.Combine(Server.Settings.ServerManagerRoot, OutputPath);
                 OutputPath = Path.GetFullPath(OutputPath);
             }
-            OutputPath = Path.Combine(OutputPath, "c10t");
+            OutputPath = Path.Combine(OutputPath, "overviewer");
 
 
             string CachePath = Server.ReadConfig("map_cache");
@@ -25,10 +24,10 @@ namespace EnigmaMM.Engine.Commands.Mappers
                 CachePath = Path.Combine(Server.Settings.ServerManagerRoot, CachePath);
                 CachePath = Path.GetFullPath(CachePath);
             }
-            CachePath = Path.Combine(CachePath, "c10t");
+            CachePath = Path.Combine(CachePath, "overviewer");
 
 
-            string exeFile = Server.ReadConfig("c10t_exe");
+            string exeFile = Server.ReadConfig("overviewer_exe");
             if (exeFile.StartsWith("."))
             {
                 exeFile = Path.Combine(Server.Settings.ServerManagerRoot, exeFile);
@@ -36,7 +35,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             }
             if (!File.Exists(exeFile))
             {
-                Server.RaiseServerMessage("c10t not found.  Expected in {0}", exeFile);
+                Server.RaiseServerMessage("Overviewer not found.  Expected in {0}", exeFile);
                 return;
             }
 
@@ -67,26 +66,19 @@ namespace EnigmaMM.Engine.Commands.Mappers
                 Directory.CreateDirectory(CachePath);
             }
 
-            Server.RaiseServerMessage("c10t: Rendering map...");
+            Server.RaiseServerMessage("Overviewer: Rendering map...");
 
-            string OutputFile = Path.Combine(OutputPath, "map.png");
             string cmd = string.Format(
-                "--world \"$WORLD\" " +
-                "--ttf-path \"$EXEPATH\\font.ttf\" " +
-                "--output \"$OUTPUTFILE\" " +
-                "--cache-dir \"$CACHE\" " +
-                "--cache-key map " +
-                "--isometric " +
-                "--show-signs=^<^< " +
-                "--show-players " +
-                "--player-color 255,255,255,255 " +
-                "--sign-color 255,255,0,255");
+                "\"$WORLD\" " +
+                "\"$OUTPUTPATH\" " +
+                "--cachedir \"$CACHE\" " +
+                "--processes 1 "
+            );
 
             cmd = cmd.Replace("$EXEPATH", Path.GetDirectoryName(exeFile));
             cmd = cmd.Replace("$WORLD", WorldPath);
             cmd = cmd.Replace("$CACHE", CachePath);
             cmd = cmd.Replace("$OUTPUTPATH", OutputPath);
-            cmd = cmd.Replace("$OUTPUTFILE", OutputFile);
 
             Process p = new Process();
             p.StartInfo.FileName = exeFile;
@@ -97,39 +89,9 @@ namespace EnigmaMM.Engine.Commands.Mappers
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
 
-            int smallWidth = 0;
-            int.TryParse(Server.ReadConfig("map_small_width"), out smallWidth);
-            string smallFile = Path.Combine(OutputPath, "map-small.png");
-            Resize(OutputFile, smallFile, smallWidth);
-
             Server.RaiseServerMessage("c10t: Done.");
         }
 
-
-        protected void Resize(string InputFile, string OutputFile, int destWidth)
-        {
-            if (!File.Exists(InputFile) || !Directory.Exists(Path.GetDirectoryName(OutputFile)))
-            {
-                return;
-            }
-
-            Bitmap input = new Bitmap(InputFile);
-
-            int sourceWidth = input.Width;
-            int sourceHeight = input.Height;
-
-            float ratio = (float)destWidth / (float)sourceWidth;
-            int destHeight = (int)(sourceHeight * ratio);
-
-            Bitmap output = new Bitmap(destWidth, destHeight);
-            Graphics g = Graphics.FromImage((Image)output);
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(input, 0, 0, destWidth, destHeight);
-            g.Dispose();
-
-            output.Save(OutputFile);
-            output.Dispose();
-        }
     }
     
 }

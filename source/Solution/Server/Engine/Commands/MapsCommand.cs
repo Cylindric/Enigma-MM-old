@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using EnigmaMM.Engine.Data;
+﻿using System.Linq;
 
 namespace EnigmaMM.Engine.Commands
 {
@@ -13,7 +11,12 @@ namespace EnigmaMM.Engine.Commands
 
         protected override void ExecuteTask(EMMServerMessage command)
         {
-            Mappers.C10t mapper = new Mappers.C10t();
+            Mappers.Mapper mapper;
+                
+            mapper = new Mappers.C10t();
+            mapper.RenderMap();
+
+            mapper = new Mappers.Overviewer();
             mapper.RenderMap();
         }
     }

@@ -81,7 +81,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Engine\Commands\Mappers\C10t.cs" />
+    <Compile Include="Engine\Commands\Mappers\Mapper.cs" />
+    <Compile Include="Engine\Commands\Mappers\Overviewer.cs" />
     <Compile Include="Engine\Commands\MapsCommand.cs" />
+    <Compile Include="Engine\DatabaseManager.cs" />
     <Compile Include="UsersForm.xaml.cs">
       <DependentUpon>UsersForm.xaml</DependentUpon>
     </Compile>
