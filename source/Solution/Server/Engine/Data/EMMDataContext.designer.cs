@@ -832,7 +832,7 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Expression", DbType="NVarChar(128) NOT NULL", CanBeNull=false)]
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Expression", DbType="NVarChar(256) NOT NULL", CanBeNull=false)]
 		public string Expression
 		{
 			get
@@ -1226,6 +1226,14 @@ namespace EnigmaMM.Engine.Data
 		
 		private string _Username;
 		
+		private double _LocX;
+		
+		private double _LocY;
+		
+		private double _LocZ;
+		
+		private System.Nullable<System.DateTime> _LastSeen;
+		
 		private EntitySet<ItemHistory> _ItemHistories;
 		
 		private EntityRef<Rank> _Rank;
@@ -1240,6 +1248,14 @@ namespace EnigmaMM.Engine.Data
     partial void OnRank_IDChanged();
     partial void OnUsernameChanging(string value);
     partial void OnUsernameChanged();
+    partial void OnLocXChanging(double value);
+    partial void OnLocXChanged();
+    partial void OnLocYChanging(double value);
+    partial void OnLocYChanged();
+    partial void OnLocZChanging(double value);
+    partial void OnLocZChanged();
+    partial void OnLastSeenChanging(System.Nullable<System.DateTime> value);
+    partial void OnLastSeenChanged();
     #endregion
 		
 		public User()
@@ -1309,6 +1325,86 @@ namespace EnigmaMM.Engine.Data
 					this._Username = value;
 					this.SendPropertyChanged("Username");
 					this.OnUsernameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocX", DbType="Float NOT NULL")]
+		public double LocX
+		{
+			get
+			{
+				return this._LocX;
+			}
+			set
+			{
+				if ((this._LocX != value))
+				{
+					this.OnLocXChanging(value);
+					this.SendPropertyChanging();
+					this._LocX = value;
+					this.SendPropertyChanged("LocX");
+					this.OnLocXChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocY", DbType="Float NOT NULL")]
+		public double LocY
+		{
+			get
+			{
+				return this._LocY;
+			}
+			set
+			{
+				if ((this._LocY != value))
+				{
+					this.OnLocYChanging(value);
+					this.SendPropertyChanging();
+					this._LocY = value;
+					this.SendPropertyChanged("LocY");
+					this.OnLocYChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocZ", DbType="Float NOT NULL")]
+		public double LocZ
+		{
+			get
+			{
+				return this._LocZ;
+			}
+			set
+			{
+				if ((this._LocZ != value))
+				{
+					this.OnLocZChanging(value);
+					this.SendPropertyChanging();
+					this._LocZ = value;
+					this.SendPropertyChanged("LocZ");
+					this.OnLocZChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LastSeen", DbType="DateTime")]
+		public System.Nullable<System.DateTime> LastSeen
+		{
+			get
+			{
+				return this._LastSeen;
+			}
+			set
+			{
+				if ((this._LastSeen != value))
+				{
+					this.OnLastSeenChanging(value);
+					this.SendPropertyChanging();
+					this._LastSeen = value;
+					this.SendPropertyChanged("LastSeen");
+					this.OnLastSeenChanged();
 				}
 			}
 		}

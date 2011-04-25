@@ -35,7 +35,7 @@
     <Type Name="MessageType">
       <Column Name="Message_Type_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Expression" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="Expression" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
       <Column Name="MatchType" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
@@ -61,6 +61,10 @@
       <Column Name="User_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Username" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="LocX" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LocY" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LocZ" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LastSeen" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="FK_User_Rank" Member="Rank" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" />
       <Association Name="ItemHistoryUser" Member="ItemHistories" ThisKey="User_ID" OtherKey="User_ID" Type="ItemHistory" DeleteRule="CASCADE" />
     </Type>

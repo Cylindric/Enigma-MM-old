@@ -15,7 +15,7 @@ namespace EnigmaMM.Engine.Commands
 
         protected override void ExecuteTask(EMMServerMessage command)
         {
-            string[] parameters = command.Message.Split(' ');
+            string[] parameters = command.Data["command"].Split(' ');
             string itemName = "";
             int quantity = 0;
             if (parameters.Count() >= 2)
@@ -56,12 +56,21 @@ namespace EnigmaMM.Engine.Commands
                 return;
             }
 
-            while (qtyToGive > 0)
+            int remainingQuantity = qtyToGive;
+            while (remainingQuantity > 0)
             {
                 int give = Math.Min(qtyToGive, MAX_GIVE_STEP);
                 Manager.Server.Execute(string.Format("give {0} {1} {2}", user.Username, item.Block_Decimal_ID, give));
-                qtyToGive = qtyToGive - give;
+                remainingQuantity = remainingQuantity - give;
             }
+
+            ItemHistory history = new ItemHistory();
+            history.Item = item;
+            history.User = user;
+            history.Quantity = qtyToGive;
+            history.CreateDate = DateTime.Now;
+            Manager.Database.ItemHistories.InsertOnSubmit(history);
+            Manager.Database.SubmitChanges();
         }
 
         private int GetActualQuantity(User user, Item item, int requestedQuantity)

@@ -19,6 +19,7 @@
             <Button Name="uxRestartButton" Click="uxRestartButton_Click" Margin="0 0 4 0">
                 <Image Name="uxRestartButtonImage" Source="Resources/toolbar-restart-active.png"></Image>
             </Button>
+            <Button Content="Users" Height="28" Name="button1" Width="45" Click="button1_Click" />
         </ToolBarPanel>
         <Grid Grid.Row="1" Margin="0 2 0 0">
                 <Grid.ColumnDefinitions>
