@@ -56,28 +56,15 @@ namespace EnigmaMM.Engine.Commands.Mappers
                 Directory.CreateDirectory(OutputPath);
             }
 
-            // Check the core cache path
-            if (!Directory.Exists(Path.GetDirectoryName(CachePath)))
-            {
-                throw new DirectoryNotFoundException("Cache path missing: " + Path.GetDirectoryName(CachePath));
-            }
-            if (!Directory.Exists(CachePath))
-            {
-                Directory.CreateDirectory(CachePath);
-            }
-
             Server.RaiseServerMessage("Overviewer: Rendering map...");
 
             string cmd = string.Format(
                 "\"$WORLD\" " +
-                "\"$OUTPUTPATH\" " +
-                "--cachedir \"$CACHE\" " +
-                "--processes 1 "
+                "\"$OUTPUTPATH\" "
             );
 
             cmd = cmd.Replace("$EXEPATH", Path.GetDirectoryName(exeFile));
             cmd = cmd.Replace("$WORLD", WorldPath);
-            cmd = cmd.Replace("$CACHE", CachePath);
             cmd = cmd.Replace("$OUTPUTPATH", OutputPath);
 
             Process p = new Process();
@@ -89,7 +76,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
             p.WaitForExit();
 
-            Server.RaiseServerMessage("c10t: Done.");
+            Server.RaiseServerMessage("overviewer: Done.");
         }
 
     }

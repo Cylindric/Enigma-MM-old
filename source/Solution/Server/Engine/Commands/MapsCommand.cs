@@ -12,7 +12,10 @@ namespace EnigmaMM.Engine.Commands
         protected override void ExecuteTask(EMMServerMessage command)
         {
             Mappers.Mapper mapper;
-                
+
+            mapper = new Mappers.BiomeExtractor();
+            mapper.RenderMap();
+
             mapper = new Mappers.C10t();
             mapper.RenderMap();
 
