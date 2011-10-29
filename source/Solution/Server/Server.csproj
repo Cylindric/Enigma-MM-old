@@ -80,6 +80,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Engine\Commands\Mappers\BiomeExtractor.cs" />
     <Compile Include="Engine\Commands\Mappers\C10t.cs" />
     <Compile Include="Engine\Commands\Mappers\Mapper.cs" />
     <Compile Include="Engine\Commands\Mappers\Overviewer.cs" />
