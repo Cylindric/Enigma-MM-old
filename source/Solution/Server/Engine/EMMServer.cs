@@ -517,6 +517,10 @@ namespace EnigmaMM.Engine
             }
             OnServerReachZeroUsers();
             mServerProcess = null;
+
+            // Update the Biome Data
+            EnigmaMM.Engine.Commands.Mappers.Mapper mapper = new EnigmaMM.Engine.Commands.Mappers.BiomeExtractor();
+            mapper.RenderMap();
         }
 
         /// <summary>

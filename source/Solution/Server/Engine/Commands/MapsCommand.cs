@@ -13,14 +13,17 @@ namespace EnigmaMM.Engine.Commands
         {
             Mappers.Mapper mapper;
 
-            mapper = new Mappers.BiomeExtractor();
-            mapper.RenderMap();
+            Manager.Server.SendCommand("save-all");
+            Manager.Server.BlockAutoSave();
+            System.Threading.Thread.Sleep(2000);
 
             mapper = new Mappers.C10t();
             mapper.RenderMap();
 
             mapper = new Mappers.Overviewer();
             mapper.RenderMap();
+
+            Manager.Server.UnblockAutoSave();
         }
     }
 }

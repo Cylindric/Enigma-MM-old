@@ -65,7 +65,9 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data.SqlServerCe, Version=3.5.1.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -80,6 +82,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EMMDataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMMDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EMMDataSet1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMMDataSet1.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Engine\Commands\Mappers\BiomeExtractor.cs" />
     <Compile Include="Engine\Commands\Mappers\C10t.cs" />
     <Compile Include="Engine\Commands\Mappers\Mapper.cs" />
@@ -150,6 +162,28 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="EMMDataSet.xsc">
+      <DependentUpon>EMMDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="EMMDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>EMMDataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="EMMDataSet.xss">
+      <DependentUpon>EMMDataSet.xsd</DependentUpon>
+    </None>
+    <None Include="EMMDataSet1.xsc">
+      <DependentUpon>EMMDataSet1.xsd</DependentUpon>
+    </None>
+    <None Include="EMMDataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>EMMDataSet1.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="EMMDataSet1.xss">
+      <DependentUpon>EMMDataSet1.xsd</DependentUpon>
+    </None>
     <None Include="Engine\Data\EMMDataContext.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>EMMDataContext.designer.cs</LastGenOutput>
