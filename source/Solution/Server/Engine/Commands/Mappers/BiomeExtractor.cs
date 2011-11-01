@@ -9,6 +9,12 @@ namespace EnigmaMM.Engine.Commands.Mappers
         {
             EMMServer Server = Manager.Server;
 
+            if (Server.CurrentStatus != Interfaces.Status.Stopped)
+            {
+                Server.RaiseServerMessage("BiomeExtractor cannot run - server is running");
+                return;
+            }
+
             string exeFile = Server.ReadConfig("biomeextractor_exe");
             if (exeFile.StartsWith("."))
             {

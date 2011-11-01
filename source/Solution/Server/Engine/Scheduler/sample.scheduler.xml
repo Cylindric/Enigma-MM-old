@@ -8,6 +8,13 @@
     <command>start</command>
   </task>
   <task>
+    <name>Daily 3am restart</name>
+    <days>*</days>
+    <hours>3</hours>
+    <minutes>0</minutes>
+    <command>restart now</command>
+  </task>
+  <task>
     <name>Daily 4am backup</name>
     <days>*</days>
     <hours>4</hours>

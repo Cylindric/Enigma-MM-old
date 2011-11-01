@@ -67,6 +67,7 @@ namespace EnigmaMM.Scheduler
         public void Start()
         {
             mTimer.Interval = TIMER_INTERVAL;
+            processTimer(DateTime.Now);
             mTimer.Start();
         }
 
@@ -115,7 +116,8 @@ namespace EnigmaMM.Scheduler
             mTasks.Add(task);
         }
 
-        private void onTimerEvent(object source, ElapsedEventArgs e)
+
+        private void processTimer(DateTime signalTime)
         {
             if (mTasks.Count == 0)
             {
@@ -125,23 +127,28 @@ namespace EnigmaMM.Scheduler
             // Run all "missed" tasks and increment their run-times
             foreach (IScheduleTask task in mTasks)
             {
-                if (task.NextRun < e.SignalTime)
+                if (task.NextRun <= signalTime)
                 {
                     ExecuteTask(task);
                 }
-            }
 
-            // Determine if the next-run time is sooner than the next scheduled run-time, and if it is shorten the delay.
-            DateTime nextTimerEvent = e.SignalTime.AddMilliseconds(mTimer.Interval);
-            if (NextTask.NextRun < nextTimerEvent)
-            {
-                mTimer.Interval = (nextTimerEvent - NextTask.NextRun).TotalMilliseconds;
+                // Determine if the next-run time is sooner than the next scheduled run-time, and if it is shorten the delay.
+                DateTime nextTimerEvent = signalTime.AddMilliseconds(mTimer.Interval);
+                if (NextTask.NextRun < nextTimerEvent)
+                {
+                    mTimer.Interval = (nextTimerEvent - NextTask.NextRun).TotalMilliseconds;
+                }
+                else
+                {
+                    mTimer.Interval = TIMER_INTERVAL;
+                }
             }
-            else
-            {
-                mTimer.Interval = TIMER_INTERVAL;
-            }
+        }
 
+
+        private void onTimerEvent(object source, ElapsedEventArgs e)
+        {
+            processTimer(e.SignalTime);
         }
 
         private void ExecuteTask(IScheduleTask task)

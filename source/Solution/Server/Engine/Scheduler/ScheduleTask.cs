@@ -190,6 +190,7 @@ namespace EnigmaMM.Scheduler
 
             if (RunDays == AT_STARTUP)
             {
+                next = start;
                 RunDays = AT_NEVER;
                 done = true;
             }
