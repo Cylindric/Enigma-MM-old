@@ -87,11 +87,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>EMMDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="EMMDataSet1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EMMDataSet1.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Engine\Commands\Mappers\BiomeExtractor.cs" />
     <Compile Include="Engine\Commands\Mappers\C10t.cs" />
     <Compile Include="Engine\Commands\Mappers\Mapper.cs" />
@@ -173,17 +168,6 @@
     <None Include="EMMDataSet.xss">
       <DependentUpon>EMMDataSet.xsd</DependentUpon>
     </None>
-    <None Include="EMMDataSet1.xsc">
-      <DependentUpon>EMMDataSet1.xsd</DependentUpon>
-    </None>
-    <None Include="EMMDataSet1.xsd">
-      <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>EMMDataSet1.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="EMMDataSet1.xss">
-      <DependentUpon>EMMDataSet1.xsd</DependentUpon>
-    </None>
     <None Include="Engine\Data\EMMDataContext.dbml">
       <Generator>MSLinqToSQLGenerator</Generator>
       <LastGenOutput>EMMDataContext.designer.cs</LastGenOutput>
@@ -252,9 +236,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Content Include="Engine\Data\schema.sql" />
-    <Content Include="EMM.sdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="EMM.sdf" />
     <Resource Include="Engine\Scheduler\sample.scheduler.xml" />
     <Resource Include="Engine\Ionic.txt" />
     <Content Include="Engine\Ionic.Zip.Reduced.dll" />
