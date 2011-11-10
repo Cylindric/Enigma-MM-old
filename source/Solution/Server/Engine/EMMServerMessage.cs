@@ -33,6 +33,7 @@ namespace EnigmaMM.Engine
             UserList,
             UserLoggedIn,
             UserLoggedOut,
+            UserFloating,
             ServerCommand,
             TriedServerCommand,
 

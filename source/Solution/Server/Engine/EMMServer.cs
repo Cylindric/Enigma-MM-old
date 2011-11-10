@@ -371,6 +371,13 @@ namespace EnigmaMM.Engine
             }
         }
 
+
+        internal void Whisper(Data.User User, string Message)
+        {
+            SendCommand(string.Format("tell {0} {1}", User.Username, Message));
+        }
+
+
         /// <summary>
         /// Called whenever the server issues a message.
         /// </summary>
@@ -424,7 +431,17 @@ namespace EnigmaMM.Engine
                     mParser.ParseCommand(M);
                     break;
 
+                case EMMServerMessage.MessageTypes.UserList:
+                    int oldUserCount = mOnlineUsers.Count;
+                    mOnlineUsers = new ArrayList(M.Data["userlist"].Split(','));
+                    if (oldUserCount > 0 && mOnlineUsers.Count == 0)
+                    {
+                        OnServerReachZeroUsers();
+                    }
+                    break;
+
                 case EMMServerMessage.MessageTypes.UserLoggedOut:
+                case EMMServerMessage.MessageTypes.UserFloating:
                     mOnlineUsers.Remove(M.Data["username"]);
                     if (mOnlineUsers.Count == 0)
                     {

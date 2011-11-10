@@ -75,23 +75,28 @@ namespace EnigmaMM.Engine.Commands.Mappers
                 "--ttf-path \"$EXEPATH\\font.ttf\" " +
                 "--output \"$OUTPUTFILE\" " +
                 "--cache-dir \"$CACHE\" " +
-                "--cache-key map " +
+                "--cache-key \"$CACHEKEY\" " +
+                "-P \"$PALETTE\" " +
                 "--isometric " +
                 "--show-signs=^<^< " +
                 "--show-players " +
+                "-r 270 " +
                 "--player-color 255,255,255,255 " +
                 "--sign-color 255,255,0,255");
 
             cmd = cmd.Replace("$EXEPATH", Path.GetDirectoryName(exeFile));
+            cmd = cmd.Replace("$PALETTE", Path.Combine(Path.GetDirectoryName(exeFile), "palette.txt"));
             cmd = cmd.Replace("$WORLD", WorldPath);
+            cmd = cmd.Replace("$CACHEKEY", Path.GetFileName(WorldPath));
             cmd = cmd.Replace("$CACHE", CachePath);
             cmd = cmd.Replace("$OUTPUTPATH", OutputPath);
             cmd = cmd.Replace("$OUTPUTFILE", OutputFile);
 
+            Server.RaiseServerMessage("c10t: {0} {1}", exeFile, cmd );
             Process p = new Process();
             p.StartInfo.FileName = exeFile;
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.CreateNoWindow = false;
+            p.StartInfo.CreateNoWindow = true;
             p.StartInfo.Arguments = cmd;
             p.Start();
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
@@ -113,22 +118,23 @@ namespace EnigmaMM.Engine.Commands.Mappers
                 return;
             }
 
-            Bitmap input = new Bitmap(InputFile);
+            using (Bitmap input = new Bitmap(InputFile))
+            {
+                int sourceWidth = input.Width;
+                int sourceHeight = input.Height;
 
-            int sourceWidth = input.Width;
-            int sourceHeight = input.Height;
+                float ratio = (float)destWidth / (float)sourceWidth;
+                int destHeight = (int)(sourceHeight * ratio);
 
-            float ratio = (float)destWidth / (float)sourceWidth;
-            int destHeight = (int)(sourceHeight * ratio);
+                Bitmap output = new Bitmap(destWidth, destHeight);
+                Graphics g = Graphics.FromImage((Image)output);
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.DrawImage(input, 0, 0, destWidth, destHeight);
+                g.Dispose();
 
-            Bitmap output = new Bitmap(destWidth, destHeight);
-            Graphics g = Graphics.FromImage((Image)output);
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(input, 0, 0, destWidth, destHeight);
-            g.Dispose();
-
-            output.Save(OutputFile);
-            output.Dispose();
+                output.Save(OutputFile);
+                output.Dispose();
+            }
         }
     }
     
