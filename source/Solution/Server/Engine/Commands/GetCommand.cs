@@ -39,8 +39,16 @@ namespace EnigmaMM.Engine.Commands
             {
                 item = mDB.Items.SingleOrDefault(i => i.Code == itemName);
             }
+
             if (item == null)
             {
+                Manager.Server.Whisper(command.User, "I don't know what item that is");
+                return;
+            }
+
+            if (item.Min_Rank_ID > command.User.Rank_ID)
+            {
+                Manager.Server.Whisper(command.User, "You are not allowed to summon that item");
                 return;
             }
 
@@ -55,6 +63,8 @@ namespace EnigmaMM.Engine.Commands
             {
                 return;
             }
+
+            Manager.Server.Whisper(user, string.Format("Giving you {0} {1}",  qtyToGive, item.Name));
 
             int remainingQuantity = qtyToGive;
             while (remainingQuantity > 0)
@@ -75,7 +85,7 @@ namespace EnigmaMM.Engine.Commands
 
         private int GetActualQuantity(User user, Item item, int requestedQuantity)
         {
-            int finalQuantity = 0;
+            int finalQuantity = requestedQuantity;
 
             if (requestedQuantity == 0)
             {

@@ -23,6 +23,8 @@ namespace EnigmaMM.Engine.Commands
             mapper = new Mappers.Overviewer();
             mapper.RenderMap();
 
+            Manager.Server.Broadcast("The maps have been updated");
+
             Manager.Server.UnblockAutoSave();
         }
     }

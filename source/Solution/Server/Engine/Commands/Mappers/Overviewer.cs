@@ -70,7 +70,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             Process p = new Process();
             p.StartInfo.FileName = exeFile;
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.CreateNoWindow = false;
+            p.StartInfo.CreateNoWindow = true;
             p.StartInfo.Arguments = cmd;
             p.Start();
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
