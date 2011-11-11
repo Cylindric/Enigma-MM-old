@@ -37,7 +37,7 @@ namespace EnigmaMM.Engine
                     {
                         if (sDatabase == null)
                         {
-                            sDatabase = new EMMDataContext("EMM.sdf");
+                            sDatabase = new EMMDataContext("data.sdf");
                             DatabaseManager dbm = new DatabaseManager();
                             dbm.CheckDatabaseState();
                         }
