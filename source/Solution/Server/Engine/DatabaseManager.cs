@@ -8,13 +8,12 @@ namespace EnigmaMM.Engine
     class DatabaseManager
     {
         Data.EMMDataContext mDb;
+        int currentVersion = 2;
 
         public void CheckDatabaseState()
         {
             mDb = Manager.Database;
-            double currentVersion = 0;
-            double.TryParse(mDb.Configs.First(c => c.Key == "db_version").Value, out currentVersion);
-
+            UpdateDatabase();
             CheckConfigSettings();
             mDb.SubmitChanges();
         }
@@ -36,6 +35,23 @@ namespace EnigmaMM.Engine
                 config.Value = value;
                 mDb.Configs.InsertOnSubmit(config);
             }
+        }
+
+        private void UpdateDatabase()
+        {
+            int currentDbVersion = GetCurrentDbVersion();
+
+            if (currentDbVersion <= 1)
+            {
+                // Upgrade from 1 to 2
+                // No schema changes, just some new data to support Beta 1.9 Pre-Release 5
+                Data.UpdateDb_1_2.DoUpdate();
+            }
+        }
+
+        private int GetCurrentDbVersion()
+        {
+            return int.Parse(mDb.Configs.First(c => c.Key == "db_version").Value);
         }
 
     }
