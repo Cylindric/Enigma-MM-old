@@ -34,14 +34,16 @@ namespace EnigmaMM.Engine.Data
                 CREATE TABLE MessageTypes
                 (
                     [Message_Type_ID] int IDENTITY PRIMARY KEY NOT NULL,
-                    [Name] nvarchar(50) NOT NULL,
-                    [Expression] nvarchar(50) NOT NULL
+                    [Name] nvarchar(20) NOT NULL,
+                    [Expression] nvarchar(200) NOT NULL,
+                    [MatchType] nvarchar(10) NOT NULL
                 )");
 
                 commands.Add(@"
                 CREATE TABLE Ranks
                 (
-                    [Rank_ID] int PRIMARY KEY NOT NULL,
+                    [Rank_ID] int IDENTITY PRIMARY KEY NOT NULL,
+                    [Level] int NOT NULL DEFAULT 0,
                     [Name] nvarchar(50) NOT NULL
                 )");
 
@@ -50,12 +52,11 @@ namespace EnigmaMM.Engine.Data
                 (
                     [Item_ID] int IDENTITY PRIMARY KEY NOT NULL,
                     [Code] nvarchar(50) NOT NULL,
-                    [Block_ID] int NOT NULL,
+                    [Block_Decimal_ID] int NOT NULL,
                     [Name] nvarchar(50) NOT NULL,
                     [Stack_Size] int NOT NULL DEFAULT 1,
                     [Max] int NOT NULL DEFAULT 64,
-                    [Min_Rank_ID] int NOT NULL DEFAULT 1,
-                    CONSTRAINT [FK_Rank] FOREIGN KEY (Min_Rank_ID) REFERENCES Ranks (Rank_ID) ON DELETE CASCADE ON UPDATE CASCADE
+                    [Min_Level] int NOT NULL DEFAULT 1
                 )");
 
                 commands.Add(@"
@@ -64,7 +65,10 @@ namespace EnigmaMM.Engine.Data
                     [User_ID] int IDENTITY PRIMARY KEY NOT NULL,
                     [Rank_ID] int NOT NULL,
                     [Username] nvarchar(50) NOT NULL,
-                    CONSTRAINT [FK_Rank] FOREIGN KEY (Rank_ID) REFERENCES Ranks (Rank_ID) ON DELETE CASCADE ON UPDATE CASCADE
+                    [LocX] Float NOT NULL DEFAULT 0,
+                    [LocY] Float NOT NULL DEFAULT 0,
+                    [LocZ] Float NOT NULL DEFAULT 0,
+                    [LastSeen] DateTime
                 )");
 
                 commands.Add(@"
@@ -74,10 +78,20 @@ namespace EnigmaMM.Engine.Data
                     [Item_ID] int NOT NULL,
                     [User_ID] int NOT NULL,
                     [Quantity] int NOT NULL DEFAULT 0,
-                    [CreateDate] datetime NOT NULL,
-                    CONSTRAINT [FK_Item] FOREIGN KEY (Item_ID) REFERENCES Items (Item_ID),
-                    CONSTRAINT [FK_User] FOREIGN KEY (User_ID) REFERENCES Users (User_ID)
+                    [CreateDate] datetime NOT NULL
                 )");
+
+                commands.Add(@"
+                CREATE TABLE Permissions
+                (
+                    [Permission_ID] int IDENTITY PRIMARY KEY NOT NULL,
+                    [Min_Level] int NOT NULL,
+                    [Name] nvarchar(50) NOT NULL
+                )");
+
+                commands.Add(@"ALTER TABLE ItemHistory ADD CONSTRAINT [FK_ItemHistory_Item] FOREIGN KEY (Item_ID) REFERENCES Items (Item_ID)");
+                commands.Add(@"ALTER TABLE ItemHistory ADD CONSTRAINT [FK_ItemHistory_User] FOREIGN KEY (User_ID) REFERENCES Users (User_ID)");
+                commands.Add(@"ALTER TABLE Users ADD CONSTRAINT [FK_User_Rank] FOREIGN KEY (Rank_ID) REFERENCES Ranks (Rank_ID) ON DELETE CASCADE ON UPDATE CASCADE");
 
                 foreach (string sql in commands)
                 {

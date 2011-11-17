@@ -52,7 +52,6 @@ CopyFile BuildPath(Array(BuildRoot, "\*.exe")), EMMRoot & "\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "data", "data.sdf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "Scheduler", "*.xml")), EMMRoot & "\"
 
 ' Remove any non-deploy files
