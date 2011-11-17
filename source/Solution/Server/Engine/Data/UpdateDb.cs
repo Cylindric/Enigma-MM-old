@@ -27,14 +27,27 @@ namespace EnigmaMM.Engine.Data
             mDb.MessageTypes.InsertOnSubmit(new Data.MessageType() { Name = name, Expression = expression, MatchType = match });
         }
 
-        protected static void InsertPermission(int rank, string name)
+        protected static void InsertItem(int blockDecimalId, string code, string name, int stackSize, int max, int minLevel)
         {
-            mDb.Permissions.InsertOnSubmit(new Data.Permission() { Rank_ID = rank, Name = name });
+            mDb.Items.InsertOnSubmit(new Data.Item() 
+            { 
+                Block_Decimal_ID = blockDecimalId,
+                Max = max,
+                Code = code,
+                Name = name,
+                Min_Level = minLevel,
+                Stack_Size = stackSize
+            });
         }
 
-        protected static void InsertRank(string name)
+        protected static void InsertPermission(int minLevel, string name)
         {
-            mDb.Ranks.InsertOnSubmit(new Data.Rank() { Name = name });
+            mDb.Permissions.InsertOnSubmit(new Data.Permission() { Min_Level = minLevel, Name = name });
+        }
+
+        protected static void InsertRank(int level, string name)
+        {
+            mDb.Ranks.InsertOnSubmit(new Data.Rank() { Level = level, Name = name });
         }
 
         protected static void InsertUser(string name, Data.Rank rank)
@@ -46,12 +59,12 @@ namespace EnigmaMM.Engine.Data
         /// Update the specified item, or it doesn't exist, insert it.
         /// </summary>
         /// <param name="block_id"></param>
-        /// <param name="min_rank_id"></param>
+        /// <param name="min_level"></param>
         /// <param name="stack"></param>
         /// <param name="max_stack"></param>
         /// <param name="code"></param>
         /// <param name="name"></param>
-        protected static void updateItem(int block_id, int min_rank_id, int stack, int max_stack, string code, string name)
+        protected static void updateItem(int block_id, int min_level, int stack, int max_stack, string code, string name)
         {
             Data.Item item = mDb.Items.SingleOrDefault(i => i.Block_Decimal_ID == block_id);
 
@@ -62,7 +75,7 @@ namespace EnigmaMM.Engine.Data
                     Code = code,
                     Name = name,
                     Block_Decimal_ID = block_id,
-                    Min_Rank_ID = min_rank_id,
+                    Min_Level = min_level,
                     Stack_Size = stack,
                     Max = max_stack
                 });
@@ -72,7 +85,7 @@ namespace EnigmaMM.Engine.Data
                 item.Block_Decimal_ID = block_id;
                 item.Code = code;
                 item.Max = max_stack;
-                item.Min_Rank_ID = min_rank_id;
+                item.Min_Level = min_level;
                 item.Name = name;
                 item.Stack_Size = stack;
             }

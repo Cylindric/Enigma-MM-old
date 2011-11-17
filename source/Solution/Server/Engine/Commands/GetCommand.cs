@@ -46,7 +46,7 @@ namespace EnigmaMM.Engine.Commands
                 return;
             }
 
-            if (item.Min_Rank_ID > command.User.Rank_ID)
+            if (item.Min_Level > command.User.Rank.Level)
             {
                 Manager.Server.Whisper(command.User, "You are not allowed to summon that item");
                 return;

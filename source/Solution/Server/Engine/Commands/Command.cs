@@ -46,7 +46,7 @@ namespace EnigmaMM.Engine.Commands
             }
 
             int userPermissions = (from p in mDB.Permissions
-                                  where p.Rank.Rank_ID <= user.Rank.Rank_ID
+                                  where p.Min_Level <= user.Rank.Level
                                   && mPermissionsRequired.Contains(p)
                                   select p).Count();
 

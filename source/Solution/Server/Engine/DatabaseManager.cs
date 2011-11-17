@@ -10,19 +10,15 @@ namespace EnigmaMM.Engine
         public const int CURRENT_VERSION = 2;
         string datafile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "data.sdf");
 
-        public DatabaseManager()
+        public void CheckDatabaseState()
         {
+            mDb = Manager.Database;
             if (!System.IO.File.Exists(datafile))
             {
                 CreateDb.DoCreate(datafile);
                 InsertData.DoInsert();
                 mDb.Configs.First(c => c.Key == "db_version").Value = CURRENT_VERSION.ToString();
             }
-        }
-
-        public void CheckDatabaseState()
-        {
-            mDb = Manager.Database;
             UpdateDatabase();
             mDb.SubmitChanges();
         }

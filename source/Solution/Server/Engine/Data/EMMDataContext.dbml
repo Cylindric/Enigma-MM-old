@@ -1,5 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Database Name="EMM" Class="EMMDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+<?xml version="1.0" encoding="utf-8"?>
+<Database Name="data" Class="EMMDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Config" Member="Configs">
     <Type Name="Config">
       <Column Name="Config_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -12,48 +12,45 @@
       <Column Name="ItemHistory_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Item_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="User_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
       <Column Name="Quantity" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="ItemHistoryItem" Member="Item" ThisKey="Item_ID" OtherKey="Item_ID" Type="Item" IsForeignKey="true" DeleteOnNull="true" />
-      <Association Name="ItemHistoryUser" Member="User" ThisKey="User_ID" OtherKey="User_ID" Type="User" IsForeignKey="true" DeleteOnNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime NOT NULL" CanBeNull="false" />
+      <Association Name="FK_ItemHistory_Item" Member="Item" ThisKey="Item_ID" OtherKey="Item_ID" Type="Item" IsForeignKey="true" />
+      <Association Name="FK_ItemHistory_User" Member="User" ThisKey="User_ID" OtherKey="User_ID" Type="User" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="Items">
     <Type Name="Item">
       <Column Name="Item_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Code" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="Block_Decimal_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
       <Column Name="Stack_Size" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Max" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Min_Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Block_Decimal_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Association Name="FK_Item_Rank" Member="Rank" ThisKey="Min_Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" />
-      <Association Name="ItemHistoryItem" Member="ItemHistories" ThisKey="Item_ID" OtherKey="Item_ID" Type="ItemHistory" DeleteRule="CASCADE" />
+      <Column Name="Min_Level" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="FK_ItemHistory_Item" Member="ItemHistories" ThisKey="Item_ID" OtherKey="Item_ID" Type="ItemHistory" DeleteRule="NO ACTION" />
     </Type>
   </Table>
   <Table Name="MessageTypes">
     <Type Name="MessageType">
       <Column Name="Message_Type_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="Expression" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="Expression" Type="System.String" DbType="NVarChar(200) NOT NULL" CanBeNull="false" />
       <Column Name="MatchType" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="Permissions">
     <Type Name="Permission">
       <Column Name="Permission_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
-      <Association Name="FK_Rank" Member="Rank" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" DeleteOnNull="true" />
+      <Column Name="Min_Level" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
     </Type>
   </Table>
   <Table Name="Ranks">
     <Type Name="Rank">
       <Column Name="Rank_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Level" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Association Name="FK_Item_Rank" Member="Items" ThisKey="Rank_ID" OtherKey="Min_Rank_ID" Type="Item" DeleteRule="NO ACTION" />
-      <Association Name="FK_Rank" Member="Permissions" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Permission" DeleteRule="CASCADE" />
-      <Association Name="FK_User_Rank" Member="Users" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="User" DeleteRule="NO ACTION" />
+      <Association Name="FK_User_Rank" Member="Users" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="User" DeleteRule="CASCADE" />
     </Type>
   </Table>
   <Table Name="Users">
@@ -65,8 +62,8 @@
       <Column Name="LocY" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="LocZ" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="LastSeen" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
-      <Association Name="FK_User_Rank" Member="Rank" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" />
-      <Association Name="ItemHistoryUser" Member="ItemHistories" ThisKey="User_ID" OtherKey="User_ID" Type="ItemHistory" DeleteRule="CASCADE" />
+      <Association Name="FK_ItemHistory_User" Member="ItemHistories" ThisKey="User_ID" OtherKey="User_ID" Type="ItemHistory" DeleteRule="NO ACTION" />
+      <Association Name="FK_User_Rank" Member="Rank" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" DeleteOnNull="true" />
     </Type>
   </Table>
 </Database>

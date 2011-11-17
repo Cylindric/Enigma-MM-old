@@ -96,6 +96,11 @@
     <Compile Include="Engine\Commands\MapsCommand.cs" />
     <Compile Include="Engine\DatabaseManager.cs" />
     <Compile Include="Engine\Data\CreateDb.cs" />
+    <Compile Include="Engine\Data\EMMDataContext.designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EMMDataContext.dbml</DependentUpon>
+    </Compile>
     <Compile Include="Engine\Data\InsertData.cs" />
     <Compile Include="Engine\Data\UpdateDb.cs" />
     <Compile Include="Engine\ServerMessageEventArgs.cs" />
@@ -117,11 +122,6 @@
     <Compile Include="Engine\Commands\BackupCommand.cs" />
     <Compile Include="Engine\Commands\Command.cs" />
     <Compile Include="Engine\Commands\GetCommand.cs" />
-    <Compile Include="Engine\Data\EMMDataContext.designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EMMDataContext.dbml</DependentUpon>
-    </Compile>
     <Compile Include="Engine\EMMServer.cs" />
     <Compile Include="Engine\EMMServerMessage.cs" />
     <Compile Include="Engine\Manager.cs" />
