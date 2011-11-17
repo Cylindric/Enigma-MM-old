@@ -11,29 +11,12 @@ namespace EnigmaMM.Engine.Commands.Mappers
             EMMServer Server = Manager.Server;
 
             string OutputPath = Server.Settings.MapOutputPath;
-            if (OutputPath.StartsWith("."))
-            {
-                OutputPath = Path.Combine(Server.Settings.ServerManagerRoot, OutputPath);
-                OutputPath = Path.GetFullPath(OutputPath);
-            }
             OutputPath = Path.Combine(OutputPath, "c10t");
 
-
             string CachePath = Server.Settings.CacheRoot;
-            if (CachePath.StartsWith("."))
-            {
-                CachePath = Path.Combine(Server.Settings.ServerManagerRoot, CachePath);
-                CachePath = Path.GetFullPath(CachePath);
-            }
             CachePath = Path.Combine(CachePath, "c10t");
 
-
             string exeFile = Server.Settings.ReadConfigPath("c10t_exe");
-            if (exeFile.StartsWith("."))
-            {
-                exeFile = Path.Combine(Server.Settings.ServerManagerRoot, exeFile);
-                exeFile = Path.GetFullPath(exeFile);
-            }
             if (!File.Exists(exeFile))
             {
                 Server.RaiseServerMessage("c10t not found.  Expected in {0}", exeFile);
