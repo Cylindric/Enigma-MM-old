@@ -15,7 +15,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
                 return;
             }
 
-            string exeFile = Server.ReadConfig("biomeextractor_exe");
+            string exeFile = Server.Settings.ReadConfigPath("biomeextractor_exe");
             if (exeFile.StartsWith("."))
             {
                 exeFile = Path.Combine(Server.Settings.ServerManagerRoot, exeFile);

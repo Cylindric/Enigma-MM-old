@@ -9,7 +9,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
         {
             EMMServer Server = Manager.Server;
 
-            string OutputPath = Server.ReadConfig("map_output");
+            string OutputPath = Server.Settings.MapOutputPath;
             if (OutputPath.StartsWith("."))
             {
                 OutputPath = Path.Combine(Server.Settings.ServerManagerRoot, OutputPath);
@@ -18,7 +18,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             OutputPath = Path.Combine(OutputPath, "overviewer");
 
 
-            string CachePath = Server.ReadConfig("map_cache");
+            string CachePath = Server.Settings.CacheRoot;
             if (CachePath.StartsWith("."))
             {
                 CachePath = Path.Combine(Server.Settings.ServerManagerRoot, CachePath);
@@ -27,7 +27,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             CachePath = Path.Combine(CachePath, "overviewer");
 
 
-            string exeFile = Server.ReadConfig("overviewer_exe");
+            string exeFile = Server.Settings.ReadConfigPath("overviewer_exe");
             if (exeFile.StartsWith("."))
             {
                 exeFile = Path.Combine(Server.Settings.ServerManagerRoot, exeFile);
