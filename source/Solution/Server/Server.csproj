@@ -41,6 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -50,6 +51,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>EnigmaMM.App</StartupObject>
@@ -93,7 +95,9 @@
     <Compile Include="Engine\Commands\Mappers\Overviewer.cs" />
     <Compile Include="Engine\Commands\MapsCommand.cs" />
     <Compile Include="Engine\DatabaseManager.cs" />
-    <Compile Include="Engine\Data\UpdateDb_1_2.cs" />
+    <Compile Include="Engine\Data\CreateDb.cs" />
+    <Compile Include="Engine\Data\InsertData.cs" />
+    <Compile Include="Engine\Data\UpdateDb.cs" />
     <Compile Include="Engine\ServerMessageEventArgs.cs" />
     <Compile Include="Engine\Settings\SettingsFile.cs" />
     <Compile Include="Engine\StatusEnum.cs" />

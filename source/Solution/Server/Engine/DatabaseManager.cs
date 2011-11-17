@@ -1,52 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
+using EnigmaMM.Engine.Data;
 
 namespace EnigmaMM.Engine
 {
     class DatabaseManager
     {
         Data.EMMDataContext mDb;
-        int currentVersion = 2;
+        public const int CURRENT_VERSION = 2;
+        string datafile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "data.sdf");
+
+        public DatabaseManager()
+        {
+            if (!System.IO.File.Exists(datafile))
+            {
+                CreateDb.DoCreate(datafile);
+                InsertData.DoInsert();
+                mDb.Configs.First(c => c.Key == "db_version").Value = CURRENT_VERSION.ToString();
+            }
+        }
 
         public void CheckDatabaseState()
         {
             mDb = Manager.Database;
             UpdateDatabase();
-            CheckConfigSettings();
             mDb.SubmitChanges();
-        }
-
-        private void CheckConfigSettings()
-        {
-            this.CheckConfigSetting("map_small_width", "250");
-            this.CheckConfigSetting("c10t_exe", "./c10t/c10t.exe");
-            this.CheckConfigSetting("overviewer_exe", "./overviewer/gmap.exe");
-        }
-
-        private void CheckConfigSetting(string key, string value)
-        {
-            Data.Config foundValue = mDb.Configs.FirstOrDefault(c => c.Key == key);
-            if (foundValue == null)
-            {
-                Data.Config config = new Data.Config();
-                config.Key = key;
-                config.Value = value;
-                mDb.Configs.InsertOnSubmit(config);
-            }
         }
 
         private void UpdateDatabase()
         {
-            int currentDbVersion = GetCurrentDbVersion();
-
-            if (currentDbVersion <= 1)
-            {
-                // Upgrade from 1 to 2
-                // No schema changes, just some new data to support Beta 1.9 Pre-Release 5
-                Data.UpdateDb_1_2.DoUpdate();
-            }
         }
 
         private int GetCurrentDbVersion()
