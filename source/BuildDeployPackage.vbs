@@ -44,7 +44,6 @@ CreateFolder(BuildPath(Array(EMMRoot, "Cache")))
 CreateFolder(BuildPath(Array(EMMRoot, "Maps")))
 CreateFolder(BuildPath(Array(EMMRoot, "Minecraft")))
 CreateFolder(BuildPath(Array(EMMRoot, "Overviewer")))
-CreateFolder(BuildPath(Array(EMMRoot, "Plugins")))
 
 
 ' The EMM core files
@@ -53,9 +52,8 @@ CopyFile BuildPath(Array(BuildRoot, "\*.exe")), EMMRoot & "\"
 
 ' Copy the sample configs from the source folder, not the build folder, to ensure
 ' we don't get any modified-for-test versions
-CopyFile BuildPath(Array(SourceRoot, "Server", "EMM.sdf")), EMMRoot & "\"
+CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "data", "data.sdf")), EMMRoot & "\"
 CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "Scheduler", "*.xml")), EMMRoot & "\"
-CopyFile BuildPath(Array(SourceRoot, "Server", "Engine", "Settings", "*.conf")), EMMRoot & "\"
 
 ' Remove any non-deploy files
 DeleteFile BuildPath(Array(EMMRoot, "MinecraftSimulator.exe"))

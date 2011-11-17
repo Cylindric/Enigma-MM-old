@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using EnigmaMM.Interfaces;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM
 {
-    public class SettingsFile : ISettings
+    public class SettingsFile 
     {
         protected Dictionary<string, string> mSettings = new Dictionary<string, string>();
-        protected IServer mServer;
+        protected EMMServer mServer;
 
         private TimeSpan RELOADINTERVAL = new TimeSpan(0, 0, 5);
 
@@ -42,7 +40,7 @@ namespace EnigmaMM
             get { return mLoaded; }
         }
 
-        public SettingsFile(IServer server, string fileName, char separator)
+        public SettingsFile(EMMServer server, string fileName, char separator)
         {
             mServer = server;
             mSettingsFile = fileName;

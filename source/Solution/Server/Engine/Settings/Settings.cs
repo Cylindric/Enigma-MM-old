@@ -1,17 +1,17 @@
 ﻿using System.IO;
-using EnigmaMM.Interfaces;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM
 {
     /// <summary>
     /// Utility class for handling server manager configuration.
     /// </summary>
-    public class Settings : IServerSettings
+    public class Settings
     {
         private SettingsFile mSettings;
-        private IServer mServer;
+        private EMMServer mServer;
 
-        public Settings(IServer server)
+        public Settings(EMMServer server)
         {
             mServer = server;
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using EnigmaMM.Interfaces;
 
 namespace EnigmaMM.Scheduler
 {
@@ -8,7 +7,7 @@ namespace EnigmaMM.Scheduler
     /// The ScheduleTask class provides the functionality for specifying scheduled tasks
     /// with recurring times they should execute.
     /// </summary>
-    public class ScheduleTask : IScheduleTask
+    public class ScheduleTask
     {
         public const string AT_STARTUP = "@startup";
         public const string AT_NEVER = "@never";

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EnigmaMM.Interfaces
+namespace EnigmaMM.Engine
 {
     public class ServerMessageEventArgs : EventArgs
     {

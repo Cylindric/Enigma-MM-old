@@ -1,15 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System;
-using EnigmaMM.Interfaces;
+﻿using System.IO;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM
 {
-    public class MCServerProperties : SettingsFile, Interfaces.IMCSettings
+    public class MCServerProperties : SettingsFile
     {
 
-        public MCServerProperties(IServer server) : base(server, Path.Combine(server.Settings.MinecraftRoot, "server.properties"), '=')
+        public MCServerProperties(EMMServer server) : base(server, Path.Combine(server.Settings.MinecraftRoot, "server.properties"), '=')
         {
         }
 
