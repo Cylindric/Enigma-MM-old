@@ -4,8 +4,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibNbt", "LibNbt\LibNbt.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{FA641914-FBA9-4109-A9A6-A7C9CC356739}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{970B78FB-587F-48FD-89B5-222B448FE10B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,17 +38,6 @@ Global
 		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|Mixed Platforms.Build.0 = Release|x86
 		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|x86.ActiveCfg = Release|x86
 		{FA641914-FBA9-4109-A9A6-A7C9CC356739}.Release|x86.Build.0 = Release|x86
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Debug|x86.Build.0 = Debug|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{970B78FB-587F-48FD-89B5-222B448FE10B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

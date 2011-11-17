@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using EnigmaMM.Interfaces;
 
 namespace EnigmaMM.Engine
 {
@@ -12,7 +11,7 @@ namespace EnigmaMM.Engine
     /// The main Server Manager class.
     /// Keeps track of the server listener, and manages the Minecraft process.
     /// </summary>
-    public class EMMServer: IServer
+    public class EMMServer
     {
         private const int COMMAND_TIMEOUT_MS = 5000;
 
@@ -23,8 +22,6 @@ namespace EnigmaMM.Engine
         private CommandParser mParser;
         private Scheduler.SchedulerManager mScheduler;
         private Settings mSettings;
-        private PluginManager mPlugins;
-        private MapManager mMapManager;
         private PowerManager mPowerManager;
 
         // Thread lock objects
@@ -39,7 +36,7 @@ namespace EnigmaMM.Engine
         private bool mAutoSaveEnabled;
         private SettingsFile mMinecraftWhitelist;
 
-        #region Interface IServer Events
+        #region Interface EMMServer Events
 
         /// <summary>
         /// Raised whenever the Minecraft server stops.
@@ -70,12 +67,12 @@ namespace EnigmaMM.Engine
         
         #region Interface IServer Properties
 
-        public IServerSettings Settings
+        public Settings Settings
         {
             get { return mSettings; }
         }
 
-        public IMCSettings MinecraftSettings
+        public MCServerProperties MinecraftSettings
         {
             get { return mMinecraftSettings; }
         }
@@ -97,8 +94,6 @@ namespace EnigmaMM.Engine
         
         #endregion
         
-        #region Interface IServer Methods
-
         /// <summary>
         /// Starts the Minecraft server process.
         /// </summary>
@@ -176,14 +171,6 @@ namespace EnigmaMM.Engine
         }
 
         /// <summary>
-        /// Generates all maps.
-        /// </summary>
-        public void GenerateMaps(string[] args)
-        { 
-            mMapManager.GenerateMaps(args);
-        }
-
-        /// <summary>
         /// Helper-method to raise ServerMessage Events from other places.
         /// </summary>
         /// <param name="Message">The message to throw</param>
@@ -244,25 +231,7 @@ namespace EnigmaMM.Engine
             }
         }
 
-        /// <summary>
-        /// Return an ISettings object relating to the specified configuration file.
-        /// </summary>
-        /// <param name="filename">The file to load.</param>
-        /// <returns>ISettings</returns>
-        public ISettings GetSettings(string filename)
-        {
-            ISettings settings = new SettingsFile(this, filename, '=');
-            return settings;
-        }
-
-        #endregion
-
         #region Internal Properties
-
-        internal PluginManager Plugins
-        {
-            get { return mPlugins; }
-        }
 
         internal Process ServerProcess
         {
@@ -318,7 +287,6 @@ namespace EnigmaMM.Engine
 
             mParser = new CommandParser(this);
             mScheduler = new Scheduler.SchedulerManager(this);
-            mMapManager = new MapManager(this);
             mPowerManager = new PowerManager(this);
 
             mServerSaving = false;
@@ -331,9 +299,6 @@ namespace EnigmaMM.Engine
             // See if we need to swap in a new config file, and load current config.
             mMinecraftSettings.LookForNewSettings();
             mMinecraftWhitelist.LookForNewSettings();
-
-            mPlugins = new PluginManager(this);
-            mPlugins.Load(Path.Combine(mSettings.ServerManagerRoot, "plugins"));
 
             mScheduler.LoadSchedule(Path.Combine(mSettings.ServerManagerRoot, "scheduler.xml"));
             mScheduler.Start();

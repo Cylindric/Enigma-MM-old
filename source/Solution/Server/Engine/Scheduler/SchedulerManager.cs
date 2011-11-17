@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Timers;
 using System.Xml;
-using EnigmaMM.Interfaces;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM.Scheduler
 {
@@ -14,15 +14,15 @@ namespace EnigmaMM.Scheduler
     public class SchedulerManager
     {
         private const int TIMER_INTERVAL = 5000;
-        private IServer mServer;
-        private List<IScheduleTask> mTasks;
+        private EMMServer mServer;
+        private List<ScheduleTask> mTasks;
         private Timer mTimer;
 
         /// <summary>
-        /// Gets or sets the <seealso cref="IServer"/> to use for executing the
+        /// Gets or sets the <seealso cref="EMMServer"/> to use for executing the
         /// scheduled commands.
         /// </summary>
-        public IServer Server
+        public EMMServer Server
         {
             get { return mServer; }
             set { mServer = value; }
@@ -32,12 +32,12 @@ namespace EnigmaMM.Scheduler
         /// Gets the <seealso cref="IScheduleTask"/> that is scheduled to run next.
         /// </summary>
         /// <remarks>If no tasks are scheduled, returns <c>null</c>.</remarks>
-        public IScheduleTask NextTask
+        public ScheduleTask NextTask
         {
             get
             {
-                IScheduleTask next = null;
-                foreach (IScheduleTask task in mTasks)
+                ScheduleTask next = null;
+                foreach (ScheduleTask task in mTasks)
                 {
                     if ((next == null) || (task.NextRun < next.NextRun))
                     {
@@ -50,13 +50,13 @@ namespace EnigmaMM.Scheduler
 
         /// <summary>
         /// Creates a new ScheduleManager with default values, linked to the 
-        /// specified <see cref="IServer"/>.
+        /// specified <see cref="EMMServer"/>.
         /// </summary>
-        /// <param name="server">The IServer to use for executing commands.</param>
-        public SchedulerManager(IServer server)
+        /// <param name="server">The EMMServer to use for executing commands.</param>
+        public SchedulerManager(EMMServer server)
         {
             mServer = server;
-            mTasks = new List<IScheduleTask>();
+            mTasks = new List<ScheduleTask>();
             mTimer = new Timer();
             mTimer.Elapsed += onTimerEvent;
         }
@@ -86,7 +86,7 @@ namespace EnigmaMM.Scheduler
         /// <param name="file">Full path to the schedule file.</param>
         public void LoadSchedule(string file)
         {
-            mTasks = new List<IScheduleTask>();
+            mTasks = new List<ScheduleTask>();
             if ( (file.Length == 0) || (!File.Exists(file)) )
             {
                 return;
@@ -110,7 +110,7 @@ namespace EnigmaMM.Scheduler
         /// Adds the specified <see cref="IScheduleTask"/> to the task list.
         /// </summary>
         /// <param name="task">The task to add.</param>
-        public void AddTask(IScheduleTask task)
+        public void AddTask(ScheduleTask task)
         {
             task.CalculateNextRunTime();
             mTasks.Add(task);
@@ -125,7 +125,7 @@ namespace EnigmaMM.Scheduler
             }
 
             // Run all "missed" tasks and increment their run-times
-            foreach (IScheduleTask task in mTasks)
+            foreach (ScheduleTask task in mTasks)
             {
                 if (task.NextRun <= signalTime)
                 {
@@ -151,7 +151,7 @@ namespace EnigmaMM.Scheduler
             processTimer(e.SignalTime);
         }
 
-        private void ExecuteTask(IScheduleTask task)
+        private void ExecuteTask(ScheduleTask task)
         {
             task.CalculateNextRunTime();
             if (mServer != null)

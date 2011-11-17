@@ -94,6 +94,8 @@
     <Compile Include="Engine\Commands\MapsCommand.cs" />
     <Compile Include="Engine\DatabaseManager.cs" />
     <Compile Include="Engine\Data\UpdateDb_1_2.cs" />
+    <Compile Include="Engine\ServerMessageEventArgs.cs" />
+    <Compile Include="Engine\StatusEnum.cs" />
     <Compile Include="UsersForm.xaml.cs">
       <DependentUpon>UsersForm.xaml</DependentUpon>
     </Compile>
@@ -118,8 +120,6 @@
     <Compile Include="Engine\EMMServer.cs" />
     <Compile Include="Engine\EMMServerMessage.cs" />
     <Compile Include="Engine\Manager.cs" />
-    <Compile Include="Engine\MapManager.cs" />
-    <Compile Include="Engine\PluginManager.cs" />
     <Compile Include="Engine\PowerManager.cs" />
     <Compile Include="Engine\Scheduler\SchedulerManager.cs" />
     <Compile Include="Engine\Scheduler\ScheduleTask.cs" />
@@ -204,12 +204,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\status-stopping.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
-      <Project>{970B78FB-587F-48FD-89B5-222B448FE10B}</Project>
-      <Name>Interfaces</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="server.ico" />
