@@ -95,6 +95,7 @@
     <Compile Include="Engine\DatabaseManager.cs" />
     <Compile Include="Engine\Data\UpdateDb_1_2.cs" />
     <Compile Include="Engine\ServerMessageEventArgs.cs" />
+    <Compile Include="Engine\Settings\SettingsFile.cs" />
     <Compile Include="Engine\StatusEnum.cs" />
     <Compile Include="UsersForm.xaml.cs">
       <DependentUpon>UsersForm.xaml</DependentUpon>
@@ -124,8 +125,7 @@
     <Compile Include="Engine\Scheduler\SchedulerManager.cs" />
     <Compile Include="Engine\Scheduler\ScheduleTask.cs" />
     <Compile Include="Engine\Settings\MCServerProperties.cs" />
-    <Compile Include="Engine\Settings\Settings.cs" />
-    <Compile Include="Engine\Settings\SettingsFile.cs" />
+    <Compile Include="Engine\Settings\Config.cs" />
     <Compile Include="InvokeOC.cs" />
     <Compile Include="LogListItem.cs" />
     <Compile Include="LVColumnStretchProperty.cs" />
@@ -177,7 +177,6 @@
     <None Include="Engine\Data\EMMDataContext.dbml.layout">
       <DependentUpon>EMMDataContext.dbml</DependentUpon>
     </None>
-    <None Include="Engine\Settings\sample.settings.conf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

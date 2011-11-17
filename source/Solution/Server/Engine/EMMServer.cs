@@ -21,8 +21,9 @@ namespace EnigmaMM.Engine
         private bool mServerSaving;
         private CommandParser mParser;
         private Scheduler.SchedulerManager mScheduler;
-        private Settings mSettings;
+        private Config mSettings;
         private PowerManager mPowerManager;
+        private string mServerRoot;
 
         // Thread lock objects
         private readonly object mAutoSaveLock = new object();
@@ -67,7 +68,7 @@ namespace EnigmaMM.Engine
         
         #region Interface IServer Properties
 
-        public Settings Settings
+        public Config Settings
         {
             get { return mSettings; }
         }
@@ -257,12 +258,6 @@ namespace EnigmaMM.Engine
             }
         }
 
-        internal string ReadConfig(string key)
-        {
-            string value = Manager.Database.Configs.Single(c => c.Key == key).Value;
-            return value;
-        }
-
         #endregion
 
         #region Public Constructors
@@ -271,17 +266,10 @@ namespace EnigmaMM.Engine
         /// Server Constructor
         /// </summary>
         /// <remarks>Defaults to using a config file in the same location as the executing assembly.</remarks>
-        public EMMServer():
-            this(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "settings.conf")){}
-
-        /// <summary>
-        /// Server Constructor
-        /// </summary>
-        public EMMServer(string mainSettingsFile)
+        public EMMServer()
         {
-            mSettings = new Settings(this);
-            mSettings.Initialise(mainSettingsFile);
-
+            mSettings = new Config(this);
+ 
             mMinecraftSettings = new MCServerProperties(this);
             mMinecraftWhitelist = new SettingsFile(this, Path.Combine(mSettings.MinecraftRoot, "white-list.txt"), ' ');
 

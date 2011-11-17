@@ -10,7 +10,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
         {
             EMMServer Server = Manager.Server;
 
-            string OutputPath = Server.ReadConfig("map_output");
+            string OutputPath = Server.Settings.MapOutputPath;
             if (OutputPath.StartsWith("."))
             {
                 OutputPath = Path.Combine(Server.Settings.ServerManagerRoot, OutputPath);
@@ -19,7 +19,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             OutputPath = Path.Combine(OutputPath, "c10t");
 
 
-            string CachePath = Server.ReadConfig("map_cache");
+            string CachePath = Server.Settings.CacheRoot;
             if (CachePath.StartsWith("."))
             {
                 CachePath = Path.Combine(Server.Settings.ServerManagerRoot, CachePath);
@@ -28,7 +28,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             CachePath = Path.Combine(CachePath, "c10t");
 
 
-            string exeFile = Server.ReadConfig("c10t_exe");
+            string exeFile = Server.Settings.ReadConfigPath("c10t_exe");
             if (exeFile.StartsWith("."))
             {
                 exeFile = Path.Combine(Server.Settings.ServerManagerRoot, exeFile);
@@ -103,7 +103,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             p.WaitForExit();
 
             int smallWidth = 0;
-            int.TryParse(Server.ReadConfig("map_small_width"), out smallWidth);
+            int.TryParse(Server.Settings.ReadConfigPath("map_small_width"), out smallWidth);
             string smallFile = Path.Combine(OutputPath, "map-small.png");
             Resize(OutputFile, smallFile, smallWidth);
 
