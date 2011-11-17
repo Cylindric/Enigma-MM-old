@@ -5,18 +5,43 @@ using System.Text;
 
 namespace EnigmaMM.Engine.Data
 {
-    static class UpdateDb_1_2
+    class UpdateDb
     {
-        private static Data.EMMDataContext mDb = Manager.Database;
+        protected static Data.EMMDataContext mDb = Manager.Database;
 
-        public static void DoUpdate()
+        protected static void UpdateConfig(string key, string value)
         {
-            updateItem(1, 4, 64, 256, "stone", "Stone Block");
-            updateItem(2, 4, 64, 256, "grass", "Grass");
-            mDb.Configs.FirstOrDefault(c => c.Key == "db_version").Value = "2";
-            mDb.SubmitChanges();
+            Data.Config record = mDb.Configs.SingleOrDefault(r => r.Key == key);
+            if (record == null)
+            {
+                mDb.Configs.InsertOnSubmit(new Data.Config() { Key = key, Value = value });
+            }
+            else
+            {
+                record.Value = value;
+            }
         }
-       
+
+        protected static void InsertMessage(string name, string expression, string match)
+        {
+            mDb.MessageTypes.InsertOnSubmit(new Data.MessageType() { Name = name, Expression = expression, MatchType = match });
+        }
+
+        protected static void InsertPermission(int rank, string name)
+        {
+            mDb.Permissions.InsertOnSubmit(new Data.Permission() { Rank_ID = rank, Name = name });
+        }
+
+        protected static void InsertRank(string name)
+        {
+            mDb.Ranks.InsertOnSubmit(new Data.Rank() { Name = name });
+        }
+
+        protected static void InsertUser(string name, Data.Rank rank)
+        {
+            mDb.Users.InsertOnSubmit(new Data.User() { Username = name, Rank = rank });
+        }
+
         /// <summary>
         /// Update the specified item, or it doesn't exist, insert it.
         /// </summary>
@@ -26,7 +51,7 @@ namespace EnigmaMM.Engine.Data
         /// <param name="max_stack"></param>
         /// <param name="code"></param>
         /// <param name="name"></param>
-        private static void updateItem(int block_id, int min_rank_id, int stack, int max_stack, string code, string name)
+        protected static void updateItem(int block_id, int min_rank_id, int stack, int max_stack, string code, string name)
         {
             Data.Item item = mDb.Items.SingleOrDefault(i => i.Block_Decimal_ID == block_id);
 

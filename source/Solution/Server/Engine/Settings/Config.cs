@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using EnigmaMM.Engine;
+using System.Data.SqlServerCe;
 
 namespace EnigmaMM
 {
