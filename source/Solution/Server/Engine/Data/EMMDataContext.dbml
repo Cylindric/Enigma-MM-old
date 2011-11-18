@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Database Name="data" Class="EMMDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Config" Member="Configs">
     <Type Name="Config">
@@ -53,6 +53,17 @@
       <Association Name="FK_User_Rank" Member="Users" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="User" DeleteRule="CASCADE" />
     </Type>
   </Table>
+  <Table Name="Tracking" Member="Trackings">
+    <Type Name="Tracking">
+      <Column Name="Tracking_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="User_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LocX" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LocY" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LocZ" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="PointTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Association Name="FK_Tracking_User" Member="User" ThisKey="User_ID" OtherKey="User_ID" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
   <Table Name="Users">
     <Type Name="User">
       <Column Name="User_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -63,6 +74,7 @@
       <Column Name="LocZ" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
       <Column Name="LastSeen" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="FK_ItemHistory_User" Member="ItemHistories" ThisKey="User_ID" OtherKey="User_ID" Type="ItemHistory" DeleteRule="NO ACTION" />
+      <Association Name="FK_Tracking_User" Member="Trackings" ThisKey="User_ID" OtherKey="User_ID" Type="Tracking" DeleteRule="NO ACTION" />
       <Association Name="FK_User_Rank" Member="Rank" ThisKey="Rank_ID" OtherKey="Rank_ID" Type="Rank" IsForeignKey="true" DeleteOnNull="true" />
     </Type>
   </Table>

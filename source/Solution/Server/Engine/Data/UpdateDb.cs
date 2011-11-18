@@ -2,14 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
+using System.Data.SqlServerCe;
 
 namespace EnigmaMM.Engine.Data
 {
-    class UpdateDb
+    public abstract class UpdateDb
     {
-        protected static Data.EMMDataContext mDb = Manager.Database;
+        protected Data.EMMDataContext mDb = Manager.Database;
+        protected List<string> mCommandQueue = new List<string>();
+        protected string mConnectionString;
+        protected string mDataFile;
 
-        protected static void UpdateConfig(string key, string value)
+        protected UpdateDb()
+        {
+            mDataFile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "data.sdf");
+            mConnectionString = string.Format("Data Source = \"{0}\"", mDataFile);
+        }
+
+        public abstract void DoUpdate();
+
+        protected void UpdateConfig(string key, string value)
         {
             Data.Config record = mDb.Configs.SingleOrDefault(r => r.Key == key);
             if (record == null)
@@ -22,12 +35,12 @@ namespace EnigmaMM.Engine.Data
             }
         }
 
-        protected static void InsertMessage(string name, string expression, string match)
+        protected void InsertMessage(string name, string expression, string match)
         {
             mDb.MessageTypes.InsertOnSubmit(new Data.MessageType() { Name = name, Expression = expression, MatchType = match });
         }
 
-        protected static void InsertItem(int blockDecimalId, string code, string name, int stackSize, int max, int minLevel)
+        protected void InsertItem(int blockDecimalId, string code, string name, int stackSize, int max, int minLevel)
         {
             mDb.Items.InsertOnSubmit(new Data.Item() 
             { 
@@ -40,17 +53,17 @@ namespace EnigmaMM.Engine.Data
             });
         }
 
-        protected static void InsertPermission(int minLevel, string name)
+        protected void InsertPermission(int minLevel, string name)
         {
             mDb.Permissions.InsertOnSubmit(new Data.Permission() { Min_Level = minLevel, Name = name });
         }
 
-        protected static void InsertRank(int level, string name)
+        protected void InsertRank(int level, string name)
         {
             mDb.Ranks.InsertOnSubmit(new Data.Rank() { Level = level, Name = name });
         }
 
-        protected static void InsertUser(string name, Data.Rank rank)
+        protected void InsertUser(string name, Data.Rank rank)
         {
             mDb.Users.InsertOnSubmit(new Data.User() { Username = name, Rank = rank });
         }
@@ -64,7 +77,7 @@ namespace EnigmaMM.Engine.Data
         /// <param name="max_stack"></param>
         /// <param name="code"></param>
         /// <param name="name"></param>
-        protected static void updateItem(int block_id, int min_level, int stack, int max_stack, string code, string name)
+        protected void updateItem(int block_id, int min_level, int stack, int max_stack, string code, string name)
         {
             Data.Item item = mDb.Items.SingleOrDefault(i => i.Block_Decimal_ID == block_id);
 
@@ -90,6 +103,23 @@ namespace EnigmaMM.Engine.Data
                 item.Stack_Size = stack;
             }
             mDb.SubmitChanges();
+        }
+
+        protected void ExecuteCommands()
+        {
+            using (SqlCeConnection con = new SqlCeConnection(mConnectionString))
+            {
+                con.Open();
+                foreach (string sql in mCommandQueue)
+                {
+                    using (SqlCeCommand cmd = new SqlCeCommand(sql, con))
+                    {
+                        cmd.CommandText = sql;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
         }
 
     }
