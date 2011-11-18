@@ -7,7 +7,7 @@ namespace EnigmaMM.Engine.Data
 {
     class InsertData: UpdateDb
     {
-        public static void DoInsert()
+        public override void DoUpdate()
         {
             DoInsertConfig();
             DoInsertMessageTypes();
@@ -17,7 +17,7 @@ namespace EnigmaMM.Engine.Data
             DoInsertItems();
         }
 
-        private static void DoInsertConfig()
+        private void DoInsertConfig()
         {
             UpdateConfig("backup_path", @".\Backups\");
             UpdateConfig("biomeextractor_exe", @".\BiomeExtractor\BiomeExtractor.jar");
@@ -34,7 +34,7 @@ namespace EnigmaMM.Engine.Data
             mDb.SubmitChanges();
         }
 
-        private static void DoInsertMessageTypes()
+        private void DoInsertMessageTypes()
         {
             InsertMessage(@"StartupComplete", @"^(?<timestamp>.+?)\ \[INFO]\ Done\ \((?<time>\d+)ns\)!\ For\ help,\ type\ ""help""\ or\ ""\?""$", @"Regex");
             InsertMessage(@"SaveComplete", @"[INFO] CONSOLE: Save complete", @"EndsWith");
@@ -59,7 +59,7 @@ namespace EnigmaMM.Engine.Data
             mDb.SubmitChanges();
         }
 
-        private static void DoInsertPermissions()
+        private void DoInsertPermissions()
         {
             InsertPermission(1, "get-item");
             InsertPermission(4, "backup");
@@ -72,7 +72,7 @@ namespace EnigmaMM.Engine.Data
             mDb.SubmitChanges();
         }
 
-        private static void DoInsertRanks()
+        private void DoInsertRanks()
         {
             InsertRank(1, "Everyone");
             InsertRank(2, "Authorised");
@@ -83,7 +83,7 @@ namespace EnigmaMM.Engine.Data
             mDb.SubmitChanges();
         }
 
-        private static void DoInsertItems()
+        private void DoInsertItems()
         {
             InsertItem(0, "air", "Air", 1, 64, 6);
             InsertItem(1, "stone", "Stone", 64, 256, 4);
@@ -311,7 +311,7 @@ namespace EnigmaMM.Engine.Data
             mDb.SubmitChanges();
         }
 
-        private static void DoInsertUsers()
+        private void DoInsertUsers()
         {
             InsertUser("console", mDb.Ranks.First(r => r.Name == "Console"));
             mDb.SubmitChanges();

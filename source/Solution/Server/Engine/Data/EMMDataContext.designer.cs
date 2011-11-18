@@ -48,6 +48,9 @@ namespace EnigmaMM.Engine.Data
     partial void InsertRank(Rank instance);
     partial void UpdateRank(Rank instance);
     partial void DeleteRank(Rank instance);
+    partial void InsertTracking(Tracking instance);
+    partial void UpdateTracking(Tracking instance);
+    partial void DeleteTracking(Tracking instance);
     partial void InsertUser(User instance);
     partial void UpdateUser(User instance);
     partial void DeleteUser(User instance);
@@ -122,6 +125,14 @@ namespace EnigmaMM.Engine.Data
 			get
 			{
 				return this.GetTable<Rank>();
+			}
+		}
+		
+		public System.Data.Linq.Table<Tracking> Trackings
+		{
+			get
+			{
+				return this.GetTable<Tracking>();
 			}
 		}
 		
@@ -1100,6 +1111,229 @@ namespace EnigmaMM.Engine.Data
 		}
 	}
 	
+	[global::System.Data.Linq.Mapping.TableAttribute()]
+	public partial class Tracking : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private int _Tracking_ID;
+		
+		private int _User_ID;
+		
+		private double _LocX;
+		
+		private double _LocY;
+		
+		private double _LocZ;
+		
+		private System.Nullable<System.DateTime> _PointTime;
+		
+		private EntityRef<User> _User;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnTracking_IDChanging(int value);
+    partial void OnTracking_IDChanged();
+    partial void OnUser_IDChanging(int value);
+    partial void OnUser_IDChanged();
+    partial void OnLocXChanging(double value);
+    partial void OnLocXChanged();
+    partial void OnLocYChanging(double value);
+    partial void OnLocYChanged();
+    partial void OnLocZChanging(double value);
+    partial void OnLocZChanged();
+    partial void OnPointTimeChanging(System.Nullable<System.DateTime> value);
+    partial void OnPointTimeChanged();
+    #endregion
+		
+		public Tracking()
+		{
+			this._User = default(EntityRef<User>);
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Tracking_ID", AutoSync=AutoSync.OnInsert, DbType="Int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Tracking_ID
+		{
+			get
+			{
+				return this._Tracking_ID;
+			}
+			set
+			{
+				if ((this._Tracking_ID != value))
+				{
+					this.OnTracking_IDChanging(value);
+					this.SendPropertyChanging();
+					this._Tracking_ID = value;
+					this.SendPropertyChanged("Tracking_ID");
+					this.OnTracking_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_User_ID", DbType="Int NOT NULL")]
+		public int User_ID
+		{
+			get
+			{
+				return this._User_ID;
+			}
+			set
+			{
+				if ((this._User_ID != value))
+				{
+					if (this._User.HasLoadedOrAssignedValue)
+					{
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+					}
+					this.OnUser_IDChanging(value);
+					this.SendPropertyChanging();
+					this._User_ID = value;
+					this.SendPropertyChanged("User_ID");
+					this.OnUser_IDChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocX", DbType="Float NOT NULL")]
+		public double LocX
+		{
+			get
+			{
+				return this._LocX;
+			}
+			set
+			{
+				if ((this._LocX != value))
+				{
+					this.OnLocXChanging(value);
+					this.SendPropertyChanging();
+					this._LocX = value;
+					this.SendPropertyChanged("LocX");
+					this.OnLocXChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocY", DbType="Float NOT NULL")]
+		public double LocY
+		{
+			get
+			{
+				return this._LocY;
+			}
+			set
+			{
+				if ((this._LocY != value))
+				{
+					this.OnLocYChanging(value);
+					this.SendPropertyChanging();
+					this._LocY = value;
+					this.SendPropertyChanged("LocY");
+					this.OnLocYChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocZ", DbType="Float NOT NULL")]
+		public double LocZ
+		{
+			get
+			{
+				return this._LocZ;
+			}
+			set
+			{
+				if ((this._LocZ != value))
+				{
+					this.OnLocZChanging(value);
+					this.SendPropertyChanging();
+					this._LocZ = value;
+					this.SendPropertyChanged("LocZ");
+					this.OnLocZChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_PointTime", DbType="DateTime")]
+		public System.Nullable<System.DateTime> PointTime
+		{
+			get
+			{
+				return this._PointTime;
+			}
+			set
+			{
+				if ((this._PointTime != value))
+				{
+					this.OnPointTimeChanging(value);
+					this.SendPropertyChanging();
+					this._PointTime = value;
+					this.SendPropertyChanged("PointTime");
+					this.OnPointTimeChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Tracking", Storage="_User", ThisKey="User_ID", OtherKey="User_ID", IsForeignKey=true)]
+		public User User
+		{
+			get
+			{
+				return this._User.Entity;
+			}
+			set
+			{
+				User previousValue = this._User.Entity;
+				if (((previousValue != value) 
+							|| (this._User.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._User.Entity = null;
+						previousValue.Trackings.Remove(this);
+					}
+					this._User.Entity = value;
+					if ((value != null))
+					{
+						value.Trackings.Add(this);
+						this._User_ID = value.User_ID;
+					}
+					else
+					{
+						this._User_ID = default(int);
+					}
+					this.SendPropertyChanged("User");
+				}
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
+	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="Users")]
 	public partial class User : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -1121,6 +1355,8 @@ namespace EnigmaMM.Engine.Data
 		private System.Nullable<System.DateTime> _LastSeen;
 		
 		private EntitySet<ItemHistory> _ItemHistories;
+		
+		private EntitySet<Tracking> _Trackings;
 		
 		private EntityRef<Rank> _Rank;
 		
@@ -1147,6 +1383,7 @@ namespace EnigmaMM.Engine.Data
 		public User()
 		{
 			this._ItemHistories = new EntitySet<ItemHistory>(new Action<ItemHistory>(this.attach_ItemHistories), new Action<ItemHistory>(this.detach_ItemHistories));
+			this._Trackings = new EntitySet<Tracking>(new Action<Tracking>(this.attach_Trackings), new Action<Tracking>(this.detach_Trackings));
 			this._Rank = default(EntityRef<Rank>);
 			OnCreated();
 		}
@@ -1308,6 +1545,19 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="User_Tracking", Storage="_Trackings", ThisKey="User_ID", OtherKey="User_ID")]
+		public EntitySet<Tracking> Trackings
+		{
+			get
+			{
+				return this._Trackings;
+			}
+			set
+			{
+				this._Trackings.Assign(value);
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Rank_User", Storage="_Rank", ThisKey="Rank_ID", OtherKey="Rank_ID", IsForeignKey=true, DeleteOnNull=true)]
 		public Rank Rank
 		{
@@ -1369,6 +1619,18 @@ namespace EnigmaMM.Engine.Data
 		}
 		
 		private void detach_ItemHistories(ItemHistory entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = null;
+		}
+		
+		private void attach_Trackings(Tracking entity)
+		{
+			this.SendPropertyChanging();
+			entity.User = this;
+		}
+		
+		private void detach_Trackings(Tracking entity)
 		{
 			this.SendPropertyChanging();
 			entity.User = null;

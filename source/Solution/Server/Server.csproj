@@ -103,6 +103,7 @@
     </Compile>
     <Compile Include="Engine\Data\InsertData.cs" />
     <Compile Include="Engine\Data\UpdateDb.cs" />
+    <Compile Include="Engine\Data\UpdateDb_2_3.cs" />
     <Compile Include="Engine\ServerMessageEventArgs.cs" />
     <Compile Include="Engine\Settings\SettingsFile.cs" />
     <Compile Include="Engine\StatusEnum.cs" />
@@ -224,8 +225,6 @@
     <Resource Include="Resources\toolbar-restart-inactive.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Engine\Data\data.sdf" />
-    <Content Include="Engine\Data\schema.sql" />
     <Resource Include="Engine\Scheduler\sample.scheduler.xml" />
     <Resource Include="Engine\Ionic.txt" />
     <Content Include="Engine\Ionic.Zip.Reduced.dll" />
