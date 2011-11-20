@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using LibNbt.Tags;
 
 namespace EnigmaMM.Engine
 {
@@ -23,6 +24,7 @@ namespace EnigmaMM.Engine
         private Scheduler.SchedulerManager mScheduler;
         private Config mSettings;
         private PowerManager mPowerManager;
+        private UserManager mUserManager;
         private string mServerRoot;
 
         // Thread lock objects
@@ -276,6 +278,7 @@ namespace EnigmaMM.Engine
             mParser = new CommandParser(this);
             mScheduler = new Scheduler.SchedulerManager(this);
             mPowerManager = new PowerManager(this);
+            mUserManager = new UserManager(this);
 
             mServerSaving = false;
             ServerStatus = Status.Stopped;
@@ -290,6 +293,9 @@ namespace EnigmaMM.Engine
 
             mScheduler.LoadSchedule(Path.Combine(mSettings.ServerManagerRoot, "scheduler.xml"));
             mScheduler.Start();
+
+            mUserManager.UpdateAllPositionsFromFile();
+            mUserManager.MonitorUserFiles();
         }
 
         #endregion
@@ -447,29 +453,8 @@ namespace EnigmaMM.Engine
         /// <param name="Message"></param>
         internal void OnUserJoined(EMMServerMessage Message)
         {
-            // make sure user exists in database
-            Data.User user = Manager.Database.Users.SingleOrDefault(i => i.Username == Message.Data["username"]);
-            if (user == null)
-            {
-                user = new Data.User();
-                user.Username = Message.Data["username"];
-                user.Rank = Manager.Database.Ranks.Single(rank => rank.Name == "Everyone");
-                Manager.Database.Users.InsertOnSubmit(user);
-            }
-            double positionX = 0;
-            double positionY = 0;
-            double positionZ = 0;
-            double.TryParse(Message.Data["LocX"], out positionX);
-            double.TryParse(Message.Data["LocY"], out positionY);
-            double.TryParse(Message.Data["LocZ"], out positionZ);
-            user.LocX = positionX;
-            user.LocY = positionY;
-            user.LocZ = positionZ;
-            user.LastSeen = DateTime.Now;
-            
-            Manager.Database.SubmitChanges();
-            
-            mOnlineUsers.Add(Message.Data["username"]);
+            Data.User user = mUserManager.OnUserJoinedMessage(Message);            
+            mOnlineUsers.Add(user.Username);
         }
 
         /// <summary>

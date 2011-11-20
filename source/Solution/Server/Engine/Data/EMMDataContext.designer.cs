@@ -1121,11 +1121,11 @@ namespace EnigmaMM.Engine.Data
 		
 		private int _User_ID;
 		
-		private double _LocX;
+		private int _LocX;
 		
-		private double _LocY;
+		private int _LocY;
 		
-		private double _LocZ;
+		private int _LocZ;
 		
 		private System.Nullable<System.DateTime> _PointTime;
 		
@@ -1139,11 +1139,11 @@ namespace EnigmaMM.Engine.Data
     partial void OnTracking_IDChanged();
     partial void OnUser_IDChanging(int value);
     partial void OnUser_IDChanged();
-    partial void OnLocXChanging(double value);
+    partial void OnLocXChanging(int value);
     partial void OnLocXChanged();
-    partial void OnLocYChanging(double value);
+    partial void OnLocYChanging(int value);
     partial void OnLocYChanged();
-    partial void OnLocZChanging(double value);
+    partial void OnLocZChanging(int value);
     partial void OnLocZChanged();
     partial void OnPointTimeChanging(System.Nullable<System.DateTime> value);
     partial void OnPointTimeChanged();
@@ -1199,8 +1199,8 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocX", DbType="Float NOT NULL")]
-		public double LocX
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocX", DbType="Int NOT NULL")]
+		public int LocX
 		{
 			get
 			{
@@ -1219,8 +1219,8 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocY", DbType="Float NOT NULL")]
-		public double LocY
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocY", DbType="Int NOT NULL")]
+		public int LocY
 		{
 			get
 			{
@@ -1239,8 +1239,8 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocZ", DbType="Float NOT NULL")]
-		public double LocZ
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocZ", DbType="Int NOT NULL")]
+		public int LocZ
 		{
 			get
 			{
@@ -1346,11 +1346,11 @@ namespace EnigmaMM.Engine.Data
 		
 		private string _Username;
 		
-		private double _LocX;
+		private int _LocX;
 		
-		private double _LocY;
+		private int _LocY;
 		
-		private double _LocZ;
+		private int _LocZ;
 		
 		private System.Nullable<System.DateTime> _LastSeen;
 		
@@ -1370,11 +1370,11 @@ namespace EnigmaMM.Engine.Data
     partial void OnRank_IDChanged();
     partial void OnUsernameChanging(string value);
     partial void OnUsernameChanged();
-    partial void OnLocXChanging(double value);
+    partial void OnLocXChanging(int value);
     partial void OnLocXChanged();
-    partial void OnLocYChanging(double value);
+    partial void OnLocYChanging(int value);
     partial void OnLocYChanged();
-    partial void OnLocZChanging(double value);
+    partial void OnLocZChanging(int value);
     partial void OnLocZChanged();
     partial void OnLastSeenChanging(System.Nullable<System.DateTime> value);
     partial void OnLastSeenChanged();
@@ -1452,8 +1452,8 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocX", DbType="Float NOT NULL")]
-		public double LocX
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocX", DbType="Int NOT NULL")]
+		public int LocX
 		{
 			get
 			{
@@ -1472,8 +1472,8 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocY", DbType="Float NOT NULL")]
-		public double LocY
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocY", DbType="Int NOT NULL")]
+		public int LocY
 		{
 			get
 			{
@@ -1492,8 +1492,8 @@ namespace EnigmaMM.Engine.Data
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocZ", DbType="Float NOT NULL")]
-		public double LocZ
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_LocZ", DbType="Int NOT NULL")]
+		public int LocZ
 		{
 			get
 			{

@@ -55,7 +55,7 @@ namespace EnigmaMM.Engine.Commands
             ExecuteTask(command.User, item, quantity);
         }
 
-        private void ExecuteTask(User user, Item item, int quantity)
+        private void ExecuteTask(Data.User user, Item item, int quantity)
         {
             int qtyToGive = GetActualQuantity(user, item, quantity);
 
@@ -83,7 +83,7 @@ namespace EnigmaMM.Engine.Commands
             Manager.Database.SubmitChanges();
         }
 
-        private int GetActualQuantity(User user, Item item, int requestedQuantity)
+        private int GetActualQuantity(Data.User user, Item item, int requestedQuantity)
         {
             int finalQuantity = requestedQuantity;
 

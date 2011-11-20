@@ -94,6 +94,7 @@
     <Compile Include="Engine\Commands\Mappers\Mapper.cs" />
     <Compile Include="Engine\Commands\Mappers\Overviewer.cs" />
     <Compile Include="Engine\Commands\MapsCommand.cs" />
+    <Compile Include="Engine\Coord.cs" />
     <Compile Include="Engine\DatabaseManager.cs" />
     <Compile Include="Engine\Data\CreateDb.cs" />
     <Compile Include="Engine\Data\EMMDataContext.designer.cs">
@@ -104,9 +105,11 @@
     <Compile Include="Engine\Data\InsertData.cs" />
     <Compile Include="Engine\Data\UpdateDb.cs" />
     <Compile Include="Engine\Data\UpdateDb_2_3.cs" />
+    <Compile Include="Engine\Data\UpdateDb_3_4.cs" />
     <Compile Include="Engine\ServerMessageEventArgs.cs" />
     <Compile Include="Engine\Settings\SettingsFile.cs" />
     <Compile Include="Engine\StatusEnum.cs" />
+    <Compile Include="Engine\UserManager.cs" />
     <Compile Include="UsersForm.xaml.cs">
       <DependentUpon>UsersForm.xaml</DependentUpon>
     </Compile>
@@ -258,6 +261,12 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibNbt\LibNbt.csproj">
+      <Project>{4488498D-976D-4DA3-BF72-109531AF0488}</Project>
+      <Name>LibNbt</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
