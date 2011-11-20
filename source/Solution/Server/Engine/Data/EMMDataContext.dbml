@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Database Name="data" Class="EMMDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
   <Table Name="Config" Member="Configs">
     <Type Name="Config">
@@ -57,9 +57,9 @@
     <Type Name="Tracking">
       <Column Name="Tracking_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="User_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
-      <Column Name="LocX" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="LocY" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="LocZ" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LocX" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LocY" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LocZ" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="PointTime" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="FK_Tracking_User" Member="User" ThisKey="User_ID" OtherKey="User_ID" Type="User" IsForeignKey="true" />
     </Type>
@@ -69,9 +69,9 @@
       <Column Name="User_ID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
       <Column Name="Rank_ID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="Username" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
-      <Column Name="LocX" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="LocY" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
-      <Column Name="LocZ" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="LocX" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LocY" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="LocZ" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
       <Column Name="LastSeen" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
       <Association Name="FK_ItemHistory_User" Member="ItemHistories" ThisKey="User_ID" OtherKey="User_ID" Type="ItemHistory" DeleteRule="NO ACTION" />
       <Association Name="FK_Tracking_User" Member="Trackings" ThisKey="User_ID" OtherKey="User_ID" Type="Tracking" DeleteRule="NO ACTION" />

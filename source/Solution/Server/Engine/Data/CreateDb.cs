@@ -25,20 +25,13 @@ namespace EnigmaMM.Engine.Data
             )");
 
             mCommandQueue.Add(@"
-            CREATE TABLE MessageTypes
+            CREATE TABLE ItemHistory
             (
-                [Message_Type_ID] int IDENTITY PRIMARY KEY NOT NULL,
-                [Name] nvarchar(20) NOT NULL,
-                [Expression] nvarchar(200) NOT NULL,
-                [MatchType] nvarchar(10) NOT NULL
-            )");
-
-            mCommandQueue.Add(@"
-            CREATE TABLE Ranks
-            (
-                [Rank_ID] int IDENTITY PRIMARY KEY NOT NULL,
-                [Level] int NOT NULL DEFAULT 0,
-                [Name] nvarchar(50) NOT NULL
+                [ItemHistory_ID] int IDENTITY PRIMARY KEY NOT NULL,
+                [Item_ID] int NOT NULL,
+                [User_ID] int NOT NULL,
+                [Quantity] int NOT NULL DEFAULT 0,
+                [CreateDate] datetime NOT NULL
             )");
 
             mCommandQueue.Add(@"
@@ -54,28 +47,15 @@ namespace EnigmaMM.Engine.Data
             )");
 
             mCommandQueue.Add(@"
-            CREATE TABLE Users
+            CREATE TABLE MessageTypes
             (
-                [User_ID] int IDENTITY PRIMARY KEY NOT NULL,
-                [Rank_ID] int NOT NULL,
-                [Username] nvarchar(50) NOT NULL,
-                [LocX] Float NOT NULL DEFAULT 0,
-                [LocY] Float NOT NULL DEFAULT 0,
-                [LocZ] Float NOT NULL DEFAULT 0,
-                [LastSeen] DateTime
+                [Message_Type_ID] int IDENTITY PRIMARY KEY NOT NULL,
+                [Name] nvarchar(20) NOT NULL,
+                [Expression] nvarchar(200) NOT NULL,
+                [MatchType] nvarchar(10) NOT NULL
             )");
 
-            mCommandQueue.Add(@"
-            CREATE TABLE ItemHistory
-            (
-                [ItemHistory_ID] int IDENTITY PRIMARY KEY NOT NULL,
-                [Item_ID] int NOT NULL,
-                [User_ID] int NOT NULL,
-                [Quantity] int NOT NULL DEFAULT 0,
-                [CreateDate] datetime NOT NULL
-            )");
-
-            mCommandQueue.Add(@"
+             mCommandQueue.Add(@"
             CREATE TABLE Permissions
             (
                 [Permission_ID] int IDENTITY PRIMARY KEY NOT NULL,
@@ -83,15 +63,35 @@ namespace EnigmaMM.Engine.Data
                 [Name] nvarchar(50) NOT NULL
             )");
 
-            mCommandQueue.Add(@"
+             mCommandQueue.Add(@"
+            CREATE TABLE Ranks
+            (
+                [Rank_ID] int IDENTITY PRIMARY KEY NOT NULL,
+                [Level] int NOT NULL DEFAULT 0,
+                [Name] nvarchar(50) NOT NULL
+            )");
+
+           mCommandQueue.Add(@"
             CREATE TABLE Tracking
             (
                 [Tracking_ID] int IDENTITY PRIMARY KEY NOT NULL,
                 [User_ID] int NOT NULL,
-                [LocX] Float NOT NULL DEFAULT 0,
-                [LocY] Float NOT NULL DEFAULT 0,
-                [LocZ] Float NOT NULL DEFAULT 0,
-                [PointTime] DateTime
+                [LocX] int NOT NULL DEFAULT 0,
+                [LocY] int NOT NULL DEFAULT 0,
+                [LocZ] int NOT NULL DEFAULT 0,
+                [PointTime] DateTime 
+            )"); 
+            
+            mCommandQueue.Add(@"
+            CREATE TABLE Users
+            (
+                [User_ID] int IDENTITY PRIMARY KEY NOT NULL,
+                [Rank_ID] int NOT NULL,
+                [Username] nvarchar(50) NOT NULL,
+                [LocX] int NOT NULL DEFAULT 0,
+                [LocY] int NOT NULL DEFAULT 0,
+                [LocZ] int NOT NULL DEFAULT 0,
+                [LastSeen] DateTime
             )");
 
             mCommandQueue.Add(@"ALTER TABLE ItemHistory ADD CONSTRAINT [FK_ItemHistory_Item] FOREIGN KEY (Item_ID) REFERENCES Items (Item_ID)");

@@ -7,7 +7,7 @@ namespace EnigmaMM.Engine
     class DatabaseManager
     {
         Data.EMMDataContext mDb;
-        public const int CURRENT_VERSION = 3;
+        public const int CURRENT_VERSION = 4;
         string datafile = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Substring(8)), "data.sdf");
 
         public void CheckDatabaseState()
@@ -31,10 +31,8 @@ namespace EnigmaMM.Engine
         {
             if (GetCurrentDbVersion() < CURRENT_VERSION)
             {
-                if (GetCurrentDbVersion() < 3)
-                {
-                    new UpdateDb_2_3().DoUpdate();
-                }
+                if (GetCurrentDbVersion() < 3) new UpdateDb_2_3().DoUpdate();
+                if (GetCurrentDbVersion() < 4) new UpdateDb_3_4().DoUpdate();
             }
         }
 
