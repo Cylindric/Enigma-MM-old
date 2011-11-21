@@ -5,7 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using System.IO;
 using System.Threading;
-using EnigmaMM.Interfaces;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM
 {

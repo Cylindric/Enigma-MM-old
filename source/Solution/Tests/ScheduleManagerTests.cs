@@ -1,7 +1,7 @@
 ﻿using System;
-using EnigmaMM.Interfaces;
 using Moq;
 using NUnit.Framework;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM.Scheduler
 {
@@ -16,12 +16,12 @@ namespace EnigmaMM.Scheduler
         /// </summary>
         private DateTime mondayMorning = new DateTime(2010, 1, 4, 4, 30, 0);
 
-        private Mock<IServer> mockServer;
+        private Mock<EMMServer> mockServer;
 
         [TestFixtureSetUp]
         public void TestInit()
         {
-            mockServer = new Mock<IServer>();
+            mockServer = new Mock<EMMServer>();
         }
 
         /// <summary>
