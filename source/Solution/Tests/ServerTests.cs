@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using EnigmaMM.Interfaces;
 using NUnit.Framework;
+using EnigmaMM.Engine;
 
 namespace EnigmaMM
 {
@@ -29,8 +29,9 @@ namespace EnigmaMM
             }
             Console.WriteLine("Settings File is: " + settingsFile);
 
-            mPersistentServer = new EMMServer(settingsFile);
-            Assert.That(mPersistentServer.Settings.Filename, Is.EqualTo(settingsFile));
+            mPersistentServer = new EMMServer();
+            //mPersistentServer = new EMMServer(settingsFile);
+            //Assert.That(mPersistentServer.Settings.Filename, Is.EqualTo(settingsFile));
 
             mPersistentServer.StartServer();
             WaitForServerStatus(Status.Running);
