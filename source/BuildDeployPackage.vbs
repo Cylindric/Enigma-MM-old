@@ -70,6 +70,7 @@ WriteLine file, "##### Contents"
 WriteLine file, "##1## Readme"
 WriteLine file, "##2## LibNbt License"
 WriteLine file, "##3## Ionic Zip License"
+WriteLine file, "##4## SourceRconLib License"
 WriteLine file, "#####"
 WriteLine file, ""
 WriteLine file, ""
@@ -89,6 +90,12 @@ WriteLine file, "###############################################################
 WriteLine file, "##3## Ionic Zip License"
 WriteLine file, "################################################################################"
 ConcatenateFiles file, BuildPath(Array(SourceRoot, "Server", "Engine", "Ionic.txt"))
+WriteLine file, ""
+WriteLine file, ""
+WriteLine file, "################################################################################"
+WriteLine file, "##4## SourceRconLib License"
+WriteLine file, "################################################################################"
+ConcatenateFiles file, BuildPath(Array(SourceRoot, "SourceRconLib", "RconLib.txt"))
 
 
 Dim zipexe, zipname, buildversion

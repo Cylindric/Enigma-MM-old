@@ -1,0 +1,4 @@
+Copyright Andrew Simpson 2008-2011
+http://aiusepsi.co.uk
+Licensed under the BSD License.
+http://creativecommons.org/licenses/BSD/
