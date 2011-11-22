@@ -106,6 +106,7 @@
     <Compile Include="Engine\Data\UpdateDb.cs" />
     <Compile Include="Engine\Data\UpdateDb_2_3.cs" />
     <Compile Include="Engine\Data\UpdateDb_3_4.cs" />
+    <Compile Include="Engine\Gui\ObservableUsers.cs" />
     <Compile Include="Engine\ServerMessageEventArgs.cs" />
     <Compile Include="Engine\Settings\SettingsFile.cs" />
     <Compile Include="Engine\StatusEnum.cs" />

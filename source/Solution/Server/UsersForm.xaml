@@ -1,14 +1,29 @@
 ﻿    <Window x:Class="EnigmaMM.UsersForm"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            Title="Users" Height="287" Width="442">
-        <Grid>
-            <DataGrid AutoGenerateColumns="False" Height="200" HorizontalAlignment="Left" Margin="44,22,0,0" Name="dataGrid1" VerticalAlignment="Top" Width="200" ItemsSource="{Binding}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="User ID" Binding="{Binding Path=User_ID}" />
-                    <DataGridTextColumn Header="Username" Binding="{Binding Path=Username}" />
-                    <DataGridTextColumn Header="Last Seen" Binding="{Binding Path=LastSeen}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </Grid>
+            Title="Users" Height="334" Width="561" Loaded="Window_Loaded" xmlns:my="clr-namespace:EnigmaMM">
+    <Window.Resources>
+        <my:EMMDataSet x:Key="eMMDataSet" />
+        <CollectionViewSource x:Key="usersViewSource" Source="{Binding Path=Users, Source={StaticResource eMMDataSet}}" />
+    </Window.Resources>
+    <Grid DataContext="{StaticResource usersViewSource}">
+        <DataGrid AutoGenerateColumns="False" EnableRowVirtualization="True" Height="192" HorizontalAlignment="Left" ItemsSource="{Binding}" Name="usersDataGrid" RowDetailsVisibilityMode="VisibleWhenSelected" VerticalAlignment="Top" Width="461">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="usernameColumn" Binding="{Binding Path=Username}" Header="Username" Width="Auto" />
+                <DataGridTextColumn x:Name="rank_IDColumn" Binding="{Binding Path=Rank_ID}" Header="Rank ID" Width="Auto" />
+                <!-- DataGridComboBoxColumn x:Name="rank_Column" Header="Rank" SelectedItemBinding="{Binding Path=Rank_ID}" SelectedValuePath="Rank_ID" DisplayMemberPath="Rank" ItemsSource="{Binding Source={StaticResource userDataProvider}}"/ -->
+                <DataGridTextColumn x:Name="locXColumn" Binding="{Binding Path=LocX}" Header="Loc X" Width="Auto" />
+                <DataGridTextColumn x:Name="locYColumn" Binding="{Binding Path=LocY}" Header="Loc Y" Width="Auto" />
+                <DataGridTextColumn x:Name="locZColumn" Binding="{Binding Path=LocZ}" Header="Loc Z" Width="Auto" />
+                <DataGridTemplateColumn x:Name="lastSeenColumn" Header="Last Seen" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding Path=LastSeen, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="Save" Height="23" HorizontalAlignment="Left" Margin="12,213,0,0" Name="SaveChanges" VerticalAlignment="Top" Width="75" Click="SaveChanges_Click" />
+    </Grid>
     </Window>
