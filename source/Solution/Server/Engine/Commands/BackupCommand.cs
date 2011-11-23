@@ -12,7 +12,7 @@ namespace EnigmaMM.Engine.Commands
 
         public BackupCommand()
         {
-            mPermissionsRequired.Add(Manager.Database.Permissions.Single(i => i.Name == "backup"));
+            mPermissionsRequired.Add(Manager.GetContext.Permissions.Single(i => i.Name == "backup"));
             Manager.Server.MinecraftSettings.Load();
             mWorldPath = Manager.Server.MinecraftSettings.WorldPath;
         }

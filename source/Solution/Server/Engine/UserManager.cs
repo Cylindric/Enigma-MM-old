@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using LibNbt.Tags;
 using System.Linq;
-using System.Diagnostics;
+using EnigmaMM.Engine.Data;
 
 namespace EnigmaMM.Engine
 {
@@ -15,27 +14,30 @@ namespace EnigmaMM.Engine
             mServer = server;
         }
 
-        public Data.User OnUserJoinedMessage(EMMServerMessage message)
+        public User OnUserJoinedMessage(EMMServerMessage message)
         {
             // make sure user exists in database
-            Data.User user = Manager.Database.Users.SingleOrDefault(i => i.Username == message.Data["username"]);
-            if (user == null)
+            using (EMMDataContext db = Manager.GetContext)
             {
-                user = CreateDefaultUser(message.Data["username"]);
+                User user = db.Users.SingleOrDefault(i => i.Username == message.Data["username"]);
+                if (user == null)
+                {
+                    user = CreateDefaultUser(message.Data["username"]);
+                }
+
+                // parse their current location from the join message
+                Coord position = new Coord(message);
+                user.LocX = position.X;
+                user.LocY = position.Y;
+                user.LocZ = position.Z;
+                user.LastSeen = DateTime.Now;
+                db.SubmitChanges();
+
+                // save the current location to the tracking table
+                TrackUserPosition(user);
+
+                return user;
             }
-
-            // parse their current location from the join message
-            Coord position = new Coord(message);
-            user.LocX = position.X;
-            user.LocY = position.Y;
-            user.LocZ = position.Z;
-            user.LastSeen = DateTime.Now;
-            Manager.Database.SubmitChanges();
-
-            // save the current location to the tracking table
-            TrackUserPosition(user);
-
-            return user;
         }
 
         public void UpdateAllPositionsFromFile()
@@ -72,9 +74,12 @@ namespace EnigmaMM.Engine
         {
             Data.User user = new Data.User();
             user.Username = username;
-            user.Rank = Manager.Database.Ranks.Single(rank => rank.Name == "Everyone");
-            Manager.Database.Users.InsertOnSubmit(user);
-            Manager.Database.SubmitChanges();
+            using (EMMDataContext db = Manager.GetContext)
+            {
+                user.Rank = db.Ranks.Single(rank => rank.Name == "Everyone");
+                db.Users.InsertOnSubmit(user);
+                db.SubmitChanges();
+            }
             return user;
         }
 
@@ -85,23 +90,14 @@ namespace EnigmaMM.Engine
 
         private void TrackUserPosition(int user_id, int x, int y, int z, DateTime time)
         {
-            Data.Tracking lasttrack = Manager.Database.Trackings.OrderByDescending(t => t.PointTime).FirstOrDefault(i => i.User_ID == user_id);
-            bool addTrack = false;
-            if (lasttrack == null)
+            using (EMMDataContext db = Manager.GetContext)
             {
-                addTrack = true;
-            }
-            else
-            {
-                if ((lasttrack.LocX != x) || (lasttrack.LocY != y) || (lasttrack.LocZ != z))
+                Data.Tracking lasttrack = db.Trackings.OrderByDescending(t => t.PointTime).FirstOrDefault(i => i.User_ID == user_id);
+                if ((lasttrack == null) || ((lasttrack.LocX != x) || (lasttrack.LocY != y) || (lasttrack.LocZ != z)))
                 {
-                    addTrack = true;
+                    db.Trackings.InsertOnSubmit(new Data.Tracking() { User_ID = user_id, LocX = x, LocY = y, LocZ = z, PointTime = time });
+                    db.SubmitChanges();
                 }
-            }
-            if (addTrack)
-            {
-                Manager.Database.Trackings.InsertOnSubmit(new Data.Tracking() { User_ID = user_id, LocX = x, LocY = y, LocZ = z, PointTime = time });
-                Manager.Database.SubmitChanges();
             }
         }
 
@@ -110,7 +106,7 @@ namespace EnigmaMM.Engine
             Coord coord = GetPositionFromFile(filename);
             string username = GetUsernameFromFile(filename);
             DateTime time = File.GetLastWriteTime(filename);
-            Data.User user = Manager.Database.Users.FirstOrDefault(u => u.Username == username);
+            Data.User user = Manager.GetContext.Users.FirstOrDefault(u => u.Username == username);
             if (user == null)
             {
                 // file does not correspond to an existing user in the database
@@ -123,7 +119,7 @@ namespace EnigmaMM.Engine
         {
             if (Path.GetFileName(e.FullPath) != "_tmp_.dat")
             {
-                //UpdatePositionFromFile(e.FullPath);
+                UpdatePositionFromFile(e.FullPath);
             }
         }
 

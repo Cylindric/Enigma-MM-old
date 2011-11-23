@@ -32,7 +32,7 @@ namespace EnigmaMM.Engine
         /// Returns a new Database Context for the primary database, and performs 
         /// database checks the first time it's used.
         /// </summary>
-        public static EMMDataContext Database
+        public static EMMDataContext GetContext
         {
             get
             {

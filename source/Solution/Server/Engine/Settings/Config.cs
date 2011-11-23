@@ -126,7 +126,7 @@ namespace EnigmaMM
 
         public string ReadConfig(string key)
         {
-            return Manager.Database.Configs.Single(c => c.Key == key).Value;
+            return Manager.GetContext.Configs.Single(c => c.Key == key).Value;
         }
 
         public int ReadConfigInt(string key)

@@ -9,7 +9,7 @@ namespace EnigmaMM.Engine.Commands
 
         public MapsCommand()
         {
-            mPermissionsRequired.Add(Manager.Database.Permissions.Single(i => i.Name == "maps"));
+            mPermissionsRequired.Add(Manager.GetContext.Permissions.Single(i => i.Name == "maps"));
         }
 
         protected override void ExecuteTask(EMMServerMessage command)

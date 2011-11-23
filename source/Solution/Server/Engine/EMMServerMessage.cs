@@ -92,7 +92,7 @@ namespace EnigmaMM.Engine
         
         public void SetUser(string username)
         {
-            mUser = Manager.Database.Users.SingleOrDefault(u => u.Username == username);
+            mUser = Manager.GetContext.Users.SingleOrDefault(u => u.Username == username);
         }
 
         /// <summary>
@@ -115,11 +115,13 @@ namespace EnigmaMM.Engine
         private void PopulateRules()
         {
             sPatterns = new List<MessagePattern>();
-            Data.EMMDataContext db = Manager.Database;
-            foreach (Data.MessageType message in db.MessageTypes)
+            using (Data.EMMDataContext db = Manager.GetContext)
             {
-                MessagePattern p = new MessagePattern(message.Name, message.MatchType, message.Expression);
-                sPatterns.Add(p);
+                foreach (Data.MessageType message in db.MessageTypes)
+                {
+                    MessagePattern p = new MessagePattern(message.Name, message.MatchType, message.Expression);
+                    sPatterns.Add(p);
+                }
             }
         }
 

@@ -12,7 +12,7 @@ namespace EnigmaMM.Engine
 
         public void CheckDatabaseState()
         {
-            mDb = Manager.Database;
+            mDb = Manager.GetContext;
             if (!System.IO.File.Exists(datafile))
             {
                 UpdateDb creator = new CreateDb();

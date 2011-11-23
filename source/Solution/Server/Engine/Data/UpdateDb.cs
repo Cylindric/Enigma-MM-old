@@ -9,7 +9,7 @@ namespace EnigmaMM.Engine.Data
 {
     public abstract class UpdateDb
     {
-        protected Data.EMMDataContext mDb = Manager.Database;
+        protected Data.EMMDataContext mDb = Manager.GetContext;
         protected List<string> mCommandQueue = new List<string>();
         protected string mConnectionString;
         protected string mDataFile;

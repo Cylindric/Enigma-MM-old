@@ -10,7 +10,7 @@ namespace EnigmaMM.Engine.Commands
 
         public GetCommand()
         {
-            mPermissionsRequired.Add(Manager.Database.Permissions.Single(i => i.Name == "get-item"));
+            mPermissionsRequired.Add(Manager.GetContext.Permissions.Single(i => i.Name == "get-item"));
         }
 
         protected override void ExecuteTask(EMMServerMessage command)
@@ -30,14 +30,17 @@ namespace EnigmaMM.Engine.Commands
             int itemID = 0;
             int.TryParse(itemName, out itemID);
             Item item;
-            EMMDataContext mDB = Manager.Database;
-            if (itemID != 0)
+            
+            using (EMMDataContext mDB = Manager.GetContext)
             {
-                item = mDB.Items.SingleOrDefault(i => i.Block_Decimal_ID == itemID);
-            }
-            else
-            {
-                item = mDB.Items.SingleOrDefault(i => i.Code == itemName);
+                if (itemID != 0)
+                {
+                    item = mDB.Items.SingleOrDefault(i => i.Block_Decimal_ID == itemID);
+                }
+                else
+                {
+                    item = mDB.Items.SingleOrDefault(i => i.Code == itemName);
+                }
             }
 
             if (item == null)
@@ -79,8 +82,11 @@ namespace EnigmaMM.Engine.Commands
             history.User = user;
             history.Quantity = qtyToGive;
             history.CreateDate = DateTime.Now;
-            Manager.Database.ItemHistories.InsertOnSubmit(history);
-            Manager.Database.SubmitChanges();
+            using (EMMDataContext db = Manager.GetContext)
+            {
+                db.ItemHistories.InsertOnSubmit(history);
+                db.SubmitChanges();
+            }
         }
 
         private int GetActualQuantity(Data.User user, Item item, int requestedQuantity)

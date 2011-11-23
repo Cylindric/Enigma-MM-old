@@ -39,16 +39,15 @@ namespace EnigmaMM.Engine.Commands
 
         protected bool CheckAccess(Data.User user)
         {
-            EMMDataContext mDB = Manager.Database;
             if (mPermissionsRequired.Count == 0)
             {
                 return true;
             }
 
-            int userPermissions = (from p in mDB.Permissions
-                                  where p.Min_Level <= user.Rank.Level
-                                  && mPermissionsRequired.Contains(p)
-                                  select p).Count();
+            int userPermissions = (from p in Manager.GetContext.Permissions
+                                   where p.Min_Level <= user.Rank.Level
+                                   && mPermissionsRequired.Contains(p)
+                                   select p).Count();
 
             if (userPermissions == mPermissionsRequired.Count)
             {
