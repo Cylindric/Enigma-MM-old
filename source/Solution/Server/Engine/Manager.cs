@@ -6,7 +6,8 @@ namespace EnigmaMM.Engine
     {
         private static volatile EMMServer sEmm;
         private static object sEmmSync = new object();
-        private static volatile EMMDataContext sDatabase;
+
+        private static volatile DatabaseManager sDbm;
         private static object sDatabaseSync = new object();
 
         public static EMMServer Server
@@ -27,23 +28,26 @@ namespace EnigmaMM.Engine
             }
         }
 
+        /// <summary>
+        /// Returns a new Database Context for the primary database, and performs 
+        /// database checks the first time it's used.
+        /// </summary>
         public static EMMDataContext Database
         {
             get
             {
-                if (sDatabase == null)
+                if (sDbm == null)
                 {
                     lock (sDatabaseSync)
                     {
-                        if (sDatabase == null)
+                        if (sDbm == null)
                         {
-                            sDatabase = new EMMDataContext("data.sdf");
-                            DatabaseManager dbm = new DatabaseManager();
-                            dbm.CheckDatabaseState();
+                            sDbm = new DatabaseManager();
+                            sDbm.CheckDatabaseState();
                         }
                     }
                 }
-                return sDatabase;
+                return new EMMDataContext("data.sdf");;
             }
         }
     }
