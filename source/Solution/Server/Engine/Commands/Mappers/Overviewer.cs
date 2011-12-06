@@ -32,6 +32,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             {
                 exeFile = Path.Combine(Server.Settings.ServerManagerRoot, exeFile);
                 exeFile = Path.GetFullPath(exeFile);
+                exeFile = string.Format("cmd");
             }
             if (!File.Exists(exeFile))
             {
@@ -70,7 +71,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             Process p = new Process();
             p.StartInfo.FileName = exeFile;
             p.StartInfo.UseShellExecute = false;
-            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.CreateNoWindow = false;
             p.StartInfo.Arguments = cmd;
             p.Start();
             p.PriorityClass = ProcessPriorityClass.BelowNormal;
