@@ -32,7 +32,7 @@ namespace EnigmaMM.Engine.Commands.Mappers
             {
                 exeFile = Path.Combine(Server.Settings.ServerManagerRoot, exeFile);
                 exeFile = Path.GetFullPath(exeFile);
-                exeFile = string.Format("cmd");
+                //exeFile = string.Format("cmd");
             }
             if (!File.Exists(exeFile))
             {
